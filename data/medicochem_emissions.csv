@@ -1,0 +1,201 @@
+record_id,factory_id,factory_name,industry_type,date,emission_source,category,quantity,unit,emission_factor,co2_emission_kg,cost_inr,waste_type,waste_quantity_kg,priority_level
+ME001,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-17,natural-gas boiler,Energy,11667.6,m3,2.05,23918.58,745336.55,Acidic Economizer Descaling Scale,246.4,High
+ME002,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-18,transport fuel,Transport,2550.9,litres,2.68,6836.41,250514.07,Fleet Brake Wear Particulate,15.0,High
+ME003,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-06,transport fuel,Transport,1955.6,litres,2.68,5241.01,183875.97,Temperature-controlled Van Exhaust Soot,9.5,High
+ME004,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-15,chemical solvents,Material,11869.8,litres,2.85,33828.93,2637723.2,Spent Acetone Distillation Bottoms,349.4,High
+ME005,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-20,hazardous waste,Waste,4125.7,kg,3.1,12789.67,517385.98,Off-spec Pharmaceutical Intermediate Mass,2599.2,High
+ME006,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-15,hazardous waste,Waste,831.8,kg,3.1,2578.58,83158.55,Off-spec Pharmaceutical Intermediate Mass,1352.1,High
+ME007,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-13,chemical wastewater,Water,347.0,m3,1.25,433.75,53931.88,High-COD Chemical Flocculant Cake,1479.6,High
+ME008,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-18,transport fuel,Transport,2329.7,litres,2.68,6243.6,239195.55,Heavy Reefer Engine Oil Residue,32.8,High
+ME009,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-10,medicine packaging,Material,5092.1,kg,1.7,8656.57,665494.06,Damaged Aluminium Pouch Foil Offcuts,258.7,High
+ME010,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-20,refrigeration,Energy,37791.4,kWh,0.82,30988.95,402162.93,Ultra-low Chiller Brine Purge,135.4,Medium
+ME011,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-05,natural-gas boiler,Energy,21215.4,m3,2.05,43491.57,1100578.98,Boiler Blowdown Sludge,335.9,High
+ME012,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-12,laboratory waste,Waste,464.4,kg,2.4,1114.56,188442.4,Expired Analytical Standards Matrix,66.4,Medium
+ME013,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-20,refrigeration,Energy,37592.7,kWh,0.82,30826.01,391192.6,Compressor Refrigerant Oil Blowdown,18.5,High
+ME014,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-15,diesel generator,Energy,1224.2,litres,2.68,3280.86,116814.78,Heavy Soot Particulates,13.5,High
+ME015,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-23,refrigeration,Energy,42297.4,kWh,0.82,34683.87,420935.04,Ultra-low Chiller Brine Purge,60.1,High
+ME016,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-25,refrigeration,Energy,36368.0,kWh,0.82,29821.76,377896.35,Compressor Refrigerant Oil Blowdown,14.0,High
+ME017,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-23,hazardous waste,Waste,2193.3,kg,3.1,6799.23,258312.8,Off-spec Pharmaceutical Intermediate Mass,1885.5,High
+ME018,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-07,laboratory waste,Waste,605.5,kg,2.4,1453.2,162027.38,Contaminated Biological Pipette Tips,275.9,Medium
+ME019,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-30,chemical wastewater,Water,2016.2,m3,1.25,2520.25,254970.56,ETP Toxic Biological Sludge,2730.0,High
+ME020,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-07-23,laboratory waste,Waste,602.4,kg,2.4,1445.76,146963.82,Contaminated Biological Pipette Tips,202.6,High
+ME021,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-01,diesel generator,Energy,738.3,litres,2.68,1978.64,68958.65,Spent Engine Filter Media,27.0,High
+ME022,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-19,electricity,Energy,15307.9,kWh,0.82,12552.48,163689.19,Substation Insulating Oil Sludge,20.4,High
+ME023,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-25,refrigeration,Energy,16248.3,kWh,0.82,13323.61,173554.44,Cold Storage Defrost Condensate,224.0,Medium
+ME024,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-10,natural-gas boiler,Energy,14026.7,m3,2.05,28754.74,640778.86,Boiler Blowdown Sludge,489.6,Medium
+ME025,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-15,refrigeration,Energy,23245.4,kWh,0.82,19061.23,264662.45,Cold Storage Defrost Condensate,209.5,High
+ME026,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-27,natural-gas boiler,Energy,13344.4,m3,2.05,27356.02,583003.05,Flue Gas Acidic Condensate,315.6,High
+ME027,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-25,refrigeration,Energy,25612.9,kWh,0.82,21002.58,281356.23,Compressor Refrigerant Oil Blowdown,9.9,High
+ME028,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-21,laboratory waste,Waste,405.8,kg,2.4,973.92,174203.46,Spent HPLC Solvent Vials & Amber Glass,371.5,High
+ME029,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-13,transport fuel,Transport,1610.2,litres,2.68,4315.34,160991.33,Fleet Brake Wear Particulate,18.2,High
+ME030,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-08,chemical solvents,Material,4748.2,litres,2.85,13532.37,1189778.57,Spent Dichloromethane Distillation Sludge,841.2,High
+ME031,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-12,diesel generator,Energy,1754.8,litres,2.68,4702.86,173914.21,Heavy Soot Particulates,12.8,High
+ME032,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-07,refrigeration,Energy,41100.8,kWh,0.82,33702.66,379800.56,Cold Storage Defrost Condensate,217.3,High
+ME033,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-28,medicine packaging,Material,3211.8,kg,1.7,5460.06,576337.2,Damaged Aluminium Pouch Foil Offcuts,162.8,High
+ME034,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-30,chemical wastewater,Water,1181.4,m3,1.25,1476.75,212576.02,High-COD Chemical Flocculant Cake,1054.8,High
+ME035,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-08,refrigeration,Energy,25836.0,kWh,0.82,21185.52,237286.56,Cold Storage Defrost Condensate,207.3,High
+ME036,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-13,diesel generator,Energy,413.7,litres,2.68,1108.72,38820.81,Spent Synthetic Lubricant Sludge,43.0,High
+ME037,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-10,electricity,Energy,72671.9,kWh,0.82,59590.96,702114.88,HVAC Cleanroom Filter Debris,43.1,Medium
+ME038,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-08,refrigeration,Energy,16012.1,kWh,0.82,13129.92,172714.68,Compressor Refrigerant Oil Blowdown,14.0,Medium
+ME039,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-09,transport fuel,Transport,1472.5,litres,2.68,3946.3,142362.78,Fleet Brake Wear Particulate,6.7,Medium
+ME040,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-19,medicine packaging,Material,1439.2,kg,1.7,2446.64,237128.04,Damaged Aluminium Pouch Foil Offcuts,317.3,Medium
+ME041,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-15,refrigeration,Energy,19601.4,kWh,0.82,16073.15,209381.12,Ultra-low Chiller Brine Purge,64.3,High
+ME042,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-02-28,chemical wastewater,Water,786.6,m3,1.25,983.25,75654.4,High-COD Chemical Flocculant Cake,1365.6,High
+ME043,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-25,natural-gas boiler,Energy,9645.4,m3,2.05,19773.07,473860.46,Boiler Blowdown Sludge,439.8,Medium
+ME044,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-18,hazardous waste,Waste,3385.1,kg,3.1,10493.81,353646.74,Toxic Carbon Adsorption Beds,1342.7,High
+ME045,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-19,hazardous waste,Waste,2748.8,kg,3.1,8521.28,284813.43,Off-spec Pharmaceutical Intermediate Mass,2552.0,High
+ME046,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-01,refrigeration,Energy,33211.9,kWh,0.82,27233.76,390437.19,Compressor Refrigerant Oil Blowdown,9.3,High
+ME047,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-01,medicine packaging,Material,4904.2,kg,1.7,8337.14,649877.49,Damaged Aluminium Pouch Foil Offcuts,157.1,Medium
+ME048,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-29,medicine packaging,Material,2162.5,kg,1.7,3676.25,394087.16,Discarded Secondary Folding Cartons,818.0,Medium
+ME049,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-09,chemical solvents,Material,10799.3,litres,2.85,30778.0,1657819.03,Spent Acetone Distillation Bottoms,209.6,High
+ME050,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-16,refrigeration,Energy,21099.5,kWh,0.82,17301.59,229420.33,Cold Storage Defrost Condensate,103.5,High
+ME051,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-13,electricity,Energy,36358.3,kWh,0.82,29813.81,355131.5,HVAC Cleanroom Filter Debris,77.1,Medium
+ME052,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-23,electricity,Energy,26008.0,kWh,0.82,21326.56,223506.94,Substation Insulating Oil Sludge,23.7,Medium
+ME053,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-09,medicine packaging,Material,4956.8,kg,1.7,8426.56,857171.49,Rejected PVC-PVDC Blister Scrap,95.0,High
+ME054,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-02,laboratory waste,Waste,318.2,kg,2.4,763.68,149300.88,Spent HPLC Solvent Vials & Amber Glass,551.6,Medium
+ME055,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-17,electricity,Energy,48178.9,kWh,0.82,39506.7,512898.29,Substation Insulating Oil Sludge,21.4,High
+ME056,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-01,hazardous waste,Waste,708.1,kg,3.1,2195.11,84718.78,Toxic Carbon Adsorption Beds,1765.0,High
+ME057,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-04,diesel generator,Energy,2301.6,litres,2.68,6168.29,231906.83,Spent Engine Filter Media,25.9,High
+ME058,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-14,diesel generator,Energy,1972.5,litres,2.68,5286.3,188337.96,Heavy Soot Particulates,21.9,High
+ME059,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-12,refrigeration,Energy,38023.2,kWh,0.82,31179.02,443748.66,Cold Storage Defrost Condensate,161.9,High
+ME060,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-23,medicine packaging,Material,1353.5,kg,1.7,2300.95,245665.41,Damaged Aluminium Pouch Foil Offcuts,351.1,Medium
+ME061,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-22,chemical solvents,Material,9849.8,litres,2.85,28071.93,1478503.02,Contaminated Methanol Residue,587.4,High
+ME062,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-20,natural-gas boiler,Energy,27971.5,m3,2.05,57341.57,1186609.94,Boiler Blowdown Sludge,523.4,Medium
+ME063,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-11,chemical wastewater,Water,1388.0,m3,1.25,1735.0,244594.93,High-COD Chemical Flocculant Cake,1670.5,High
+ME064,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-14,refrigeration,Energy,11882.1,kWh,0.82,9743.32,109957.61,Compressor Refrigerant Oil Blowdown,10.0,High
+ME065,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-30,chemical solvents,Material,10979.3,litres,2.85,31291.0,2409646.8,Spent Dichloromethane Distillation Sludge,345.5,High
+ME066,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-10,refrigeration,Energy,18566.4,kWh,0.82,15224.45,171345.87,Compressor Refrigerant Oil Blowdown,7.4,Medium
+ME067,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-24,transport fuel,Transport,2637.7,litres,2.68,7069.04,272717.53,Heavy Reefer Engine Oil Residue,46.5,High
+ME068,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-12,refrigeration,Energy,9092.0,kWh,0.82,7455.44,89164.8,Ultra-low Chiller Brine Purge,47.1,High
+ME069,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-09-06,chemical solvents,Material,12182.0,litres,2.85,34718.7,1798453.63,Contaminated Methanol Residue,323.0,High
+ME070,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-16,transport fuel,Transport,1318.9,litres,2.68,3534.65,125378.18,Heavy Reefer Engine Oil Residue,31.8,High
+ME071,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-04,medicine packaging,Material,1886.6,kg,1.7,3207.22,253030.08,Rejected PVC-PVDC Blister Scrap,302.6,High
+ME072,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-20,refrigeration,Energy,27201.0,kWh,0.82,22304.82,311496.55,Cold Storage Defrost Condensate,211.2,Medium
+ME073,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-20,natural-gas boiler,Energy,5656.8,m3,2.05,11596.44,364498.43,Flue Gas Acidic Condensate,365.6,High
+ME074,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-21,electricity,Energy,34500.1,kWh,0.82,28290.08,350890.1,None (Direct Grid Energy),0.0,High
+ME075,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-23,medicine packaging,Material,2137.0,kg,1.7,3632.9,268661.19,Damaged Aluminium Pouch Foil Offcuts,131.5,Medium
+ME076,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-04,hazardous waste,Waste,2015.9,kg,3.1,6249.29,236284.82,Off-spec Pharmaceutical Intermediate Mass,789.6,High
+ME077,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-27,electricity,Energy,40877.7,kWh,0.82,33519.71,391837.79,HVAC Cleanroom Filter Debris,40.6,High
+ME078,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-29,electricity,Energy,47707.0,kWh,0.82,39119.74,447729.42,None (Direct Grid Energy),0.0,High
+ME079,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-17,natural-gas boiler,Energy,10429.8,m3,2.05,21381.09,575839.0,Acidic Economizer Descaling Scale,136.3,High
+ME080,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-14,hazardous waste,Waste,2994.2,kg,3.1,9282.02,260179.24,Toxic Carbon Adsorption Beds,1427.4,High
+ME081,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-27,refrigeration,Energy,15766.8,kWh,0.82,12928.78,156515.66,Compressor Refrigerant Oil Blowdown,5.1,High
+ME082,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-01,chemical solvents,Material,5571.1,litres,2.85,15877.64,1249057.53,Spent Dichloromethane Distillation Sludge,520.7,High
+ME083,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-04,laboratory waste,Waste,565.3,kg,2.4,1356.72,195344.28,Spent HPLC Solvent Vials & Amber Glass,89.1,High
+ME084,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-14,chemical wastewater,Water,920.6,m3,1.25,1150.75,148474.8,High-COD Chemical Flocculant Cake,1611.6,High
+ME085,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-04,natural-gas boiler,Energy,17338.4,m3,2.05,35543.72,803045.51,Boiler Blowdown Sludge,591.1,High
+ME086,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-28,diesel generator,Energy,3040.6,litres,2.68,8148.81,288423.22,Spent Engine Filter Media,9.8,High
+ME087,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-29,transport fuel,Transport,1876.2,litres,2.68,5028.22,186152.83,Fleet Brake Wear Particulate,15.2,High
+ME088,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-28,chemical wastewater,Water,2084.2,m3,1.25,2605.25,205878.78,Heavy Metal Neutralization Salt,1075.8,High
+ME089,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-14,hazardous waste,Waste,1771.2,kg,3.1,5490.72,151717.78,Off-spec Pharmaceutical Intermediate Mass,887.3,High
+ME090,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-23,chemical solvents,Material,9901.4,litres,2.85,28218.99,1544500.74,Contaminated Methanol Residue,797.2,High
+ME091,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-19,diesel generator,Energy,1429.1,litres,2.68,3829.99,139495.37,Spent Engine Filter Media,14.8,High
+ME092,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-06,chemical solvents,Material,11871.8,litres,2.85,33834.63,2891401.05,Spent Acetone Distillation Bottoms,647.1,High
+ME093,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-19,refrigeration,Energy,36336.4,kWh,0.82,29795.85,354481.16,Compressor Refrigerant Oil Blowdown,15.1,Medium
+ME094,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-30,transport fuel,Transport,1572.8,litres,2.68,4215.1,152843.69,Heavy Reefer Engine Oil Residue,26.2,High
+ME095,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-19,electricity,Energy,60559.4,kWh,0.82,49658.71,707397.41,Substation Insulating Oil Sludge,15.4,High
+ME096,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-24,transport fuel,Transport,3732.5,litres,2.68,10003.1,351932.79,Temperature-controlled Van Exhaust Soot,12.7,High
+ME097,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-16,electricity,Energy,45820.9,kWh,0.82,37573.14,509186.99,None (Direct Grid Energy),0.0,Medium
+ME098,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-06,electricity,Energy,48533.2,kWh,0.82,39797.22,547159.8,None (Direct Grid Energy),0.0,High
+ME099,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-06,refrigeration,Energy,30763.8,kWh,0.82,25226.32,323792.07,Ultra-low Chiller Brine Purge,106.9,Medium
+ME100,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-02-05,electricity,Energy,22875.4,kWh,0.82,18757.83,256031.35,Substation Insulating Oil Sludge,16.5,Medium
+ME101,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-01,chemical wastewater,Water,1800.1,m3,1.25,2250.12,314986.31,ETP Toxic Biological Sludge,874.5,High
+ME102,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-07,electricity,Energy,42437.7,kWh,0.82,34798.91,386848.82,HVAC Cleanroom Filter Debris,75.1,Medium
+ME103,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-15,medicine packaging,Material,3742.0,kg,1.7,6361.4,558229.26,Discarded Secondary Folding Cartons,818.5,High
+ME104,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-08,refrigeration,Energy,21473.8,kWh,0.82,17608.52,226264.85,Compressor Refrigerant Oil Blowdown,16.2,High
+ME105,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-28,hazardous waste,Waste,1038.9,kg,3.1,3220.59,101849.05,Off-spec Pharmaceutical Intermediate Mass,317.4,High
+ME106,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-17,transport fuel,Transport,3284.7,litres,2.68,8803.0,331704.41,Heavy Reefer Engine Oil Residue,24.8,High
+ME107,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-24,refrigeration,Energy,15079.1,kWh,0.82,12364.86,172092.55,Compressor Refrigerant Oil Blowdown,15.9,High
+ME108,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-09,diesel generator,Energy,1029.0,litres,2.68,2757.72,104660.97,Heavy Soot Particulates,21.8,High
+ME109,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-28,medicine packaging,Material,2851.0,kg,1.7,4846.7,396446.64,Rejected PVC-PVDC Blister Scrap,699.8,Medium
+ME110,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-22,refrigeration,Energy,30444.5,kWh,0.82,24964.49,276851.43,Ultra-low Chiller Brine Purge,124.8,High
+ME111,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-20,hazardous waste,Waste,3144.8,kg,3.1,9748.88,331594.14,Contaminated API Reaction Filter Cakes,835.7,High
+ME112,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-03,diesel generator,Energy,2918.5,litres,2.68,7821.58,296789.01,Spent Synthetic Lubricant Sludge,13.5,High
+ME113,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-29,chemical wastewater,Water,1704.4,m3,1.25,2130.5,219621.58,High-COD Chemical Flocculant Cake,1626.5,High
+ME114,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-12,laboratory waste,Waste,641.3,kg,2.4,1539.12,159004.14,Spent HPLC Solvent Vials & Amber Glass,355.4,Medium
+ME115,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-18,medicine packaging,Material,3581.9,kg,1.7,6089.23,563945.2,Discarded Secondary Folding Cartons,605.8,High
+ME116,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-10,natural-gas boiler,Energy,15063.7,m3,2.05,30880.58,752532.27,Acidic Economizer Descaling Scale,237.0,High
+ME117,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-01,chemical wastewater,Water,370.7,m3,1.25,463.38,53813.67,ETP Toxic Biological Sludge,2059.3,High
+ME118,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-06,natural-gas boiler,Energy,13269.6,m3,2.05,27202.68,754320.88,Acidic Economizer Descaling Scale,270.3,Medium
+ME119,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-05,refrigeration,Energy,8812.8,kWh,0.82,7226.5,102882.03,Ultra-low Chiller Brine Purge,28.6,High
+ME120,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-09-09,electricity,Energy,47086.0,kWh,0.82,38610.52,439845.82,HVAC Cleanroom Filter Debris,74.9,High
+ME121,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-28,refrigeration,Energy,12428.0,kWh,0.82,10190.96,147699.64,Compressor Refrigerant Oil Blowdown,16.9,High
+ME122,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-11,diesel generator,Energy,1302.3,litres,2.68,3490.16,131623.29,Spent Engine Filter Media,11.3,High
+ME123,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-27,hazardous waste,Waste,2049.8,kg,3.1,6354.38,198383.78,Toxic Carbon Adsorption Beds,494.9,High
+ME124,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-29,transport fuel,Transport,2071.8,litres,2.68,5552.42,202655.58,Fleet Brake Wear Particulate,4.3,High
+ME125,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-18,chemical solvents,Material,8589.7,litres,2.85,24480.65,2011297.67,Contaminated Methanol Residue,342.8,High
+ME126,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-17,chemical wastewater,Water,1757.3,m3,1.25,2196.62,295944.74,Heavy Metal Neutralization Salt,212.1,High
+ME127,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-24,electricity,Energy,72190.8,kWh,0.82,59196.46,642725.55,None (Direct Grid Energy),0.0,High
+ME128,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-15,natural-gas boiler,Energy,17311.9,m3,2.05,35489.39,909179.47,Boiler Blowdown Sludge,498.9,High
+ME129,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-28,chemical solvents,Material,5309.6,litres,2.85,15132.36,775910.67,Spent Dichloromethane Distillation Sludge,715.2,High
+ME130,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-30,chemical wastewater,Water,618.5,m3,1.25,773.12,106677.73,ETP Toxic Biological Sludge,2605.3,High
+ME131,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-24,natural-gas boiler,Energy,25585.4,m3,2.05,52450.07,1398065.29,Boiler Blowdown Sludge,271.4,Medium
+ME132,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-02-18,refrigeration,Energy,31327.8,kWh,0.82,25688.8,279159.58,Ultra-low Chiller Brine Purge,112.8,High
+ME133,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-02-14,chemical wastewater,Water,473.1,m3,1.25,591.38,71158.39,High-COD Chemical Flocculant Cake,851.3,High
+ME134,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-15,laboratory waste,Waste,607.1,kg,2.4,1457.04,144818.2,Expired Analytical Standards Matrix,145.1,High
+ME135,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-04,refrigeration,Energy,29597.3,kWh,0.82,24269.79,282996.46,Ultra-low Chiller Brine Purge,98.1,High
+ME136,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-02,medicine packaging,Material,2873.7,kg,1.7,4885.29,371807.85,Rejected PVC-PVDC Blister Scrap,344.6,Medium
+ME137,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-06-01,laboratory waste,Waste,464.7,kg,2.4,1115.28,123797.15,Spent HPLC Solvent Vials & Amber Glass,153.9,High
+ME138,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-20,hazardous waste,Waste,1979.4,kg,3.1,6136.14,255208.04,Toxic Carbon Adsorption Beds,470.3,High
+ME139,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-01,hazardous waste,Waste,775.0,kg,3.1,2402.5,88301.34,Toxic Carbon Adsorption Beds,1580.3,High
+ME140,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-29,electricity,Energy,56202.7,kWh,0.82,46086.21,537516.98,None (Direct Grid Energy),0.0,Medium
+ME141,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-04,electricity,Energy,15090.4,kWh,0.82,12374.13,147169.01,Substation Insulating Oil Sludge,15.0,High
+ME142,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-16,hazardous waste,Waste,2395.6,kg,3.1,7426.36,211142.37,Toxic Carbon Adsorption Beds,1290.6,High
+ME143,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-04,diesel generator,Energy,723.6,litres,2.68,1939.25,73010.53,Spent Synthetic Lubricant Sludge,40.5,High
+ME144,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-06-29,electricity,Energy,33412.6,kWh,0.82,27398.33,342583.66,HVAC Cleanroom Filter Debris,42.4,Medium
+ME145,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-30,laboratory waste,Waste,416.2,kg,2.4,998.88,117822.03,Contaminated Biological Pipette Tips,250.1,High
+ME146,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-22,laboratory waste,Waste,144.5,kg,2.4,346.8,36567.93,Expired Analytical Standards Matrix,112.0,High
+ME147,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-06,chemical wastewater,Water,338.6,m3,1.25,423.25,49680.75,ETP Toxic Biological Sludge,1612.5,High
+ME148,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-30,laboratory waste,Waste,414.7,kg,2.4,995.28,101610.06,Contaminated Biological Pipette Tips,164.3,High
+ME149,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-25,chemical wastewater,Water,1133.7,m3,1.25,1417.12,150488.0,High-COD Chemical Flocculant Cake,964.7,High
+ME150,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-02-01,laboratory waste,Waste,249.0,kg,2.4,597.6,75053.31,Spent HPLC Solvent Vials & Amber Glass,121.8,Medium
+ME151,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-19,diesel generator,Energy,997.3,litres,2.68,2672.76,99023.4,Spent Engine Filter Media,27.5,High
+ME152,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-04,hazardous waste,Waste,1113.7,kg,3.1,3452.47,79738.62,Off-spec Pharmaceutical Intermediate Mass,595.4,High
+ME153,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-27,medicine packaging,Material,1617.6,kg,1.7,2749.92,248991.15,Discarded Secondary Folding Cartons,508.3,High
+ME154,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-07-20,hazardous waste,Waste,3702.9,kg,3.1,11478.99,349516.68,Contaminated API Reaction Filter Cakes,2154.0,High
+ME155,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-05-24,chemical wastewater,Water,622.7,m3,1.25,778.38,81943.15,Heavy Metal Neutralization Salt,332.5,High
+ME156,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-02,chemical solvents,Material,9536.1,litres,2.85,27177.89,2179455.48,Spent Acetone Distillation Bottoms,495.1,High
+ME157,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-20,medicine packaging,Material,1706.6,kg,1.7,2901.22,282089.21,Discarded Secondary Folding Cartons,762.5,Medium
+ME158,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-14,transport fuel,Transport,2169.9,litres,2.68,5815.33,222017.2,Heavy Reefer Engine Oil Residue,43.8,High
+ME159,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-07,chemical solvents,Material,7344.7,litres,2.85,20932.4,1406594.51,Spent Acetone Distillation Bottoms,771.4,High
+ME160,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-20,refrigeration,Energy,29630.3,kWh,0.82,24296.85,294523.1,Cold Storage Defrost Condensate,221.7,High
+ME161,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-22,diesel generator,Energy,1002.9,litres,2.68,2687.77,97697.27,Spent Synthetic Lubricant Sludge,34.7,High
+ME162,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-11,refrigeration,Energy,15011.9,kWh,0.82,12309.76,133597.46,Ultra-low Chiller Brine Purge,157.5,High
+ME163,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-11,medicine packaging,Material,1203.3,kg,1.7,2045.61,190264.73,Discarded Secondary Folding Cartons,491.8,Medium
+ME164,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-16,medicine packaging,Material,1751.5,kg,1.7,2977.55,236187.06,Rejected PVC-PVDC Blister Scrap,141.9,Medium
+ME165,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-22,electricity,Energy,42655.7,kWh,0.82,34977.67,420831.8,Substation Insulating Oil Sludge,7.1,High
+ME166,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-31,laboratory waste,Waste,274.3,kg,2.4,658.32,73263.01,Spent HPLC Solvent Vials & Amber Glass,246.7,High
+ME167,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-15,laboratory waste,Waste,621.8,kg,2.4,1492.32,284857.42,Expired Analytical Standards Matrix,156.3,Medium
+ME168,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-05,natural-gas boiler,Energy,4494.2,m3,2.05,9213.11,236694.83,Boiler Blowdown Sludge,315.3,High
+ME169,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-03-12,laboratory waste,Waste,280.4,kg,2.4,672.96,68872.18,Spent HPLC Solvent Vials & Amber Glass,277.9,Medium
+ME170,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-01-12,chemical wastewater,Water,1654.5,m3,1.25,2068.12,230865.73,High-COD Chemical Flocculant Cake,617.0,High
+ME171,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-15,electricity,Energy,51150.5,kWh,0.82,41943.41,568332.17,None (Direct Grid Energy),0.0,High
+ME172,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-15,diesel generator,Energy,1421.7,litres,2.68,3810.16,141845.54,Spent Synthetic Lubricant Sludge,54.1,High
+ME173,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-28,transport fuel,Transport,1371.9,litres,2.68,3676.69,134815.57,Fleet Brake Wear Particulate,21.3,Medium
+ME174,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-15,transport fuel,Transport,2228.4,litres,2.68,5972.11,221225.95,Heavy Reefer Engine Oil Residue,11.5,High
+ME175,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-28,refrigeration,Energy,25023.4,kWh,0.82,20519.19,253309.58,Compressor Refrigerant Oil Blowdown,7.7,Medium
+ME176,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-23,laboratory waste,Waste,172.9,kg,2.4,414.96,74665.13,Contaminated Biological Pipette Tips,306.7,Medium
+ME177,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-11-22,transport fuel,Transport,1314.4,litres,2.68,3522.59,135614.44,Fleet Brake Wear Particulate,15.9,High
+ME178,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-21,natural-gas boiler,Energy,19864.2,m3,2.05,40721.61,1019790.7,Flue Gas Acidic Condensate,302.7,Medium
+ME179,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-08-22,natural-gas boiler,Energy,27416.5,m3,2.05,56203.82,1699703.09,Flue Gas Acidic Condensate,357.2,High
+ME180,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-15,hazardous waste,Waste,2606.8,kg,3.1,8081.08,230146.6,Off-spec Pharmaceutical Intermediate Mass,1188.6,High
+ME181,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-29,laboratory waste,Waste,85.7,kg,2.4,205.68,28064.39,Spent HPLC Solvent Vials & Amber Glass,377.6,Medium
+ME182,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-09-25,refrigeration,Energy,44098.6,kWh,0.82,36160.85,500003.99,Ultra-low Chiller Brine Purge,128.9,High
+ME183,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-08-12,medicine packaging,Material,2070.2,kg,1.7,3519.34,370940.8,Discarded Secondary Folding Cartons,300.4,Medium
+ME184,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-07,chemical solvents,Material,3395.9,litres,2.85,9678.32,547369.46,Spent Acetone Distillation Bottoms,388.0,High
+ME185,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-10-24,laboratory waste,Waste,138.8,kg,2.4,333.12,52640.87,Expired Analytical Standards Matrix,129.4,High
+ME186,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-18,electricity,Energy,21485.6,kWh,0.82,17618.19,212290.98,HVAC Cleanroom Filter Debris,70.6,High
+ME187,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-03-28,natural-gas boiler,Energy,27972.8,m3,2.05,57344.24,1737416.29,Acidic Economizer Descaling Scale,133.2,High
+ME188,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-25,refrigeration,Energy,35223.1,kWh,0.82,28882.94,395223.04,Compressor Refrigerant Oil Blowdown,11.4,High
+ME189,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-04,laboratory waste,Waste,188.4,kg,2.4,452.16,43949.31,Contaminated Biological Pipette Tips,81.9,Medium
+ME190,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-02-27,electricity,Energy,51395.0,kWh,0.82,42143.9,558271.57,HVAC Cleanroom Filter Debris,51.3,Medium
+ME191,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-05-12,laboratory waste,Waste,331.4,kg,2.4,795.36,127705.1,Spent HPLC Solvent Vials & Amber Glass,216.6,High
+ME192,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-07-30,medicine packaging,Material,1539.3,kg,1.7,2616.81,287954.44,Damaged Aluminium Pouch Foil Offcuts,243.8,Medium
+ME193,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-07-17,hazardous waste,Waste,1089.1,kg,3.1,3376.21,127519.09,Off-spec Pharmaceutical Intermediate Mass,371.4,High
+ME194,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-01-11,laboratory waste,Waste,300.1,kg,2.4,720.24,94065.27,Spent HPLC Solvent Vials & Amber Glass,507.3,High
+ME195,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-04-06,transport fuel,Transport,2711.1,litres,2.68,7265.75,262338.23,Temperature-controlled Van Exhaust Soot,12.2,Medium
+ME196,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-04-21,chemical wastewater,Water,1324.2,m3,1.25,1655.25,138317.83,Heavy Metal Neutralization Salt,269.3,High
+ME197,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-07-20,refrigeration,Energy,20865.7,kWh,0.82,17109.87,235964.32,Ultra-low Chiller Brine Purge,48.1,High
+ME198,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-07-15,chemical wastewater,Water,1597.9,m3,1.25,1997.38,204817.8,Heavy Metal Neutralization Salt,969.0,High
+ME199,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2026-09-02,diesel generator,Energy,2528.2,litres,2.68,6775.58,256466.98,Spent Synthetic Lubricant Sludge,15.1,High
+ME200,F001,MedicoChem Pharmaceuticals,Pharmaceutical Manufacturing,2025-12-20,electricity,Energy,52392.6,kWh,0.82,42961.93,494955.74,Substation Insulating Oil Sludge,6.0,Medium

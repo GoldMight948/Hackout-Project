@@ -1,0 +1,201 @@
+record_id,factory_id,factory_name,industry_type,date,emission_source,category,quantity,unit,emission_factor,co2_emission_kg,cost_inr,waste_type,waste_quantity_kg,priority_level
+GE001,F002,GreenPack Plastics,Plastic Packaging,2026-08-20,transport fuel,Transport,454.4,litres,2.68,1217.79,43961.42,Commercial Van Lubricant Sludge,10.4,Medium
+GE002,F002,GreenPack Plastics,Plastic Packaging,2025-09-09,plastic scrap,Waste,1158.5,kg,1.85,2143.22,36936.55,Defective Thermoformed Blisters,561.4,Medium
+GE003,F002,GreenPack Plastics,Plastic Packaging,2025-06-08,recycled plastic,Material,5300.1,kg,0.75,3975.08,356659.93,Extruder Screen Pack Char,39.0,Medium
+GE004,F002,GreenPack Plastics,Plastic Packaging,2026-03-10,water usage,Water,232.6,m3,0.38,88.39,9700.11,Chilled Water Loop Flushing,230.9,Low
+GE005,F002,GreenPack Plastics,Plastic Packaging,2025-08-07,packaging waste,Waste,1004.0,kg,1.62,1626.48,22819.69,Damaged Corrugated Separators,611.0,Medium
+GE006,F002,GreenPack Plastics,Plastic Packaging,2026-01-01,electricity,Energy,15444.9,kWh,0.82,12664.82,155809.89,None (Direct Grid Energy),0.0,Medium
+GE007,F002,GreenPack Plastics,Plastic Packaging,2025-04-12,water usage,Water,459.3,m3,0.38,174.53,24131.46,Chilled Water Loop Flushing,238.1,Low
+GE008,F002,GreenPack Plastics,Plastic Packaging,2025-02-11,transport fuel,Transport,1183.0,litres,2.68,3170.44,114023.71,Commercial Van Lubricant Sludge,23.4,High
+GE009,F002,GreenPack Plastics,Plastic Packaging,2026-05-12,transport fuel,Transport,1599.9,litres,2.68,4287.73,161187.99,Commercial Van Lubricant Sludge,18.7,Medium
+GE010,F002,GreenPack Plastics,Plastic Packaging,2026-07-17,packaging waste,Waste,1224.6,kg,1.62,1983.85,36514.0,Stretch Film Offcut Waste,762.9,Medium
+GE011,F002,GreenPack Plastics,Plastic Packaging,2025-12-04,diesel generator,Energy,185.3,litres,2.68,496.6,17286.46,Spent Crankcase Oil Sludge,10.2,High
+GE012,F002,GreenPack Plastics,Plastic Packaging,2026-05-18,electricity,Energy,12269.1,kWh,0.82,10060.66,136245.0,None (Direct Grid Energy),0.0,High
+GE013,F002,GreenPack Plastics,Plastic Packaging,2026-01-04,transport fuel,Transport,984.5,litres,2.68,2638.46,99021.15,Tire Wear Particle Dust,7.7,High
+GE014,F002,GreenPack Plastics,Plastic Packaging,2025-10-06,recycled plastic,Material,2567.9,kg,0.75,1925.93,180718.41,Non-homogenized Regrind Fines,37.1,Low
+GE015,F002,GreenPack Plastics,Plastic Packaging,2025-04-13,recycled plastic,Material,1097.1,kg,0.75,822.82,91331.87,Extruder Screen Pack Char,9.1,Low
+GE016,F002,GreenPack Plastics,Plastic Packaging,2025-12-15,electricity,Energy,5288.4,kWh,0.82,4336.49,57473.03,Defective Capacitor Scrap,1.1,Medium
+GE017,F002,GreenPack Plastics,Plastic Packaging,2025-09-01,water usage,Water,438.4,m3,0.38,166.59,22161.73,Cooling Bath Discharge Effluent,195.4,Medium
+GE018,F002,GreenPack Plastics,Plastic Packaging,2025-12-11,plastic scrap,Waste,1614.7,kg,1.85,2987.2,41626.09,Polypropylene Slit Edge Trimmings,1200.3,Medium
+GE019,F002,GreenPack Plastics,Plastic Packaging,2025-04-26,transport fuel,Transport,461.0,litres,2.68,1235.48,43642.75,Tire Wear Particle Dust,4.8,Medium
+GE020,F002,GreenPack Plastics,Plastic Packaging,2026-02-22,water usage,Water,342.6,m3,0.38,130.19,18992.19,Cooling Bath Discharge Effluent,248.9,Low
+GE021,F002,GreenPack Plastics,Plastic Packaging,2026-03-13,packaging waste,Waste,1392.6,kg,1.62,2256.01,37534.93,Stretch Film Offcut Waste,352.8,Medium
+GE022,F002,GreenPack Plastics,Plastic Packaging,2026-05-02,water usage,Water,283.4,m3,0.38,107.69,13593.78,Quench Tank Wastewater,300.4,Low
+GE023,F002,GreenPack Plastics,Plastic Packaging,2025-05-17,water usage,Water,376.3,m3,0.38,142.99,20868.64,Chilled Water Loop Flushing,337.0,Medium
+GE024,F002,GreenPack Plastics,Plastic Packaging,2025-08-01,transport fuel,Transport,805.0,litres,2.68,2157.4,80256.45,Tire Wear Particle Dust,3.7,Medium
+GE025,F002,GreenPack Plastics,Plastic Packaging,2025-08-05,plastic scrap,Waste,1199.0,kg,1.85,2218.15,39893.94,Punched Edge Strips,112.1,High
+GE026,F002,GreenPack Plastics,Plastic Packaging,2025-03-19,transport fuel,Transport,1701.9,litres,2.68,4561.09,168217.44,Air Intake Filter Media,5.3,Medium
+GE027,F002,GreenPack Plastics,Plastic Packaging,2025-09-27,diesel generator,Energy,248.2,litres,2.68,665.18,23633.83,Fuel Filter Cartridge Waste,6.9,High
+GE028,F002,GreenPack Plastics,Plastic Packaging,2026-01-16,electricity,Energy,6864.2,kWh,0.82,5628.64,59931.1,Defective Capacitor Scrap,2.1,Medium
+GE029,F002,GreenPack Plastics,Plastic Packaging,2026-06-28,packaging waste,Waste,1021.0,kg,1.62,1654.02,28233.78,Discarded Adhesive Tape Liners,213.7,Medium
+GE030,F002,GreenPack Plastics,Plastic Packaging,2025-07-20,packaging waste,Waste,1396.0,kg,1.62,2261.52,35259.95,Discarded Adhesive Tape Liners,294.5,Medium
+GE031,F002,GreenPack Plastics,Plastic Packaging,2025-12-15,electricity,Energy,5108.4,kWh,0.82,4188.89,48305.83,Transformer Coolant Purge,0.4,Medium
+GE032,F002,GreenPack Plastics,Plastic Packaging,2026-05-13,recycled plastic,Material,4606.9,kg,0.75,3455.17,350555.07,Non-homogenized Regrind Fines,61.7,Low
+GE033,F002,GreenPack Plastics,Plastic Packaging,2025-10-04,packaging waste,Waste,1391.1,kg,1.62,2253.58,27395.9,Damaged Corrugated Separators,697.5,Medium
+GE034,F002,GreenPack Plastics,Plastic Packaging,2026-08-18,plastic scrap,Waste,1431.1,kg,1.85,2647.53,33301.39,Defective Thermoformed Blisters,1100.4,High
+GE035,F002,GreenPack Plastics,Plastic Packaging,2025-06-05,packaging waste,Waste,1103.8,kg,1.62,1788.16,24928.95,Damaged Corrugated Separators,556.1,Low
+GE036,F002,GreenPack Plastics,Plastic Packaging,2026-03-04,virgin plastic,Material,3467.6,kg,2.55,8842.38,522581.13,Polymer Trimming Shards,142.3,High
+GE037,F002,GreenPack Plastics,Plastic Packaging,2025-04-13,plastic scrap,Waste,1285.0,kg,1.85,2377.25,30485.14,Punched Edge Strips,718.7,Medium
+GE038,F002,GreenPack Plastics,Plastic Packaging,2026-01-26,water usage,Water,463.8,m3,0.38,176.24,18359.14,Chilled Water Loop Flushing,234.6,Low
+GE039,F002,GreenPack Plastics,Plastic Packaging,2025-07-29,plastic scrap,Waste,1438.6,kg,1.85,2661.41,45068.12,Polypropylene Slit Edge Trimmings,1593.3,High
+GE040,F002,GreenPack Plastics,Plastic Packaging,2026-07-14,packaging waste,Waste,475.2,kg,1.62,769.82,14185.65,Discarded Adhesive Tape Liners,242.8,Low
+GE041,F002,GreenPack Plastics,Plastic Packaging,2025-02-19,water usage,Water,213.4,m3,0.38,81.09,11440.37,Quench Tank Wastewater,369.7,Low
+GE042,F002,GreenPack Plastics,Plastic Packaging,2026-08-03,virgin plastic,Material,3874.8,kg,2.55,9880.74,463878.78,Off-spec Extrusion Purge Lumps,194.4,Medium
+GE043,F002,GreenPack Plastics,Plastic Packaging,2025-05-05,water usage,Water,257.3,m3,0.38,97.77,11314.94,Quench Tank Wastewater,429.7,Low
+GE044,F002,GreenPack Plastics,Plastic Packaging,2026-05-05,recycled plastic,Material,1669.3,kg,0.75,1251.97,147526.97,Extruder Screen Pack Char,16.6,Low
+GE045,F002,GreenPack Plastics,Plastic Packaging,2025-10-05,recycled plastic,Material,5246.4,kg,0.75,3934.8,354736.45,Non-homogenized Regrind Fines,36.3,Medium
+GE046,F002,GreenPack Plastics,Plastic Packaging,2026-09-08,virgin plastic,Material,1471.2,kg,2.55,3751.56,188367.05,Off-spec Extrusion Purge Lumps,102.8,High
+GE047,F002,GreenPack Plastics,Plastic Packaging,2025-01-13,diesel generator,Energy,177.0,litres,2.68,474.36,16884.98,Spent Crankcase Oil Sludge,6.7,Medium
+GE048,F002,GreenPack Plastics,Plastic Packaging,2026-06-28,plastic scrap,Waste,283.0,kg,1.85,523.55,8024.34,Defective Thermoformed Blisters,468.4,Medium
+GE049,F002,GreenPack Plastics,Plastic Packaging,2025-10-04,water usage,Water,91.0,m3,0.38,34.58,5335.21,Cooling Bath Discharge Effluent,587.0,Medium
+GE050,F002,GreenPack Plastics,Plastic Packaging,2026-01-04,water usage,Water,338.3,m3,0.38,128.55,18339.97,Cooling Bath Discharge Effluent,127.3,Medium
+GE051,F002,GreenPack Plastics,Plastic Packaging,2025-01-08,diesel generator,Energy,848.1,litres,2.68,2272.91,81707.28,Diesel Exhaust Filter Soot,5.8,High
+GE052,F002,GreenPack Plastics,Plastic Packaging,2026-04-26,electricity,Energy,8105.7,kWh,0.82,6646.67,74884.77,Defective Capacitor Scrap,1.7,High
+GE053,F002,GreenPack Plastics,Plastic Packaging,2025-01-09,plastic scrap,Waste,220.4,kg,1.85,407.74,5762.15,Defective Thermoformed Blisters,747.1,High
+GE054,F002,GreenPack Plastics,Plastic Packaging,2025-01-15,plastic scrap,Waste,483.1,kg,1.85,893.74,10875.03,Defective Thermoformed Blisters,749.2,Medium
+GE055,F002,GreenPack Plastics,Plastic Packaging,2026-05-05,recycled plastic,Material,5078.7,kg,0.75,3809.02,346981.84,Non-homogenized Regrind Fines,59.7,Low
+GE056,F002,GreenPack Plastics,Plastic Packaging,2025-09-23,transport fuel,Transport,1306.5,litres,2.68,3501.42,130505.16,Air Intake Filter Media,2.8,Medium
+GE057,F002,GreenPack Plastics,Plastic Packaging,2026-03-03,virgin plastic,Material,2312.8,kg,2.55,5897.64,302965.69,Off-spec Extrusion Purge Lumps,173.5,High
+GE058,F002,GreenPack Plastics,Plastic Packaging,2026-03-16,plastic scrap,Waste,1862.3,kg,1.85,3445.26,56454.6,Punched Edge Strips,914.3,Medium
+GE059,F002,GreenPack Plastics,Plastic Packaging,2025-03-29,virgin plastic,Material,2634.8,kg,2.55,6718.74,403576.45,Molding Runner Scrap Offcuts,104.7,High
+GE060,F002,GreenPack Plastics,Plastic Packaging,2026-02-26,transport fuel,Transport,1216.6,litres,2.68,3260.49,114040.22,Commercial Van Lubricant Sludge,19.3,Medium
+GE061,F002,GreenPack Plastics,Plastic Packaging,2025-11-10,packaging waste,Waste,961.6,kg,1.62,1557.79,23707.1,Damaged Corrugated Separators,652.7,Medium
+GE062,F002,GreenPack Plastics,Plastic Packaging,2025-04-19,water usage,Water,126.8,m3,0.38,48.18,5532.88,Cooling Bath Discharge Effluent,492.5,Low
+GE063,F002,GreenPack Plastics,Plastic Packaging,2025-06-20,diesel generator,Energy,284.4,litres,2.68,762.19,27055.86,Spent Crankcase Oil Sludge,8.8,High
+GE064,F002,GreenPack Plastics,Plastic Packaging,2026-01-30,water usage,Water,595.6,m3,0.38,226.33,24869.68,Quench Tank Wastewater,344.5,Low
+GE065,F002,GreenPack Plastics,Plastic Packaging,2026-06-09,virgin plastic,Material,2909.9,kg,2.55,7420.24,418258.02,Off-spec Extrusion Purge Lumps,236.5,Medium
+GE066,F002,GreenPack Plastics,Plastic Packaging,2026-01-08,water usage,Water,503.1,m3,0.38,191.18,29964.69,Cooling Bath Discharge Effluent,214.9,Low
+GE067,F002,GreenPack Plastics,Plastic Packaging,2025-08-06,transport fuel,Transport,696.3,litres,2.68,1866.08,69266.37,Air Intake Filter Media,5.7,High
+GE068,F002,GreenPack Plastics,Plastic Packaging,2026-05-28,electricity,Energy,15454.6,kWh,0.82,12672.77,151225.55,None (Direct Grid Energy),0.0,Medium
+GE069,F002,GreenPack Plastics,Plastic Packaging,2026-05-26,diesel generator,Energy,402.4,litres,2.68,1078.43,37295.42,Diesel Exhaust Filter Soot,5.3,High
+GE070,F002,GreenPack Plastics,Plastic Packaging,2025-06-24,recycled plastic,Material,4173.7,kg,0.75,3130.27,320846.24,Washed Flake Sediment Sludge,45.2,Low
+GE071,F002,GreenPack Plastics,Plastic Packaging,2025-08-29,water usage,Water,547.7,m3,0.38,208.13,27925.36,Chilled Water Loop Flushing,182.5,Low
+GE072,F002,GreenPack Plastics,Plastic Packaging,2025-11-29,water usage,Water,230.7,m3,0.38,87.67,12248.8,Cooling Bath Discharge Effluent,264.2,Medium
+GE073,F002,GreenPack Plastics,Plastic Packaging,2025-01-03,plastic scrap,Waste,233.6,kg,1.85,432.16,5404.99,Punched Edge Strips,681.9,Medium
+GE074,F002,GreenPack Plastics,Plastic Packaging,2025-08-25,transport fuel,Transport,627.1,litres,2.68,1680.63,62146.49,Air Intake Filter Media,6.7,High
+GE075,F002,GreenPack Plastics,Plastic Packaging,2025-02-19,recycled plastic,Material,1548.6,kg,0.75,1161.45,135450.5,Washed Flake Sediment Sludge,47.9,Low
+GE076,F002,GreenPack Plastics,Plastic Packaging,2026-08-13,packaging waste,Waste,804.2,kg,1.62,1302.8,23732.86,Discarded Adhesive Tape Liners,163.5,Medium
+GE077,F002,GreenPack Plastics,Plastic Packaging,2026-07-18,water usage,Water,458.2,m3,0.38,174.12,22330.36,Cooling Bath Discharge Effluent,211.6,Low
+GE078,F002,GreenPack Plastics,Plastic Packaging,2025-08-09,packaging waste,Waste,155.2,kg,1.62,251.42,4505.69,Stretch Film Offcut Waste,387.4,Medium
+GE079,F002,GreenPack Plastics,Plastic Packaging,2025-08-20,virgin plastic,Material,2994.8,kg,2.55,7636.74,449619.01,Molding Runner Scrap Offcuts,35.2,Medium
+GE080,F002,GreenPack Plastics,Plastic Packaging,2025-03-24,packaging waste,Waste,992.6,kg,1.62,1608.01,24282.7,Discarded Adhesive Tape Liners,113.0,Medium
+GE081,F002,GreenPack Plastics,Plastic Packaging,2025-06-30,electricity,Energy,4073.6,kWh,0.82,3340.35,35891.95,Defective Capacitor Scrap,4.1,Medium
+GE082,F002,GreenPack Plastics,Plastic Packaging,2025-10-10,water usage,Water,179.9,m3,0.38,68.36,6507.57,Cooling Bath Discharge Effluent,330.2,Low
+GE083,F002,GreenPack Plastics,Plastic Packaging,2025-06-11,plastic scrap,Waste,922.1,kg,1.85,1705.89,24711.83,Polypropylene Slit Edge Trimmings,1245.7,Medium
+GE084,F002,GreenPack Plastics,Plastic Packaging,2026-02-01,packaging waste,Waste,1122.9,kg,1.62,1819.1,28630.96,Discarded Adhesive Tape Liners,57.6,Medium
+GE085,F002,GreenPack Plastics,Plastic Packaging,2025-11-27,electricity,Energy,4396.9,kWh,0.82,3605.46,40111.72,Transformer Coolant Purge,3.6,Medium
+GE086,F002,GreenPack Plastics,Plastic Packaging,2025-06-03,plastic scrap,Waste,1076.3,kg,1.85,1991.15,33676.79,Polypropylene Slit Edge Trimmings,1296.1,High
+GE087,F002,GreenPack Plastics,Plastic Packaging,2025-10-04,electricity,Energy,14745.1,kWh,0.82,12090.98,154056.88,Defective Capacitor Scrap,1.6,High
+GE088,F002,GreenPack Plastics,Plastic Packaging,2025-09-26,packaging waste,Waste,1339.2,kg,1.62,2169.5,29317.48,Stretch Film Offcut Waste,452.8,Medium
+GE089,F002,GreenPack Plastics,Plastic Packaging,2025-11-05,plastic scrap,Waste,452.7,kg,1.85,837.5,11429.58,Polypropylene Slit Edge Trimmings,191.5,Medium
+GE090,F002,GreenPack Plastics,Plastic Packaging,2025-10-13,recycled plastic,Material,1690.0,kg,0.75,1267.5,121389.62,Non-homogenized Regrind Fines,59.7,Low
+GE091,F002,GreenPack Plastics,Plastic Packaging,2026-06-28,packaging waste,Waste,1207.8,kg,1.62,1956.64,26688.34,Discarded Adhesive Tape Liners,84.8,Medium
+GE092,F002,GreenPack Plastics,Plastic Packaging,2026-05-16,electricity,Energy,6097.8,kWh,0.82,5000.2,63836.64,Transformer Coolant Purge,2.1,High
+GE093,F002,GreenPack Plastics,Plastic Packaging,2025-06-28,transport fuel,Transport,745.4,litres,2.68,1997.67,75077.17,Tire Wear Particle Dust,3.8,High
+GE094,F002,GreenPack Plastics,Plastic Packaging,2025-02-24,electricity,Energy,10532.9,kWh,0.82,8636.98,92603.33,Defective Capacitor Scrap,2.1,Medium
+GE095,F002,GreenPack Plastics,Plastic Packaging,2025-11-28,transport fuel,Transport,1561.3,litres,2.68,4184.28,147837.13,Tire Wear Particle Dust,17.9,Medium
+GE096,F002,GreenPack Plastics,Plastic Packaging,2026-07-11,electricity,Energy,6405.8,kWh,0.82,5252.76,54517.27,Transformer Coolant Purge,1.4,High
+GE097,F002,GreenPack Plastics,Plastic Packaging,2025-11-10,packaging waste,Waste,592.1,kg,1.62,959.2,12589.97,Discarded Adhesive Tape Liners,46.8,Medium
+GE098,F002,GreenPack Plastics,Plastic Packaging,2025-01-29,packaging waste,Waste,488.7,kg,1.62,791.69,10048.23,Discarded Adhesive Tape Liners,97.7,Medium
+GE099,F002,GreenPack Plastics,Plastic Packaging,2025-07-03,plastic scrap,Waste,368.9,kg,1.85,682.47,10196.93,Defective Thermoformed Blisters,203.0,High
+GE100,F002,GreenPack Plastics,Plastic Packaging,2025-02-20,virgin plastic,Material,4000.1,kg,2.55,10200.25,519843.66,Off-spec Extrusion Purge Lumps,133.2,Medium
+GE101,F002,GreenPack Plastics,Plastic Packaging,2026-05-07,plastic scrap,Waste,1097.8,kg,1.85,2030.93,32239.55,Defective Thermoformed Blisters,1170.5,High
+GE102,F002,GreenPack Plastics,Plastic Packaging,2026-01-24,plastic scrap,Waste,264.9,kg,1.85,490.06,9267.31,Polypropylene Slit Edge Trimmings,1117.6,Medium
+GE103,F002,GreenPack Plastics,Plastic Packaging,2026-05-23,virgin plastic,Material,7009.0,kg,2.55,17872.95,909591.41,Off-spec Extrusion Purge Lumps,140.1,High
+GE104,F002,GreenPack Plastics,Plastic Packaging,2025-11-28,diesel generator,Energy,480.3,litres,2.68,1287.2,44495.28,Spent Crankcase Oil Sludge,19.3,Medium
+GE105,F002,GreenPack Plastics,Plastic Packaging,2025-02-01,recycled plastic,Material,1573.5,kg,0.75,1180.12,132003.39,Washed Flake Sediment Sludge,12.4,Low
+GE106,F002,GreenPack Plastics,Plastic Packaging,2025-12-27,electricity,Energy,4286.6,kWh,0.82,3515.01,38638.4,Transformer Coolant Purge,0.3,Medium
+GE107,F002,GreenPack Plastics,Plastic Packaging,2026-05-12,plastic scrap,Waste,1258.0,kg,1.85,2327.3,32656.04,Defective Thermoformed Blisters,976.9,Medium
+GE108,F002,GreenPack Plastics,Plastic Packaging,2025-01-11,recycled plastic,Material,3917.8,kg,0.75,2938.35,297246.05,Washed Flake Sediment Sludge,53.9,Medium
+GE109,F002,GreenPack Plastics,Plastic Packaging,2025-10-28,water usage,Water,428.6,m3,0.38,162.87,17715.75,Cooling Bath Discharge Effluent,384.6,Low
+GE110,F002,GreenPack Plastics,Plastic Packaging,2025-01-12,plastic scrap,Waste,631.6,kg,1.85,1168.46,16639.72,Polypropylene Slit Edge Trimmings,917.2,Medium
+GE111,F002,GreenPack Plastics,Plastic Packaging,2026-08-03,virgin plastic,Material,6387.1,kg,2.55,16287.1,832272.44,Off-spec Extrusion Purge Lumps,277.8,High
+GE112,F002,GreenPack Plastics,Plastic Packaging,2025-03-01,recycled plastic,Material,2637.7,kg,0.75,1978.27,180125.8,Non-homogenized Regrind Fines,25.1,Low
+GE113,F002,GreenPack Plastics,Plastic Packaging,2025-06-06,recycled plastic,Material,5052.1,kg,0.75,3789.08,441021.51,Washed Flake Sediment Sludge,54.1,Medium
+GE114,F002,GreenPack Plastics,Plastic Packaging,2026-02-19,water usage,Water,447.2,m3,0.38,169.94,18444.64,Cooling Bath Discharge Effluent,599.4,Low
+GE115,F002,GreenPack Plastics,Plastic Packaging,2026-04-28,transport fuel,Transport,1774.8,litres,2.68,4756.46,170637.34,Tire Wear Particle Dust,17.4,High
+GE116,F002,GreenPack Plastics,Plastic Packaging,2025-01-24,water usage,Water,494.9,m3,0.38,188.06,26225.31,Cooling Bath Discharge Effluent,535.9,Low
+GE117,F002,GreenPack Plastics,Plastic Packaging,2026-01-21,transport fuel,Transport,1657.7,litres,2.68,4442.64,166431.63,Air Intake Filter Media,2.8,Medium
+GE118,F002,GreenPack Plastics,Plastic Packaging,2026-02-07,packaging waste,Waste,582.7,kg,1.62,943.97,11396.18,Damaged Corrugated Separators,690.3,Low
+GE119,F002,GreenPack Plastics,Plastic Packaging,2026-06-03,water usage,Water,448.3,m3,0.38,170.35,20607.26,Cooling Bath Discharge Effluent,217.6,Medium
+GE120,F002,GreenPack Plastics,Plastic Packaging,2025-03-19,recycled plastic,Material,1051.7,kg,0.75,788.78,87977.34,Extruder Screen Pack Char,33.2,Low
+GE121,F002,GreenPack Plastics,Plastic Packaging,2025-10-15,water usage,Water,212.3,m3,0.38,80.67,9419.48,Quench Tank Wastewater,181.9,Medium
+GE122,F002,GreenPack Plastics,Plastic Packaging,2025-01-29,diesel generator,Energy,342.6,litres,2.68,918.17,31877.49,Spent Crankcase Oil Sludge,18.7,Medium
+GE123,F002,GreenPack Plastics,Plastic Packaging,2025-09-06,diesel generator,Energy,199.1,litres,2.68,533.59,19019.47,Spent Crankcase Oil Sludge,21.2,Medium
+GE124,F002,GreenPack Plastics,Plastic Packaging,2025-05-07,packaging waste,Waste,1401.5,kg,1.62,2270.43,39136.45,Discarded Adhesive Tape Liners,77.4,Low
+GE125,F002,GreenPack Plastics,Plastic Packaging,2026-05-16,virgin plastic,Material,1600.6,kg,2.55,4081.53,246229.8,Molding Runner Scrap Offcuts,175.8,High
+GE126,F002,GreenPack Plastics,Plastic Packaging,2025-03-16,virgin plastic,Material,6615.6,kg,2.55,16869.78,966158.27,Polymer Trimming Shards,205.0,Medium
+GE127,F002,GreenPack Plastics,Plastic Packaging,2026-02-28,water usage,Water,317.7,m3,0.38,120.73,13571.36,Quench Tank Wastewater,210.4,Low
+GE128,F002,GreenPack Plastics,Plastic Packaging,2026-06-29,diesel generator,Energy,469.6,litres,2.68,1258.53,44863.9,Spent Crankcase Oil Sludge,10.7,Medium
+GE129,F002,GreenPack Plastics,Plastic Packaging,2026-05-02,water usage,Water,177.4,m3,0.38,67.41,6681.07,Quench Tank Wastewater,408.0,Medium
+GE130,F002,GreenPack Plastics,Plastic Packaging,2026-02-07,recycled plastic,Material,5730.8,kg,0.75,4298.1,392511.62,Washed Flake Sediment Sludge,40.4,Low
+GE131,F002,GreenPack Plastics,Plastic Packaging,2026-06-09,electricity,Energy,5148.7,kWh,0.82,4221.93,44901.58,Transformer Coolant Purge,3.6,Medium
+GE132,F002,GreenPack Plastics,Plastic Packaging,2025-03-31,packaging waste,Waste,1458.2,kg,1.62,2362.28,40133.33,Discarded Adhesive Tape Liners,174.7,Low
+GE133,F002,GreenPack Plastics,Plastic Packaging,2026-08-09,virgin plastic,Material,4466.8,kg,2.55,11390.34,537769.28,Off-spec Extrusion Purge Lumps,75.9,Medium
+GE134,F002,GreenPack Plastics,Plastic Packaging,2025-10-28,plastic scrap,Waste,1666.4,kg,1.85,3082.84,51361.52,Punched Edge Strips,288.5,Medium
+GE135,F002,GreenPack Plastics,Plastic Packaging,2025-07-26,recycled plastic,Material,2592.9,kg,0.75,1944.68,211671.65,Non-homogenized Regrind Fines,36.6,Low
+GE136,F002,GreenPack Plastics,Plastic Packaging,2025-03-13,electricity,Energy,6769.3,kWh,0.82,5550.83,61304.94,None (Direct Grid Energy),0.0,High
+GE137,F002,GreenPack Plastics,Plastic Packaging,2026-07-05,plastic scrap,Waste,1478.0,kg,1.85,2734.3,41600.01,Defective Thermoformed Blisters,891.3,Medium
+GE138,F002,GreenPack Plastics,Plastic Packaging,2025-03-24,plastic scrap,Waste,480.5,kg,1.85,888.93,14270.21,Defective Thermoformed Blisters,1011.9,Medium
+GE139,F002,GreenPack Plastics,Plastic Packaging,2026-05-18,recycled plastic,Material,6284.1,kg,0.75,4713.08,561722.93,Extruder Screen Pack Char,20.7,Low
+GE140,F002,GreenPack Plastics,Plastic Packaging,2025-05-29,transport fuel,Transport,442.4,litres,2.68,1185.63,42785.1,Air Intake Filter Media,6.0,Medium
+GE141,F002,GreenPack Plastics,Plastic Packaging,2025-09-22,packaging waste,Waste,673.1,kg,1.62,1090.42,14161.19,Discarded Adhesive Tape Liners,94.6,Low
+GE142,F002,GreenPack Plastics,Plastic Packaging,2025-07-29,packaging waste,Waste,650.0,kg,1.62,1053.0,18447.46,Stretch Film Offcut Waste,116.4,Low
+GE143,F002,GreenPack Plastics,Plastic Packaging,2025-02-26,diesel generator,Energy,569.9,litres,2.68,1527.33,53525.08,Fuel Filter Cartridge Waste,3.4,Medium
+GE144,F002,GreenPack Plastics,Plastic Packaging,2025-07-23,electricity,Energy,12190.8,kWh,0.82,9996.46,110055.09,Transformer Coolant Purge,4.0,Medium
+GE145,F002,GreenPack Plastics,Plastic Packaging,2025-05-19,packaging waste,Waste,306.1,kg,1.62,495.88,8660.21,Stretch Film Offcut Waste,384.4,Medium
+GE146,F002,GreenPack Plastics,Plastic Packaging,2026-08-07,water usage,Water,232.1,m3,0.38,88.2,10325.77,Cooling Bath Discharge Effluent,555.7,Low
+GE147,F002,GreenPack Plastics,Plastic Packaging,2026-05-07,plastic scrap,Waste,511.9,kg,1.85,947.01,17259.97,Punched Edge Strips,867.1,Medium
+GE148,F002,GreenPack Plastics,Plastic Packaging,2025-01-13,diesel generator,Energy,978.9,litres,2.68,2623.45,93339.15,Spent Crankcase Oil Sludge,13.0,Medium
+GE149,F002,GreenPack Plastics,Plastic Packaging,2025-06-07,electricity,Energy,5140.7,kWh,0.82,4215.37,45610.5,Defective Capacitor Scrap,1.1,Medium
+GE150,F002,GreenPack Plastics,Plastic Packaging,2025-02-25,transport fuel,Transport,1170.9,litres,2.68,3138.01,109646.89,Tire Wear Particle Dust,11.2,Medium
+GE151,F002,GreenPack Plastics,Plastic Packaging,2026-01-08,plastic scrap,Waste,482.8,kg,1.85,893.18,15804.98,Polypropylene Slit Edge Trimmings,891.4,Medium
+GE152,F002,GreenPack Plastics,Plastic Packaging,2025-01-25,transport fuel,Transport,659.2,litres,2.68,1766.66,64954.18,Air Intake Filter Media,7.1,High
+GE153,F002,GreenPack Plastics,Plastic Packaging,2025-10-26,virgin plastic,Material,5362.6,kg,2.55,13674.63,757744.98,Off-spec Extrusion Purge Lumps,230.8,High
+GE154,F002,GreenPack Plastics,Plastic Packaging,2025-11-15,water usage,Water,374.6,m3,0.38,142.35,14930.72,Quench Tank Wastewater,349.1,Low
+GE155,F002,GreenPack Plastics,Plastic Packaging,2025-05-13,virgin plastic,Material,5445.9,kg,2.55,13887.04,641093.42,Polymer Trimming Shards,117.5,Medium
+GE156,F002,GreenPack Plastics,Plastic Packaging,2025-08-25,plastic scrap,Waste,251.3,kg,1.85,464.91,7829.59,Defective Thermoformed Blisters,399.6,High
+GE157,F002,GreenPack Plastics,Plastic Packaging,2025-01-13,transport fuel,Transport,734.7,litres,2.68,1969.0,71540.14,Tire Wear Particle Dust,6.7,High
+GE158,F002,GreenPack Plastics,Plastic Packaging,2025-02-16,packaging waste,Waste,925.2,kg,1.62,1498.82,25315.37,Stretch Film Offcut Waste,422.6,Low
+GE159,F002,GreenPack Plastics,Plastic Packaging,2025-05-23,diesel generator,Energy,980.5,litres,2.68,2627.74,91486.31,Diesel Exhaust Filter Soot,6.1,High
+GE160,F002,GreenPack Plastics,Plastic Packaging,2025-12-28,transport fuel,Transport,1279.9,litres,2.68,3430.13,126897.08,Commercial Van Lubricant Sludge,5.1,Medium
+GE161,F002,GreenPack Plastics,Plastic Packaging,2026-01-12,transport fuel,Transport,899.2,litres,2.68,2409.86,89944.58,Commercial Van Lubricant Sludge,8.1,Medium
+GE162,F002,GreenPack Plastics,Plastic Packaging,2026-07-11,packaging waste,Waste,1287.6,kg,1.62,2085.91,31506.76,Discarded Adhesive Tape Liners,160.6,Medium
+GE163,F002,GreenPack Plastics,Plastic Packaging,2025-10-04,packaging waste,Waste,1035.1,kg,1.62,1676.86,20483.72,Discarded Adhesive Tape Liners,57.9,Medium
+GE164,F002,GreenPack Plastics,Plastic Packaging,2026-04-20,diesel generator,Energy,930.9,litres,2.68,2494.81,90232.23,Spent Crankcase Oil Sludge,23.1,Medium
+GE165,F002,GreenPack Plastics,Plastic Packaging,2026-03-17,diesel generator,Energy,430.9,litres,2.68,1154.81,41738.61,Spent Crankcase Oil Sludge,6.8,Medium
+GE166,F002,GreenPack Plastics,Plastic Packaging,2025-10-23,electricity,Energy,9621.2,kWh,0.82,7889.38,99275.71,None (Direct Grid Energy),0.0,Medium
+GE167,F002,GreenPack Plastics,Plastic Packaging,2025-01-21,virgin plastic,Material,3562.0,kg,2.55,9083.1,472708.15,Molding Runner Scrap Offcuts,156.9,Medium
+GE168,F002,GreenPack Plastics,Plastic Packaging,2025-10-22,virgin plastic,Material,2078.7,kg,2.55,5300.68,241803.05,Polymer Trimming Shards,204.0,Medium
+GE169,F002,GreenPack Plastics,Plastic Packaging,2026-08-16,virgin plastic,Material,5634.6,kg,2.55,14368.23,791508.02,Molding Runner Scrap Offcuts,40.1,High
+GE170,F002,GreenPack Plastics,Plastic Packaging,2025-01-14,transport fuel,Transport,1800.5,litres,2.68,4825.34,168456.19,Commercial Van Lubricant Sludge,24.3,Medium
+GE171,F002,GreenPack Plastics,Plastic Packaging,2025-12-09,recycled plastic,Material,3694.8,kg,0.75,2771.1,247042.36,Non-homogenized Regrind Fines,62.1,Low
+GE172,F002,GreenPack Plastics,Plastic Packaging,2026-01-01,virgin plastic,Material,6327.1,kg,2.55,16134.1,793644.22,Polymer Trimming Shards,87.7,Medium
+GE173,F002,GreenPack Plastics,Plastic Packaging,2025-09-23,electricity,Energy,12937.5,kWh,0.82,10608.75,132635.33,None (Direct Grid Energy),0.0,Medium
+GE174,F002,GreenPack Plastics,Plastic Packaging,2026-07-03,recycled plastic,Material,3232.9,kg,0.75,2424.68,289238.44,Extruder Screen Pack Char,22.8,Low
+GE175,F002,GreenPack Plastics,Plastic Packaging,2026-07-12,diesel generator,Energy,705.3,litres,2.68,1890.2,69083.34,Spent Crankcase Oil Sludge,10.7,Medium
+GE176,F002,GreenPack Plastics,Plastic Packaging,2026-08-19,electricity,Energy,11159.2,kWh,0.82,9150.54,121239.48,Defective Capacitor Scrap,4.2,High
+GE177,F002,GreenPack Plastics,Plastic Packaging,2026-03-22,packaging waste,Waste,1376.6,kg,1.62,2230.09,29642.22,Damaged Corrugated Separators,498.0,Medium
+GE178,F002,GreenPack Plastics,Plastic Packaging,2026-01-15,packaging waste,Waste,560.5,kg,1.62,908.01,15046.14,Damaged Corrugated Separators,279.7,Medium
+GE179,F002,GreenPack Plastics,Plastic Packaging,2026-01-24,packaging waste,Waste,812.2,kg,1.62,1315.76,18382.38,Damaged Corrugated Separators,649.6,Medium
+GE180,F002,GreenPack Plastics,Plastic Packaging,2025-12-22,plastic scrap,Waste,1670.9,kg,1.85,3091.17,40620.81,Punched Edge Strips,890.1,Medium
+GE181,F002,GreenPack Plastics,Plastic Packaging,2026-04-28,recycled plastic,Material,2861.2,kg,0.75,2145.9,226850.61,Extruder Screen Pack Char,23.2,Low
+GE182,F002,GreenPack Plastics,Plastic Packaging,2025-08-18,electricity,Energy,10077.5,kWh,0.82,8263.55,99518.09,Defective Capacitor Scrap,4.2,Medium
+GE183,F002,GreenPack Plastics,Plastic Packaging,2026-07-08,electricity,Energy,5265.5,kWh,0.82,4317.71,55130.77,Defective Capacitor Scrap,4.5,High
+GE184,F002,GreenPack Plastics,Plastic Packaging,2025-08-13,diesel generator,Energy,481.2,litres,2.68,1289.62,45784.66,Spent Crankcase Oil Sludge,19.9,High
+GE185,F002,GreenPack Plastics,Plastic Packaging,2025-12-25,transport fuel,Transport,646.9,litres,2.68,1733.69,63841.93,Commercial Van Lubricant Sludge,21.7,Medium
+GE186,F002,GreenPack Plastics,Plastic Packaging,2025-02-17,diesel generator,Energy,443.8,litres,2.68,1189.38,41159.33,Fuel Filter Cartridge Waste,10.1,Medium
+GE187,F002,GreenPack Plastics,Plastic Packaging,2026-04-01,electricity,Energy,14428.6,kWh,0.82,11831.45,126418.06,None (Direct Grid Energy),0.0,Medium
+GE188,F002,GreenPack Plastics,Plastic Packaging,2026-04-14,transport fuel,Transport,880.3,litres,2.68,2359.2,84725.38,Tire Wear Particle Dust,15.1,Medium
+GE189,F002,GreenPack Plastics,Plastic Packaging,2026-04-17,electricity,Energy,5440.1,kWh,0.82,4460.88,57583.59,None (Direct Grid Energy),0.0,Medium
+GE190,F002,GreenPack Plastics,Plastic Packaging,2025-03-10,electricity,Energy,4279.6,kWh,0.82,3509.27,41281.03,Defective Capacitor Scrap,4.5,High
+GE191,F002,GreenPack Plastics,Plastic Packaging,2025-07-16,electricity,Energy,15619.1,kWh,0.82,12807.66,165539.64,Transformer Coolant Purge,3.4,Medium
+GE192,F002,GreenPack Plastics,Plastic Packaging,2026-04-02,diesel generator,Energy,1099.6,litres,2.68,2946.93,103273.14,Spent Crankcase Oil Sludge,14.1,Medium
+GE193,F002,GreenPack Plastics,Plastic Packaging,2025-02-21,plastic scrap,Waste,815.9,kg,1.85,1509.41,26761.6,Defective Thermoformed Blisters,1095.3,High
+GE194,F002,GreenPack Plastics,Plastic Packaging,2026-07-26,recycled plastic,Material,3861.7,kg,0.75,2896.27,269770.87,Washed Flake Sediment Sludge,26.9,Low
+GE195,F002,GreenPack Plastics,Plastic Packaging,2025-07-03,recycled plastic,Material,4961.1,kg,0.75,3720.83,336475.98,Non-homogenized Regrind Fines,56.0,Medium
+GE196,F002,GreenPack Plastics,Plastic Packaging,2025-05-07,transport fuel,Transport,1230.5,litres,2.68,3297.74,116451.1,Air Intake Filter Media,3.4,High
+GE197,F002,GreenPack Plastics,Plastic Packaging,2026-01-12,diesel generator,Energy,188.1,litres,2.68,504.11,18254.44,Diesel Exhaust Filter Soot,8.6,Medium
+GE198,F002,GreenPack Plastics,Plastic Packaging,2025-07-23,water usage,Water,145.5,m3,0.38,55.29,5281.11,Quench Tank Wastewater,246.1,Low
+GE199,F002,GreenPack Plastics,Plastic Packaging,2026-04-09,diesel generator,Energy,945.8,litres,2.68,2534.74,88796.27,Diesel Exhaust Filter Soot,13.5,Medium
+GE200,F002,GreenPack Plastics,Plastic Packaging,2026-05-03,electricity,Energy,3683.5,kWh,0.82,3020.47,31214.19,Transformer Coolant Purge,1.0,Medium
