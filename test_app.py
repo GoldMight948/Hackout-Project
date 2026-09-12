@@ -108,6 +108,30 @@ def test_calculations():
     assert res_deficit["est_revenue"] == 0.0
     print(f"  [PASS] Deficit Case: {res_deficit['total_co2']} t CO2 vs {res_deficit['govt_credits']} credits -> Deficit: {res_deficit['credits_required']} t, Cost: ${res_deficit['compliance_cost']:,.0f}")
 
+    # Case 3: Defaulted Fields Transparency Verification (Task 4)
+    sparse_input = {
+        "electricity_kwh": 50000.0,
+        "diesel_liters": 2000.0
+    }
+    res_sparse = calculate_detailed_emissions(sparse_input)
+    assert "defaulted_fields" in res_sparse
+    assert "water_m3" in res_sparse["defaulted_fields"]
+    assert "raw_material_tonnes" in res_sparse["defaulted_fields"]
+    assert "production_units" in res_sparse["defaulted_fields"]
+    assert "total_credits" in res_sparse["defaulted_fields"]
+
+    full_input = {
+        "electricity_kwh": 50000.0,
+        "water_m3": 1500.0,
+        "raw_material_tonnes": 200.0,
+        "production_units": 30000.0,
+        "total_credits": 180.0,
+        "machine_hours": 2000.0
+    }
+    res_full = calculate_detailed_emissions(full_input)
+    assert len(res_full["defaulted_fields"]) == 0
+    print("  [PASS] Defaulted fields detection & transparency metadata verified.")
+
     # Top 10 Leaks Verification
     leaks = res_deficit["top_10_leaks"]
     assert len(leaks) == 10, f"Expected 10 leaks, found {len(leaks)}"
@@ -161,8 +185,8 @@ def test_fastapi_endpoints():
         from fastapi.testclient import TestClient
         from api import app
         client = TestClient(app)
-    except ImportError:
-        print("  [SKIP] fastapi/testclient not installed in current environment; skipping REST API tests.")
+    except (ImportError, RuntimeError):
+        print("  [SKIP] fastapi/testclient (httpx) not installed in current environment; skipping REST API tests.")
         return
     
     # Health check

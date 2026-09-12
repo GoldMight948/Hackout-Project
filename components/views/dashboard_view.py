@@ -35,6 +35,7 @@ def render_dashboard_view():
             st.warning("No data found. Please complete Setup or load a demo dataset.")
             if st.button("Go to Setup"):
                 st.session_state["current_step"] = 3
+                st.session_state["nav_section"] = "setup"
                 st.rerun()
             return
         st.session_state["emissions_results"] = calculate_detailed_emissions(inputs)
@@ -50,9 +51,11 @@ def render_dashboard_view():
     res_co2 = st.session_state.get("emissions_results", {}).get("total_co2", 0.0) if st.session_state.get("emissions_results") else 0.0
 
     if (
-        st.session_state.get("dash_synced_email") != user_email or
-        last_synced_count != total_logs_count or
-        (total_logs_count > 0 and res_co2 == 0.0)
+        not st.session_state.get("manual_setup_override", False) and (
+            st.session_state.get("dash_synced_email") != user_email or
+            last_synced_count != total_logs_count or
+            (total_logs_count > 0 and res_co2 == 0.0)
+        )
     ):
         synced_res = sync_activity_logs_to_dashboard(user_email, is_demo=is_demo)
         if synced_res:
@@ -63,7 +66,7 @@ def render_dashboard_view():
     res = st.session_state["emissions_results"]
     user_logs = get_activity_logs(user_email, limit=500)
     audit_data = calculate_carbon_credit_audit(user, user_logs, res)
-    comp_name = user.get("company_name", res.get("raw_inputs", {}).get("business_name", "Enterprise Facility"))
+    comp_name = res.get("raw_inputs", {}).get("business_name") or st.session_state.get("form_inputs", {}).get("business_name") or user.get("company_name", "Enterprise Facility")
     theme_mode = st.session_state.get("theme_mode", "light")
     chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
 
@@ -84,6 +87,35 @@ def render_dashboard_view():
             if st.button("🔄 Reset Demo Defaults", key="dash_reset_demo_btn", use_container_width=True):
                 reset_current_demo_profile()
                 st.success("Demo profile reset to factory defaults!")
+                st.rerun()
+
+    # Defaulted Fields Notice Banner (Task 4: Surface Silent Defaults)
+    def_fields = res.get("defaulted_fields", [])
+    if def_fields:
+        field_labels = {
+            "water_m3": "Water Consumption (est. 1,200 m³/yr)",
+            "raw_material_tonnes": "Raw Materials (est. 150 t/yr)",
+            "production_units": "Production Output (est. 25,000 units/yr)",
+            "total_credits": "Carbon Credits Quota (est. 150 t)",
+            "machine_hours": "Machine Operating Hours (est. 2,200 hrs/yr)"
+        }
+        human_readable = [field_labels.get(f, f) for f in def_fields]
+        info_icon = feather_icon("info", color=COLOR_INFO, size=18, margin_right=8)
+        c_notif1, c_notif2 = st.columns([4.2, 1.2])
+        with c_notif1:
+            st.markdown(f"""
+                <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 9px 15px; margin-bottom: 14px; display: flex; align-items: center;">
+                    {info_icon}
+                    <div style="font-size: 0.85rem; color: #1E40AF;">
+                        <strong>Notice — Baseline Estimates Active:</strong> Some operational parameters were omitted from assessment inputs and are using standard industry baseline defaults:
+                        <span style="font-weight: 600;">{", ".join(human_readable)}</span>.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+        with c_notif2:
+            if st.button("⚙️ Update in Setup", key="dash_update_defaults_btn", use_container_width=True):
+                st.session_state["nav_section"] = "setup"
+                st.session_state["current_step"] = 3
                 st.rerun()
 
     # Header section with Feather Icon

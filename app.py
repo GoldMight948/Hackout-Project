@@ -120,6 +120,8 @@ def render_sidebar():
         diag_items = [
             ("🔍 Emission Leak Hotspots", "leak_detection", 6),
             ("💰 Carbon Credits & Market", "carbon_credits", 7),
+            ("💡 Green Recommendations", "recommendations", 8),
+            ("🧪 Decarbonization Simulator", "simulator", 9),
             ("♻️ Circular Economy (4R)", "circular", 10),
         ]
         for label, section_key, step_target in diag_items:
@@ -139,6 +141,7 @@ def render_sidebar():
 
         admin_items = [
             ("⚙️ Business Profile & Setup", "setup", 3),
+            ("📝 Activity Data Entry", "data_entry", 3),
             ("📥 Upload Historical Data", "upload", 4),
             ("📑 Compliance Reports & ESG", "reports", 11),
             ("🛠️ Platform Settings", "settings", 12),
@@ -204,11 +207,20 @@ def main():
     nav_sec = st.session_state.get("nav_section", "dashboard")
     step = st.session_state.get("current_step", 5)
 
+    # Sync nav_section if step was set directly to dashboard
+    if step == 5 and nav_sec in ["setup", "upload"]:
+        nav_sec = "dashboard"
+        st.session_state["nav_section"] = "dashboard"
+
     if nav_sec == "copilot":
         from components.chatbot import render_copilot_view
         render_copilot_view()
     elif nav_sec == "activity_logs":
         render_activity_log_view()
+    elif nav_sec == "analytics":
+        render_analytics_view()
+    elif nav_sec == "recommendations" or step == 8:
+        render_recommendations_view()
     elif nav_sec == "circular" or step == 10:
         render_circular_view()
     elif nav_sec == "leak_detection" or step == 6:
@@ -221,8 +233,11 @@ def main():
         render_reports_view()
     elif nav_sec == "settings" or step == 12:
         render_settings_view()
-    elif nav_sec == "setup" or step == 3:
+    elif nav_sec == "setup" or (step == 3 and nav_sec != "data_entry"):
         render_setup_view()
+    elif nav_sec == "data_entry":
+        from components.views.data_entry_view import render_data_entry_view
+        render_data_entry_view()
     elif nav_sec == "upload" or step == 4:
         render_upload_view()
     else: # Default dashboard (Step 5)

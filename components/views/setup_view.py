@@ -62,6 +62,7 @@ def render_setup_view():
 
     # Current form values
     inputs = st.session_state.get("form_inputs", {})
+    comp_name = inputs.get("business_name") or user.get("company_name", "Enterprise Facility")
     def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 350000.0)))
     def_renew = float(inputs.get("renewable_pct", 15.0))
     def_diesel = float(inputs.get("diesel_liters", inputs.get("fuel", 12000.0)))
@@ -98,6 +99,14 @@ def render_setup_view():
     def_bal = float(inputs.get("current_balance", def_credits))
 
     with st.form("setup_emission_form"):
+        c_bn1, c_bn2 = st.columns([2, 1])
+        with c_bn1:
+            inp_biz_name = st.text_input("Facility / Enterprise Name", value=comp_name, help="Name of your enterprise facility")
+        with c_bn2:
+            inp_period = st.selectbox("Assessment Reporting Year", [2025, 2026, 2024], index=0)
+
+        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
+
         # Section 1: Energy & Fuel
         st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('zap', color=COLOR_WARNING, size=20)} <span>1. Energy & Thermal Fuel Consumption</span></div>", unsafe_allow_html=True)
         c_e1, c_e2, c_e3 = st.columns(3)
@@ -171,8 +180,10 @@ def render_setup_view():
         submit_setup = st.form_submit_button("Calculate Emissions, Diagnose Leaks & Save", type="primary", use_container_width=True)
 
         if submit_setup:
+            final_biz_name = inp_biz_name.strip() or comp_name
             updated_data = {
-                "business_name": comp_name,
+                "business_name": final_biz_name,
+                "period_year": int(inp_period),
                 "electricity_kwh": inp_elec,
                 "renewable_pct": inp_renew,
                 "diesel_liters": inp_diesel,
@@ -191,6 +202,7 @@ def render_setup_view():
                 "wastewater_m3": inp_wastewater,
                 "raw_material_tonnes": inp_raw_mat,
                 "production_units": inp_prod_qty,
+                "machine_hours": inp_mach_hours,
                 "machine_running_hours": inp_mach_hours,
                 "total_credits": inp_credits,
                 "credit_price": inp_price,
@@ -204,12 +216,23 @@ def render_setup_view():
 
             st.session_state["form_inputs"] = updated_data
             st.session_state["emissions_results"] = results
+            st.session_state["manual_setup_override"] = True
+
+            if "current_user" in st.session_state and isinstance(st.session_state["current_user"], dict):
+                st.session_state["current_user"]["company_name"] = final_biz_name
 
             # Persist to SQLite with demo isolation tag
             save_emissions_assessment(user_email, updated_data, is_demo=1 if is_demo else 0)
 
+            # Prevent dashboard from overriding fresh user inputs with older logs
+            st.session_state["dash_synced_email"] = user_email
+            from database.db_manager import get_aggregated_activity_summary
+            agg_stat = get_aggregated_activity_summary(user_email)
+            st.session_state["dash_synced_entries"] = agg_stat.get("total_entries", 0)
+
             st.success("Operational footprint saved & calculated! Redirecting to Dashboard...")
             st.session_state["current_step"] = 5
+            st.session_state["nav_section"] = "dashboard"
             st.rerun()
 
     # Back navigation
@@ -217,4 +240,5 @@ def render_setup_view():
     with col_back:
         if st.button("← Back to Step 2", key="setup_back"):
             st.session_state["current_step"] = 2
+            st.session_state["nav_section"] = "auth"
             st.rerun()

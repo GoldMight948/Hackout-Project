@@ -342,15 +342,39 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
     waste_pap_kg = max(0.0, float(inputs.get("paper_waste_kg", inputs.get("waste", 0.0) * 0.15)))
     waste_haz_kg = max(0.0, float(inputs.get("hazardous_waste_kg", inputs.get("waste", 0.0) * 0.05)))
 
-    water_m3 = max(0.0, float(inputs.get("water_m3", 1200.0)))
-    wastewater_m3 = max(0.0, float(inputs.get("wastewater_m3", water_m3 * 0.85)))
+    # Track silently defaulted fields to surface transparency to user
+    defaulted_fields = []
+    if inputs.get("water_m3") is None:
+        defaulted_fields.append("water_m3")
+    if inputs.get("raw_material_tonnes") is None:
+        defaulted_fields.append("raw_material_tonnes")
+    if inputs.get("production_units") is None:
+        defaulted_fields.append("production_units")
+    if inputs.get("total_credits") is None and inputs.get("total_carbon_credits") is None:
+        defaulted_fields.append("total_credits")
+    if inputs.get("machine_running_hours") is None and inputs.get("machine_hours") is None:
+        defaulted_fields.append("machine_hours")
 
-    raw_mat_t = max(0.0, float(inputs.get("raw_material_tonnes", 150.0)))
-    prod_units = max(0.0, float(inputs.get("production_units", 25000.0)))
-    mach_hours = max(0.0, float(inputs.get("machine_running_hours", inputs.get("machine_hours", 2200.0))))
+    water_val = inputs.get("water_m3")
+    water_m3 = max(0.0, float(water_val if water_val is not None else 1200.0))
 
-    govt_credits = max(0.0, float(inputs.get("total_credits", inputs.get("total_carbon_credits", 150.0))))
-    credit_price = max(1.0, float(inputs.get("credit_price", inputs.get("carbon_credit_price", 35.0))))
+    ww_val = inputs.get("wastewater_m3")
+    wastewater_m3 = max(0.0, float(ww_val if ww_val is not None else water_m3 * 0.85))
+
+    rm_val = inputs.get("raw_material_tonnes")
+    raw_mat_t = max(0.0, float(rm_val if rm_val is not None else 150.0))
+
+    pu_val = inputs.get("production_units")
+    prod_units = max(0.0, float(pu_val if pu_val is not None else 25000.0))
+
+    mh_val = inputs.get("machine_running_hours") if inputs.get("machine_running_hours") is not None else inputs.get("machine_hours")
+    mach_hours = max(0.0, float(mh_val if mh_val is not None else 2200.0))
+
+    gc_val = inputs.get("total_credits") if inputs.get("total_credits") is not None else inputs.get("total_carbon_credits")
+    govt_credits = max(0.0, float(gc_val if gc_val is not None else 150.0))
+
+    cp_val = inputs.get("credit_price") if inputs.get("credit_price") is not None else inputs.get("carbon_credit_price")
+    credit_price = max(1.0, float(cp_val if cp_val is not None else 35.0))
 
     # 2. Emission Calculations (t CO2e)
     # Electricity takes renewable share into account
@@ -731,7 +755,8 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
         "benchmark_intensity": bench_intensity,
         "production_units": prod_units,
         "renewable_pct": renew_pct,
-        "raw_inputs": inputs
+        "raw_inputs": inputs,
+        "defaulted_fields": defaulted_fields
     }
 
 # Backward compatibility alias

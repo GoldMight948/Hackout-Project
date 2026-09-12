@@ -257,6 +257,7 @@ def render_upload_view():
         with col_btn2:
             if st.button("Proceed to Dashboard →", type="primary", use_container_width=True):
                 st.session_state["current_step"] = 5
+                st.session_state["nav_section"] = "dashboard"
                 st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
