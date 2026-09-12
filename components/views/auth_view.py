@@ -31,11 +31,10 @@ def render_auth_view():
     </div>
   """, unsafe_allow_html=True)
 
-  default_tab_idx = 1 if st.session_state.get("auth_tab") == "register" else 0
-  tab_login, tab_register, tab_demo = st.tabs(["Sign In", "Create Business Profile", "1-Click Demo Profiles"])
+  auth_tab = st.session_state.get("auth_tab", "login")
 
   # 1. Sign In Tab
-  with tab_login:
+  if auth_tab == "login":
     c1, c2, c3 = st.columns([1, 2, 1])
     with c2:
       st.markdown(f"""
@@ -62,7 +61,7 @@ def render_auth_view():
       st.markdown("</div>", unsafe_allow_html=True)
 
   # 2. Create Business Profile Tab
-  with tab_register:
+  elif auth_tab == "register":
     st.markdown(f"""
       <div class="saas-card">
         <div class="saas-card-title" style="margin-bottom: 6px;">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Register Facility & Production Workspace</div>
@@ -118,7 +117,7 @@ def render_auth_view():
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div>
             <div style="font-weight: 700; font-size: 0.95rem; color: #065F46; display: flex; align-items: center;">
-              {feather_icon('award', color='#CBDED3', size=16, margin_right=6)} Statutory Carbon Credit Quota (EPA / CARB / CCTS Calibrated)
+              {feather_icon('award', color='#8BA49A', size=16, margin_right=6)} Statutory Carbon Credit Quota (EPA / CARB / CCTS Calibrated)
             </div>
             <div style="font-size: 0.83rem; color: #047857; margin-top: 3px;">
               Regulatory Regime: <strong>{quota_info['regulatory_regime']}</strong>
@@ -128,7 +127,7 @@ def render_auth_view():
             </div>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 1.65rem; font-weight: 800; color: #CBDED3; line-height: 1.1;">
+            <div style="font-size: 1.65rem; font-weight: 800; color: #8BA49A; line-height: 1.1;">
               {quota_info['quota_credits']:,.0f}
             </div>
             <div style="font-size: 0.75rem; color: #065F46; font-weight: 600;">Government Carbon Credits</div>
@@ -207,41 +206,6 @@ def render_auth_view():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-
-  # 3. Quick Demo Login Tab (Isolated Sandbox)
-  with tab_demo:
-    st.markdown(f"""
-      <div class="saas-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <div>
-            <div class="saas-card-title">{feather_icon('zap', color=COLOR_WARNING, size=18)} Isolated Demo Sandbox Profiles</div>
-            <div class="saas-card-subtitle">
-              Instantly test the full platform with realistic operational data across 4 core industries. Demo data is sandboxed and can be reset at any time:
-            </div>
-          </div>
-          <span class="badge-medium">SANDBOX MODE</span>
-        </div>
-    """, unsafe_allow_html=True)
-
-    d_cols = st.columns(4, gap="medium")
-    for idx, (email, user) in enumerate(DEMO_USERS.items()):
-      preset = DEMO_BUSINESSES[user["preset_key"]]
-      with d_cols[idx]:
-        st.markdown(f"""
-          <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; height: 170px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <div style="margin-bottom: 8px;">{feather_icon('user', color=COLOR_PRIMARY, size=24, margin_right=0)}</div>
-              <div style="font-weight: 700; font-size: 0.95rem;">{user['name']}</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">{user['company']}</div>
-              <div style="font-size: 0.74rem; color: #CBDED3; font-weight: 600; margin-top: 4px;">{preset['type_label']}</div>
-            </div>
-          </div>
-        """, unsafe_allow_html=True)
-
-        if st.button(f"Sign In as {user['name'].split()[0]}", key=f"demo_btn_{email}", use_container_width=True):
-          quick_demo_login(email)
-
-    st.markdown("</div>", unsafe_allow_html=True)
 
   # Back navigation
   col_b, _ = st.columns([1, 4])

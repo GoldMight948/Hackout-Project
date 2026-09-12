@@ -265,7 +265,7 @@ def calculate_carbon_credit_audit(
     audit_summary_text = f"Government allocated {initial_govt_quota:,.0f} carbon credits under {statutory_info['regulatory_regime']} framework. Awaiting operational activity logging."
   elif not is_projected_deficit:
     audit_verdict = "COMPLIANT — SURPLUS FORECAST "
-    audit_status_color = "#CBDED3"
+    audit_status_color = "#8BA49A"
     audit_summary_text = f"Operating safely within statutory quota. Projected annual surplus of {projected_surplus_credits:,.1f} credits available for trading reserve."
   else:
     audit_verdict = "QUOTA DEFICIT WARNING 🔴"
@@ -671,7 +671,7 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
 
   if credit_balance >= 0:
     net_carbon_status = "Carbon Neutral "
-    status_color = "#CBDED3"
+    status_color = "#8BA49A"
     credits_remaining = credit_balance
     credits_required = 0.0
     possible_to_sell = credit_balance

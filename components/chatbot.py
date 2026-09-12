@@ -326,7 +326,7 @@ def render_copilot_chat(key_prefix: str = "copilot"):
     <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; margin-bottom: 12px; box-shadow: var(--shadow-card);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #CBDED3; letter-spacing: 0.08em;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #8BA49A; letter-spacing: 0.08em;">
             ACTIVE ENTERPRISE PROFILE
           </div>
           <div style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary); margin-top: 2px;">
@@ -343,13 +343,13 @@ def render_copilot_chat(key_prefix: str = "copilot"):
           </div>
           <div style="background: var(--bg-subtle); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
             <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700;">CREDIT STATUS</div>
-            <div style="font-weight: 800; font-size: 0.85rem; color: {'#EF4444' if is_deficit else '#CBDED3'};">
+            <div style="font-weight: 800; font-size: 0.85rem; color: {'#EF4444' if is_deficit else '#8BA49A'};">
               {'Deficit: ' + f'{credits_required:,.1f}t' if is_deficit else 'Surplus: ' + f'{credits_remaining:,.1f}t'}
             </div>
           </div>
           <div style="background: var(--bg-subtle); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
             <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700;">ECO SCORE</div>
-            <div style="font-weight: 800; font-size: 0.92rem; color: #CBDED3;">{s_score:.0f}/100</div>
+            <div style="font-weight: 800; font-size: 0.92rem; color: #8BA49A;">{s_score:.0f}/100</div>
           </div>
           <div style="background: var(--bg-subtle); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
             <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700;">DAILY SHIFTS</div>
@@ -409,7 +409,7 @@ def render_copilot_chat(key_prefix: str = "copilot"):
       else:
         st.markdown(f"""
           <div class="chat-bubble-bot">
-            <div style="display: flex; align-items: center; margin-bottom: 4px; font-weight: 700; color: #CBDED3; font-size: 0.8rem;">
+            <div style="display: flex; align-items: center; margin-bottom: 4px; font-weight: 700; color: #8BA49A; font-size: 0.8rem;">
               {feather_icon('cpu', color=COLOR_SUCCESS, size=14, margin_right=5)} Carbon Copilot
             </div>
             {msg['text']}
@@ -494,13 +494,13 @@ def render_copilot_view():
   
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
         AI Intelligence & Copilot
       </span>
     </div>
   """, unsafe_allow_html=True)
 
-  header_icon = feather_icon("cpu", color="#CBDED3", size=30, margin_right=10)
+  header_icon = feather_icon("cpu", color="#8BA49A", size=30, margin_right=10)
   st.markdown(f"""
     <div style="margin-bottom: 20px;">
       <h1 style="font-size: 2.0rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; display: flex; align-items: center;">

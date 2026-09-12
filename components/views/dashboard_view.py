@@ -120,12 +120,12 @@ def render_dashboard_view():
         st.rerun()
 
   # Header section with Feather Icon
-  head_icon = feather_icon("pie-chart", color="#CBDED3", size=30, margin_right=10)
+  head_icon = feather_icon("pie-chart", color="#8BA49A", size=30, margin_right=10)
   cal_icon = feather_icon("calendar", color="var(--text-muted)", size=15, margin_right=6)
   st.markdown(f"""
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
       <div>
-        <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
+        <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
           Executive Overview & Carbon Intelligence
         </span>
         <h1 style="font-size: 2.1rem; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em; display: flex; align-items: center;">
@@ -153,7 +153,7 @@ def render_dashboard_view():
     # Live Operational Sync Banner (reflects real-time daily activity logs)
     agg_stat = get_aggregated_activity_summary(user_email)
     if agg_stat["total_entries"] > 0:
-      sync_icon = feather_icon("refresh-cw", color="#CBDED3", size=16, margin_right=8)
+      sync_icon = feather_icon("refresh-cw", color="#8BA49A", size=16, margin_right=8)
       st.markdown(f"""
         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center;">
@@ -220,7 +220,7 @@ def render_dashboard_view():
           <div class="kpi-title">
             {def_icon} Net Carbon Status
           </div>
-          <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#CBDED3'};">
+          <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#8BA49A'};">
             {net_val:,.1f}
           </div>
           <div class="kpi-subtext">{net_sub}</div>
@@ -256,7 +256,7 @@ def render_dashboard_view():
 
     with k7:
       score_val = res['sustainability_score']
-      score_color = "#CBDED3" if score_val >= 70 else ("#F59E0B" if score_val >= 45 else "#EF4444")
+      score_color = "#8BA49A" if score_val >= 70 else ("#F59E0B" if score_val >= 45 else "#EF4444")
       score_badge = "Tier A (Leader)" if score_val >= 75 else ("Tier B (Standard)" if score_val >= 50 else "Tier C (Action Needed)")
       st.markdown(f"""
         <div class="kpi-card">
@@ -271,7 +271,7 @@ def render_dashboard_view():
     # =========================================================================
     # STATUTORY GOVERNMENT QUOTA CROSS-CHECK & CARBON CREDIT CONSUMPTION AUDIT
     # =========================================================================
-    audit_icon = feather_icon("award", color="#CBDED3", size=20, margin_right=8)
+    audit_icon = feather_icon("award", color="#8BA49A", size=20, margin_right=8)
     st.markdown(f"""
       <div class="saas-card" style="margin-bottom: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
@@ -326,7 +326,7 @@ def render_dashboard_view():
       """, unsafe_allow_html=True)
 
     with ac4:
-      exp_color = "#EF4444" if audit_data['is_projected_deficit'] else "#CBDED3"
+      exp_color = "#EF4444" if audit_data['is_projected_deficit'] else "#8BA49A"
       exp_sub = f"Deficit: -{audit_data['projected_credits_needed']:,.0f} credits" if audit_data['is_projected_deficit'] else f"Surplus: +{audit_data['projected_surplus_credits']:,.0f} credits"
       st.markdown(f"""
         <div class="kpi-card {'deficit' if audit_data['is_projected_deficit'] else 'low'}">
@@ -384,9 +384,9 @@ def render_dashboard_view():
             </tr>
             <tr style="border-bottom: 1px solid var(--border-color); background: rgba(16, 185, 129, 0.03);">
               <td style="padding: 10px 12px; font-weight: 700; color: #065F46;">{feather_icon('award', size=16, margin_right=6)} <strong>Annual Statutory Quota</strong></td>
-              <td style="padding: 10px 12px; font-weight: 700; color: #B0C5BA;"><strong>{audit_data['initial_govt_quota']:,.0f}</strong> credits initially issued</td>
+              <td style="padding: 10px 12px; font-weight: 700; color: #6B8E7D;"><strong>{audit_data['initial_govt_quota']:,.0f}</strong> credits initially issued</td>
               <td style="padding: 10px 12px;"><strong>{audit_data['accrued_credits_used']:,.2f}</strong> credits used to date <span style="font-size: 0.78rem; color: var(--text-muted);">({audit_data['total_entries_count']} shifts)</span></td>
-              <td style="padding: 10px 12px; font-weight: 700; color: {'#DC2626' if audit_data['is_projected_deficit'] else '#B0C5BA'};"><strong>{audit_data['expected_annual_burn']:,.1f}</strong> credits expected full year</td>
+              <td style="padding: 10px 12px; font-weight: 700; color: {'#DC2626' if audit_data['is_projected_deficit'] else '#6B8E7D'};"><strong>{audit_data['expected_annual_burn']:,.1f}</strong> credits expected full year</td>
               <td style="padding: 10px 12px;">{status_badge_annual}</td>
             </tr>
             <tr>
@@ -426,7 +426,7 @@ def render_dashboard_view():
         number={'suffix': "/100", 'font': {'size': 28, 'color': chart_text_color}},
         gauge={
           'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': chart_text_color},
-          'bar': {'color': "#CBDED3", 'thickness': 0.28},
+          'bar': {'color': "#8BA49A", 'thickness': 0.28},
           'bgcolor': "rgba(0,0,0,0)",
           'borderwidth': 1,
           'bordercolor': "var(--border-color)",
@@ -462,7 +462,7 @@ def render_dashboard_view():
 
       pie_labels = list(res["pillar_co2"].keys())
       pie_values = list(res["pillar_co2"].values())
-      pillar_palette = ["#F59E0B", "#EF4444", "#F97316", "#CBDED3", "#06B6D4", "#6366F1"]
+      pillar_palette = ["#F59E0B", "#EF4444", "#F97316", "#8BA49A", "#06B6D4", "#6366F1"]
 
       fig_pie = go.Figure(data=[go.Pie(
         labels=pie_labels,
@@ -505,7 +505,7 @@ def render_dashboard_view():
         orientation='h',
         marker=dict(
           color=cat_vals,
-          colorscale=[[0, '#CBDED3'], [0.5, '#F59E0B'], [1.0, '#DC2626']],
+          colorscale=[[0, '#8BA49A'], [0.5, '#F59E0B'], [1.0, '#DC2626']],
           line=dict(width=0)
         ),
         text=[f"{v:,.1f} t" for v in cat_vals],
@@ -533,7 +533,7 @@ def render_dashboard_view():
 
       fig_stacked = go.Figure()
       pillars = [c for c in monthly_df.columns if c not in ["Month", "Month_Num", "Total_Monthly_CO2"]]
-      palette = ["#F59E0B", "#EF4444", "#F97316", "#CBDED3", "#06B6D4", "#6366F1"]
+      palette = ["#F59E0B", "#EF4444", "#F97316", "#8BA49A", "#06B6D4", "#6366F1"]
 
       for idx, pillar in enumerate(pillars):
         fig_stacked.add_trace(go.Bar(
@@ -551,7 +551,7 @@ def render_dashboard_view():
         x=monthly_df["Month"],
         y=[monthly_quota] * len(monthly_df),
         mode='lines',
-        line=dict(color='#CBDED3', dash='dash', width=2),
+        line=dict(color='#8BA49A', dash='dash', width=2),
         hovertemplate="Monthly Quota: %{y:,.1f} t<extra></extra>"
       ))
 
@@ -600,10 +600,10 @@ def render_dashboard_view():
       r_cols = st.columns(len(top_3_hotspot_recs), gap="medium")
       for r_idx, r in enumerate(top_3_hotspot_recs):
         with r_cols[r_idx]:
-          r_card_icon = feather_icon(r.get("feather_icon", "zap"), color="#CBDED3", size=16, margin_right=6)
+          r_card_icon = feather_icon(r.get("feather_icon", "zap"), color="#8BA49A", size=16, margin_right=6)
           diff_badge = "badge-low" if r["difficulty"] == "Easy" else ("badge-medium" if r["difficulty"] == "Medium" else "badge-critical")
           st.markdown(f"""
-            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid {'#CBDED3' if r['targeted_hotspot_rank'] == 1 else ('#F59E0B' if r['targeted_hotspot_rank'] == 2 else '#3B82F6')};">
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid {'#8BA49A' if r['targeted_hotspot_rank'] == 1 else ('#F59E0B' if r['targeted_hotspot_rank'] == 2 else '#3B82F6')};">
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                   <span style="font-size: 0.75rem; font-weight: 800; background: rgba(16,185,129,0.15); color: #047857; padding: 2px 8px; border-radius: 6px;">
@@ -626,11 +626,11 @@ def render_dashboard_view():
               <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-size: 0.82rem;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                   <span style="color: var(--text-muted);">CO₂ Reduction:</span>
-                  <strong style="color: #CBDED3;">-{r['co2_saved_t']:,.1f} t/yr ({r['co2_saved_pct']}%)</strong>
+                  <strong style="color: #8BA49A;">-{r['co2_saved_t']:,.1f} t/yr ({r['co2_saved_pct']}%)</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                   <span style="color: var(--text-muted);">Annual Savings:</span>
-                  <strong style="color: #B0C5BA;">+₹{r['annual_savings_inr']:,.0f}/yr</strong>
+                  <strong style="color: #6B8E7D;">+₹{r['annual_savings_inr']:,.0f}/yr</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                   <span style="color: var(--text-muted);">CapEx Est:</span>
@@ -693,7 +693,7 @@ def render_dashboard_view():
       st.markdown(f"""
         <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid #6EE7B7; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center;">
-            {feather_icon('check-circle', color='#B0C5BA', size=18, margin_right=8)}
+            {feather_icon('check-circle', color='#6B8E7D', size=18, margin_right=8)}
             <span style="font-size: 0.88rem; font-weight: 700; color: #065F46;">
               Quick Entry #{dash_just_logged['id']} saved for {dash_just_logged['date']}. Executive Dashboard updated!
             </span>
@@ -822,7 +822,7 @@ def render_dashboard_view():
         """, unsafe_allow_html=True)
 
       with pk4:
-        p_exp_color = "#EF4444" if audit_data['is_projected_deficit'] else "#CBDED3"
+        p_exp_color = "#EF4444" if audit_data['is_projected_deficit'] else "#8BA49A"
         st.markdown(f"""
           <div class="kpi-card {'deficit' if audit_data['is_projected_deficit'] else 'low'}">
             <div class="kpi-title">
@@ -878,7 +878,7 @@ def render_dashboard_view():
         name="Transport Freight CO₂",
         x=df_periodic["log_date"],
         y=df_periodic["calculated_transport_co2"],
-        marker_color="#CBDED3",
+        marker_color="#8BA49A",
         hovertemplate="<b>%{x}</b><br>Transport: %{y:,.3f} t CO₂<extra></extra>"
       ))
 
@@ -888,7 +888,7 @@ def render_dashboard_view():
         x=df_periodic["log_date"],
         y=[daily_quota_runrate] * len(df_periodic),
         mode="lines",
-        line=dict(color="#CBDED3", dash="dash", width=2),
+        line=dict(color="#8BA49A", dash="dash", width=2),
         hovertemplate="Statutory Allowance Run-Rate: %{y:,.2f} t/day<extra></extra>"
       ))
 
@@ -977,7 +977,7 @@ def render_dashboard_view():
             labels=w_labels,
             values=w_values,
             hole=0.6,
-            marker=dict(colors=["#CBDED3", "#EF4444", "#6B7280", "#F59E0B", "#991B1B"]),
+            marker=dict(colors=["#8BA49A", "#EF4444", "#6B7280", "#F59E0B", "#991B1B"]),
             textinfo="label+percent",
             hovertemplate="<b>%{label}</b>: %{value:,.1f} kg (%{percent})<extra></extra>"
           )])
@@ -1026,7 +1026,7 @@ def render_dashboard_view():
           y=[audit_data['initial_govt_quota']] * len(df_periodic),
           mode="lines",
           name=f"Govt Quota Ceiling ({audit_data['initial_govt_quota']:,.0f} credits)",
-          line=dict(color="#CBDED3", dash="dash", width=2),
+          line=dict(color="#8BA49A", dash="dash", width=2),
           hovertemplate="Initial Statutory Quota: %{y:,.0f} credits<extra></extra>"
         ))
         fig_cum.update_layout(
@@ -1057,8 +1057,8 @@ def render_dashboard_view():
             c_val = l.get('calculated_total_co2', 0.0)
             cap_target = audit_data['daily_quota_target'] if l.get("frequency") == "daily" else audit_data['weekly_quota_target']
             pct_cap = (c_val / cap_target * 100) if cap_target > 0 else 0.0
-            cap_color = "#CBDED3" if pct_cap <= 100 else "#EF4444"
-            st.markdown(f"<strong style='color: #CBDED3;'>{c_val:.2f} credits</strong> &bull; <span style='font-size: 0.78rem; color: {cap_color};'>{pct_cap:.0f}% of cap</span>", unsafe_allow_html=True)
+            cap_color = "#8BA49A" if pct_cap <= 100 else "#EF4444"
+            st.markdown(f"<strong style='color: #8BA49A;'>{c_val:.2f} credits</strong> &bull; <span style='font-size: 0.78rem; color: {cap_color};'>{pct_cap:.0f}% of cap</span>", unsafe_allow_html=True)
           with c_tbtn:
             if st.button("", key=f"dash_del_tbl_{l['id']}", help="Delete this entry and recalculate dashboard"):
               delete_activity_log(l["id"], user_email)
