@@ -581,6 +581,67 @@ def delete_activity_log(log_id: int, user_email: str) -> bool:
             pass
     return deleted
 
+def update_activity_log(log_id: int, user_email: str, updated_data: Dict[str, Any], is_demo: Optional[bool] = None) -> bool:
+    """Updates an existing activity log entry, recalculates its emissions, and synchronizes the dashboard."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    email_clean = user_email.lower().strip()
+    if is_demo is None:
+        is_demo = is_demo_user(email_clean)
+
+    diesel_l = max(0.0, float(updated_data.get("diesel_liters", 0.0)))
+    petrol_l = max(0.0, float(updated_data.get("petrol_liters", 0.0)))
+    gas_m3 = max(0.0, float(updated_data.get("gas_m3", 0.0)))
+    elec_kwh = max(0.0, float(updated_data.get("electricity_kwh", 0.0)))
+    waste_org = max(0.0, float(updated_data.get("organic_waste_kg", 0.0)))
+    waste_plas = max(0.0, float(updated_data.get("plastic_waste_kg", 0.0)))
+    waste_met = max(0.0, float(updated_data.get("metal_waste_kg", 0.0)))
+    waste_pap = max(0.0, float(updated_data.get("paper_waste_kg", 0.0)))
+    waste_haz = max(0.0, float(updated_data.get("hazardous_waste_kg", 0.0)))
+    truck_km = max(0.0, float(updated_data.get("truck_km", 0.0)))
+    water_m3 = max(0.0, float(updated_data.get("water_m3", 0.0)))
+    prod_units = max(0.0, float(updated_data.get("production_units", 0.0)))
+
+    fuel_co2 = round((diesel_l * ACTIVITY_EMISSION_FACTORS["diesel"]) + (petrol_l * ACTIVITY_EMISSION_FACTORS["petrol"]) + (gas_m3 * ACTIVITY_EMISSION_FACTORS["gas"]), 4)
+    waste_co2 = round((waste_org * ACTIVITY_EMISSION_FACTORS["waste_organic"]) + (waste_plas * ACTIVITY_EMISSION_FACTORS["waste_plastic"]) + (waste_met * ACTIVITY_EMISSION_FACTORS["waste_metal"]) + (waste_pap * ACTIVITY_EMISSION_FACTORS["waste_paper"]) + (waste_haz * ACTIVITY_EMISSION_FACTORS["waste_hazardous"]), 4)
+    elec_co2 = round(elec_kwh * ACTIVITY_EMISSION_FACTORS["electricity"], 4)
+    trans_co2 = round(truck_km * ACTIVITY_EMISSION_FACTORS["truck"], 4)
+    tot_co2 = round(fuel_co2 + waste_co2 + elec_co2 + trans_co2, 4)
+
+    log_date = str(updated_data.get("log_date", datetime.now().strftime("%Y-%m-%d")))
+    frequency = str(updated_data.get("frequency", "daily")).lower()
+    period_label = str(updated_data.get("period_label", log_date))
+    notes = str(updated_data.get("notes", ""))
+
+    cursor.execute("""
+        UPDATE activity_logs SET
+            log_date = ?, frequency = ?, period_label = ?,
+            diesel_liters = ?, petrol_liters = ?, gas_m3 = ?, electricity_kwh = ?,
+            organic_waste_kg = ?, plastic_waste_kg = ?, metal_waste_kg = ?, paper_waste_kg = ?, hazardous_waste_kg = ?,
+            truck_km = ?, water_m3 = ?, production_units = ?,
+            calculated_fuel_co2 = ?, calculated_waste_co2 = ?, calculated_electricity_co2 = ?, calculated_transport_co2 = ?, calculated_total_co2 = ?,
+            notes = ?
+        WHERE id = ? AND user_email = ?
+    """, (
+        log_date, frequency, period_label,
+        diesel_l, petrol_l, gas_m3, elec_kwh,
+        waste_org, waste_plas, waste_met, waste_pap, waste_haz,
+        truck_km, water_m3, prod_units,
+        fuel_co2, waste_co2, elec_co2, trans_co2, tot_co2,
+        notes, log_id, email_clean
+    ))
+    updated = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+
+    if updated:
+        log_audit(email_clean, "UPDATE_ACTIVITY_LOG", "Activity Log", str(log_id), f"Updated to {tot_co2} t CO2", is_demo=is_demo)
+        try:
+            sync_activity_logs_to_dashboard(email_clean, is_demo=is_demo)
+        except Exception:
+            pass
+    return updated
+
 def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = None) -> Optional[Dict[str, Any]]:
     """
     Synchronizes operational daily and weekly activity logs with the enterprise emissions assessment.
@@ -637,10 +698,19 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
     d_mult = (365.0 / d_count) if d_count > 0 else 0.0
     w_mult = (52.0 / w_count) if w_count > 0 else 0.0
 
+    LOGGED_CORE_FIELDS = {
+        "diesel_liters", "petrol_liters", "gas_m3", "electricity_kwh",
+        "organic_waste_kg", "plastic_waste_kg", "metal_waste_kg",
+        "paper_waste_kg", "hazardous_waste_kg", "truck_km"
+    }
+
     def annualize_field(field: str, fallback_val: float = 0.0) -> float:
-        d_val = sum(l.get(field, 0.0) for l in daily_logs) * d_mult
-        w_val = sum(l.get(field, 0.0) for l in weekly_logs) * w_mult
+        d_val = sum(float(l.get(field, 0.0) or 0.0) for l in daily_logs) * d_mult
+        w_val = sum(float(l.get(field, 0.0) or 0.0) for l in weekly_logs) * w_mult
         tot = d_val + w_val
+        # If user actively logs operational shifts, their fuel/power/waste logs are the dynamic ground truth!
+        if field in LOGGED_CORE_FIELDS:
+            return round(tot, 1)
         if tot > 0:
             return round(tot, 1)
         return float(latest.get(field, fallback_val))

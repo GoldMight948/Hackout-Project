@@ -8,7 +8,7 @@ import streamlit as st
 import re
 from datetime import datetime
 from database.db_manager import get_aggregated_activity_summary, get_activity_logs, get_user_profile
-from components.calculations import calculate_carbon_credit_audit
+from components.calculations import calculate_carbon_credit_audit, generate_hotspot_recommendations
 from components.icons import feather_icon, COLOR_SUCCESS, COLOR_WARNING, COLOR_INFO, COLOR_NEUTRAL
 
 NAV_DESTINATIONS = {
@@ -16,6 +16,7 @@ NAV_DESTINATIONS = {
     "activity_logs": {"name": "Daily & Weekly Activity Logs", "icon": "calendar", "section": "activity_logs", "step": 4},
     "leak_detection": {"name": "Emission Leak Detection", "icon": "alert-triangle", "section": "leak_detection", "step": 6},
     "carbon_credits": {"name": "Carbon Credit Ledger & Market", "icon": "dollar-sign", "section": "carbon_credits", "step": 7},
+    "recommendations": {"name": "Green Recommendations", "icon": "zap", "section": "recommendations", "step": 8},
     "circular": {"name": "Circular Economy & 4R Framework", "icon": "refresh-cw", "section": "circular", "step": 10},
     "setup": {"name": "Business Profile & Setup", "icon": "settings", "section": "setup", "step": 3},
     "upload": {"name": "Upload Historical Data", "icon": "upload", "section": "upload", "step": 4},
@@ -30,7 +31,9 @@ def detect_navigation_intent(query: str):
         return "dashboard"
     if any(k in q for k in ["activity", "daily", "weekly", "log fuel", "log waste", "meter", "log entry", "record", "logs"]):
         return "activity_logs"
-    if any(k in q for k in ["leak", "hotspot", "waste point", "leakage", "diagnostics", "highest emission", "fix", "recommend", "intervention"]):
+    if any(k in q for k in ["recommend", "recommendation", "action plan", "green solution", "how to reduce", "decarbonize"]):
+        return "recommendations"
+    if any(k in q for k in ["leak", "hotspot", "waste point", "leakage", "diagnostics", "highest emission", "fix leak"]):
         return "leak_detection"
     if any(k in q for k in ["credit", "carbon credit", "quota", "trading", "offset", "deficit", "allowance", "market"]):
         return "carbon_credits"
@@ -124,6 +127,33 @@ def generate_copilot_response(user_prompt: str, user_email: str, company_name: s
             "text": text,
             "nav_target": "dashboard",
             "suggestions": ["🔥 Check Top Leaks", "📝 Log Shift Activity", "💰 Check Carbon Balance", "📊 View Dashboard"]
+        }
+
+    # 2.5 Green Decarbonization Recommendations (Targeted to Hotspot Leaks)
+    if any(w in q for w in ["recommend", "green recommend", "what should i do", "how to reduce", "how can i reduce", "cut emission", "solution", "action plan", "fix leak", "decarbonize"]):
+        user_prof = get_user_profile(user_email) or {}
+        hotspot_recs = generate_hotspot_recommendations(res, user_prof)
+        top_3 = hotspot_recs[:3]
+        rec_lines = []
+        for i, rec in enumerate(top_3, 1):
+            badge = "🔥 Hotspot #1 Fix" if rec.get("is_top_leak") else f"Targeted: {rec.get('targeted_leak')}"
+            rec_lines.append(
+                f"{i}. **{rec['title']}** ({badge})\n"
+                f"   - **CO₂ Saved**: Cuts `{rec['co2_saved_t']:,.1f} t CO₂e/yr` ({rec['co2_saved_pct']:.1f}% of total)\n"
+                f"   - **Financial Savings**: `${rec['annual_savings_usd']:,.0f}/yr` &bull; CapEx `{rec['cost_estimate']}` &bull; ROI `{rec['expected_roi']}`\n"
+                f"   - **Incentive**: {rec.get('govt_incentives', 'Standard green transition tax credit')}"
+            )
+        recs_formatted = "\n\n".join(rec_lines)
+        text = (
+            f"### 💡 Hotspot-Targeted Green Recommendations for {company_name}\n\n"
+            f"Based on your operational emission leak hotspots, here are the highest-return decarbonization interventions:\n\n"
+            f"{recs_formatted}\n\n"
+            f"Would you like to explore the interactive Green Recommendations workspace or simulate these interventions?"
+        )
+        return {
+            "text": text,
+            "nav_target": "recommendations",
+            "suggestions": ["💡 Open Recommendations", "🧪 Test in Simulator", "📊 Return to Dashboard"]
         }
 
     # 3. Personalized Emissions & Footprint Queries

@@ -491,12 +491,110 @@ def test_carbon_credit_audit_and_cross_check():
     assert "Expected Annual Credit Use" in resp["text"]
     print("  [PASS] Copilot cross-check intent & audit diagnostics verified.")
 
+def test_dynamic_graphs_and_hotspot_recommendations():
+    print("Testing Dynamic Graph Synchronization & Hotspot-Based Green Recommendations...")
+    from components.calculations import generate_hotspot_recommendations, calculate_detailed_emissions
+    from database.db_manager import (
+        save_activity_log, update_activity_log, delete_activity_log,
+        sync_activity_logs_to_dashboard, get_latest_emissions
+    )
+    from components.chatbot import generate_copilot_response
+
+    # 1. Verify Green Recommendations dynamically prioritize the business's actual leak hotspot
+    # Scenario A: Top Hotspot is Fuel (Boiler Diesel)
+    sample_fuel_assessment = calculate_detailed_emissions({
+        "business_name": "EcoThermal Ltd",
+        "diesel_liters": 45000.0,
+        "electricity_kwh": 20000.0,
+        "truck_km": 5000.0,
+        "organic_waste_kg": 2000.0,
+        "total_credits": 300.0
+    })
+    recs_fuel = generate_hotspot_recommendations(sample_fuel_assessment, {"employees": 35})
+    assert len(recs_fuel) > 0
+    top_rec_fuel = recs_fuel[0]
+    assert top_rec_fuel["targeted_hotspot_rank"] == 1
+    assert "#1 Hotspot Fix" in top_rec_fuel["hotspot_priority_tag"]
+    assert top_rec_fuel["category"] == "Fuel"
+    assert top_rec_fuel["co2_saved_t"] > 0
+    assert top_rec_fuel["annual_savings_usd"] > 0
+    assert "months" in top_rec_fuel["payback_time"] or "years" in top_rec_fuel["payback_time"]
+    print(f"  [PASS] Fuel Hotspot Recommendations verified: Top Fix='{top_rec_fuel['title']}' (-{top_rec_fuel['co2_saved_t']} t CO2e).")
+
+    # Scenario B: Top Hotspot is Transport Freight
+    sample_trans_assessment = calculate_detailed_emissions({
+        "business_name": "Apex Cargo",
+        "diesel_liters": 2000.0,
+        "electricity_kwh": 30000.0,
+        "truck_km": 180000.0,
+        "organic_waste_kg": 1000.0,
+        "total_credits": 250.0
+    })
+    recs_trans = generate_hotspot_recommendations(sample_trans_assessment, {"employees": 45})
+    assert len(recs_trans) > 0
+    top_rec_trans = recs_trans[0]
+    assert top_rec_trans["targeted_hotspot_rank"] == 1
+    assert "#1 Hotspot Fix" in top_rec_trans["hotspot_priority_tag"]
+    assert top_rec_trans["category"] == "Transport"
+    assert "Route" in top_rec_trans["title"] or "Fleet" in top_rec_trans["title"]
+    print(f"  [PASS] Transport Hotspot Recommendations verified: Top Fix='{top_rec_trans['title']}' (-{top_rec_trans['co2_saved_t']} t CO2e).")
+
+    # 2. Verify Activity Log Update & Dynamic Dashboard Recalculation
+    test_email = "dynamic_test@enterprise.com"
+    from database.db_manager import register_user, get_activity_logs, delete_activity_log, save_activity_log, update_activity_log, sync_activity_logs_to_dashboard
+    register_user(test_email, "Pass123!", "Dynamic Co", "Tester", "SME", "Manufacturing Plant", 30)
+
+    # Clean up any leftover logs from prior test runs
+    for old_log in get_activity_logs(test_email):
+        delete_activity_log(old_log["id"], test_email)
+
+    # Log initial shift: High diesel (300 L)
+    log_id = save_activity_log(test_email, {
+        "log_date": "2026-09-01",
+        "frequency": "daily",
+        "period_label": "2026-09-01",
+        "diesel_liters": 300.0,
+        "electricity_kwh": 500.0
+    }, is_demo=False)
+    
+    synced_initial = sync_activity_logs_to_dashboard(test_email, is_demo=False)
+    co2_initial = synced_initial["total_co2"]
+    assert co2_initial > 0
+    assert synced_initial["top_leak"]["category"] == "Fuel"
+
+    # User updates data: cuts diesel to 0 L and switches to green electricity
+    updated = update_activity_log(log_id, test_email, {
+        "log_date": "2026-09-01",
+        "frequency": "daily",
+        "period_label": "2026-09-01",
+        "diesel_liters": 0.0,
+        "electricity_kwh": 1200.0
+    }, is_demo=False)
+    assert updated is True
+
+    synced_updated = sync_activity_logs_to_dashboard(test_email, is_demo=False)
+    co2_updated = synced_updated["total_co2"]
+    # Total emissions changed and fuel dropped to 0
+    assert synced_updated["raw_inputs"]["diesel_liters"] == 0.0
+    assert synced_updated["pillar_co2"]["Fuel & Heating"] == 0.0
+    # Top leak is now Electricity
+    assert synced_updated["top_leak"]["category"] == "Electricity"
+    print(f"  [PASS] Dynamic Graph update on user data edit verified: Fuel dropped to 0, Top Leak shifted from Fuel -> Electricity.")
+
+    # 3. Copilot Recommendation Query response verified
+    copilot_rec_resp = generate_copilot_response("what green recommendations do you have to cut emissions and fix leaks", test_email, "Dynamic Co", synced_updated)
+    assert "Hotspot-Targeted Green Recommendations" in copilot_rec_resp["text"]
+    assert "CO₂ Saved" in copilot_rec_resp["text"]
+    assert copilot_rec_resp["nav_target"] == "recommendations"
+    print("  [PASS] Copilot Hotspot-Targeted Recommendation generation verified.")
+
 if __name__ == "__main__":
     test_database()
     test_calculations()
     test_demo_isolation_and_activity_logs()
     test_geo_data_and_statutory_carbon_quotas()
     test_carbon_credit_audit_and_cross_check()
+    test_dynamic_graphs_and_hotspot_recommendations()
     test_copilot_assistant()
     test_ml_forecasting()
     test_presets_and_alternatives()

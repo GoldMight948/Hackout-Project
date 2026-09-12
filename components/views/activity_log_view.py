@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 import io
 
 from database.db_manager import (
-    save_activity_log, get_activity_logs, delete_activity_log,
+    save_activity_log, get_activity_logs, delete_activity_log, update_activity_log,
     get_aggregated_activity_summary, save_emissions_assessment,
     sync_activity_logs_to_dashboard, ACTIVITY_EMISSION_FACTORS
 )
@@ -305,6 +305,7 @@ def render_activity_log_view():
                     }
 
                     # Explicitly ensure dashboard is recalculated
+                    st.session_state["manual_setup_override"] = False
                     sync_activity_logs_to_dashboard(user_email, is_demo=is_demo)
 
                     st.success(f"✅ Successfully logged record #{record_id}! Generated {tot_co2:,.3f} tonnes CO₂e. Executive Dashboard updated!")
@@ -406,12 +407,60 @@ def render_activity_log_view():
                     else:
                         st.warning("Please record at least 1 daily log before calculating an annualized run-rate.")
 
+            # Edit an Operational Log Entry
+            with st.expander("✏️ Edit an Operational Log Entry"):
+                log_map = {f"#{l['id']} - {l['log_date']} ({l['period_label']})": l for l in logs}
+                selected_log_label = st.selectbox("Select Log Entry to Edit", list(log_map.keys()), key="edit_log_selector")
+                target_log = log_map[selected_log_label]
+                
+                with st.form(f"edit_log_form_{target_log['id']}"):
+                    ce1, ce2, ce3 = st.columns(3)
+                    with ce1:
+                        ed_diesel = st.number_input("⛽ Diesel (L)", min_value=0.0, value=float(target_log.get("diesel_liters", 0.0)), step=10.0, key=f"ed_d_{target_log['id']}")
+                        ed_petrol = st.number_input("🚗 Petrol (L)", min_value=0.0, value=float(target_log.get("petrol_liters", 0.0)), step=5.0, key=f"ed_p_{target_log['id']}")
+                        ed_gas = st.number_input("🔥 Gas (m³)", min_value=0.0, value=float(target_log.get("gas_m3", 0.0)), step=25.0, key=f"ed_g_{target_log['id']}")
+                    with ce2:
+                        ed_elec = st.number_input("⚡ Electricity (kWh)", min_value=0.0, value=float(target_log.get("electricity_kwh", 0.0)), step=100.0, key=f"ed_e_{target_log['id']}")
+                        ed_waste_org = st.number_input("🍃 Organic Waste (kg)", min_value=0.0, value=float(target_log.get("organic_waste_kg", 0.0)), step=10.0, key=f"ed_wo_{target_log['id']}")
+                        ed_waste_plas = st.number_input("🥤 Plastic Waste (kg)", min_value=0.0, value=float(target_log.get("plastic_waste_kg", 0.0)), step=10.0, key=f"ed_wp_{target_log['id']}")
+                    with ce3:
+                        ed_waste_met = st.number_input("🔩 Metal Scrap (kg)", min_value=0.0, value=float(target_log.get("metal_waste_kg", 0.0)), step=10.0, key=f"ed_wm_{target_log['id']}")
+                        ed_waste_pap = st.number_input("📦 Paper/Cardboard (kg)", min_value=0.0, value=float(target_log.get("paper_waste_kg", 0.0)), step=10.0, key=f"ed_wpa_{target_log['id']}")
+                        ed_truck = st.number_input("🚚 Freight Distance (km)", min_value=0.0, value=float(target_log.get("truck_km", 0.0)), step=50.0, key=f"ed_t_{target_log['id']}")
+                    
+                    ed_notes = st.text_input("Operational Shift Notes", value=str(target_log.get("notes") or ""), key=f"ed_n_{target_log['id']}")
+                    ed_submit = st.form_submit_button("💾 Save Changes & Recalculate Dashboard", type="primary", use_container_width=True)
+                    if ed_submit:
+                        updated_payload = {
+                            "log_date": target_log["log_date"],
+                            "frequency": target_log["frequency"],
+                            "period_label": target_log["period_label"],
+                            "diesel_liters": ed_diesel,
+                            "petrol_liters": ed_petrol,
+                            "gas_m3": ed_gas,
+                            "electricity_kwh": ed_elec,
+                            "organic_waste_kg": ed_waste_org,
+                            "plastic_waste_kg": ed_waste_plas,
+                            "metal_waste_kg": ed_waste_met,
+                            "paper_waste_kg": ed_waste_pap,
+                            "hazardous_waste_kg": float(target_log.get("hazardous_waste_kg", 0.0)),
+                            "truck_km": ed_truck,
+                            "water_m3": float(target_log.get("water_m3", 0.0)),
+                            "production_units": float(target_log.get("production_units", 0.0)),
+                            "notes": ed_notes
+                        }
+                        update_activity_log(target_log["id"], user_email, updated_payload, is_demo=is_demo)
+                        st.session_state["manual_setup_override"] = False
+                        st.success(f"Entry #{target_log['id']} updated! Dashboard recalculated.")
+                        st.rerun()
+
             # Individual Log Deletion Option by ID
             with st.expander("🗑️ Delete a Log Record by ID"):
                 log_ids = [l["id"] for l in logs]
                 selected_del_id = st.selectbox("Select Log ID to Delete", log_ids, key="del_select_box")
                 if st.button("Confirm Delete Record", key="del_log_btn_confirm"):
                     if delete_activity_log(selected_del_id, user_email):
+                        st.session_state["manual_setup_override"] = False
                         sync_activity_logs_to_dashboard(user_email, is_demo=is_demo)
                         st.success(f"Record #{selected_del_id} deleted successfully.")
                         st.rerun()

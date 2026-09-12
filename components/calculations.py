@@ -762,3 +762,430 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
 # Backward compatibility alias
 def calculate_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
     return calculate_detailed_emissions(inputs)
+
+
+def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    """
+    Dynamically generates and prioritizes Green Decarbonization Recommendations based on
+    the business's actual emission leak hotspots.
+    
+    Ranks interventions so that the business's #1, #2, and #3 leak sources receive top priority.
+    Dynamically computes CO2 saved, annual financial savings, CapEx estimate, ROI %, payback periods,
+    and carbon credits saved based on actual measured leak volume and facility scale.
+    """
+    if not emissions_res:
+        return []
+
+    top_leaks = emissions_res.get("top_10_leaks", [])
+    total_co2 = max(0.1, emissions_res.get("total_co2", 100.0))
+    credit_price = emissions_res.get("credit_price", 38.0)
+    
+    prof = user_prof or {}
+    employees = max(5, int(prof.get("employees", 50)))
+    scale_factor = max(0.6, min(4.0, (employees / 40.0) * (total_co2 / 300.0) ** 0.5))
+
+    # Master repository of hotspot-specific decarbonization and circular solutions
+    HOTSPOT_SOLUTIONS_MAP = {
+        "Diesel Heavy Machinery & Gensets": [
+            {
+                "id_prefix": "rec_boiler_economizer",
+                "title": "Industrial Flue Gas Waste Heat Recovery (Economizer) & Boiler Burner Retrofit",
+                "category": "Fuel",
+                "icon": "🔥",
+                "feather_icon": "zap",
+                "description": "Capture high-temperature flue exhaust heat to preheat boiler feedwater and install automated air-to-fuel ratio trim controllers.",
+                "saving_ratio": 0.26,
+                "cost_base_min": 4500,
+                "cost_base_max": 9500,
+                "difficulty": "Medium",
+                "impact_level": "Critical",
+                "circular_benefit": "Recovers 85% of latent exhaust thermal energy, eliminating upstream fossil fuel combustion.",
+                "govt_incentives": "Qualifies for State Clean Energy Industrial Grant & Accelerated Depreciation (Section 179/MACRS)."
+            },
+            {
+                "id_prefix": "rec_insulation_jackets",
+                "title": "High-Efficiency Thermal Pipe & Boiler Valve Removable Blanket Insulation",
+                "category": "Fuel",
+                "icon": "🧤",
+                "feather_icon": "shield",
+                "description": "Fit custom silicone-fiberglass insulation jackets over bare steam pipes, boiler headers, and uninsulated valves.",
+                "saving_ratio": 0.16,
+                "cost_base_min": 1400,
+                "cost_base_max": 3200,
+                "difficulty": "Easy",
+                "impact_level": "High",
+                "circular_benefit": "Durable, reusable jackets detach in seconds for maintenance without disposal waste.",
+                "govt_incentives": "Utility Industrial Efficiency Rebate program reimburses up to 35% of installation invoices."
+            }
+        ],
+        "Diesel Generators & Stationary Machinery": [
+            {
+                "id_prefix": "rec_boiler_economizer",
+                "title": "Industrial Flue Gas Waste Heat Recovery (Economizer) & Boiler Burner Retrofit",
+                "category": "Fuel",
+                "icon": "🔥",
+                "feather_icon": "zap",
+                "description": "Capture high-temperature flue exhaust heat to preheat boiler feedwater and install automated air-to-fuel ratio trim controllers.",
+                "saving_ratio": 0.26,
+                "cost_base_min": 4500,
+                "cost_base_max": 9500,
+                "difficulty": "Medium",
+                "impact_level": "Critical",
+                "circular_benefit": "Recovers 85% of latent exhaust thermal energy, eliminating upstream fossil fuel combustion.",
+                "govt_incentives": "Qualifies for State Clean Energy Industrial Grant & Accelerated Depreciation (Section 179/MACRS)."
+            }
+        ],
+        "Natural Gas Thermal Boilers": [
+            {
+                "id_prefix": "rec_gas_cogen",
+                "title": "Microturbine Combined Heat & Power (CHP) Cogeneration System",
+                "category": "Fuel",
+                "icon": "⚡",
+                "feather_icon": "activity",
+                "description": "Generate on-site baseload electric power from pipeline natural gas while channeling exhaust heat for factory process heating.",
+                "saving_ratio": 0.28,
+                "cost_base_min": 12000,
+                "cost_base_max": 28000,
+                "difficulty": "Hard",
+                "impact_level": "Critical",
+                "circular_benefit": "Dual-generation efficiency tops 80% compared to 45% for separate grid power and thermal boilers.",
+                "govt_incentives": "Federal Combined Heat and Power Investment Tax Credit (ITC) 30%."
+            },
+            {
+                "id_prefix": "rec_gas_o2_trim",
+                "title": "Automated Oxygen-Trim Combustion Controls & Condensing Economizer",
+                "category": "Fuel",
+                "icon": "🔥",
+                "feather_icon": "sliders",
+                "description": "Continuously modulate draft fans and gas injection using in-stack zirconium oxide sensors to eliminate excess fuel burn.",
+                "saving_ratio": 0.18,
+                "cost_base_min": 3200,
+                "cost_base_max": 7500,
+                "difficulty": "Medium",
+                "impact_level": "High",
+                "circular_benefit": "Prevents incomplete hydrocarbon combustion and cuts NOx emissions by 40%.",
+                "govt_incentives": "Regional Clean Air District Energy Abatement Rebate ($2,500 direct incentive)."
+            }
+        ],
+        "Grid Electricity Base-Load": [
+            {
+                "id_prefix": "rec_solar_pv",
+                "title": "On-Site Commercial Rooftop Bifacial Solar PV Microgrid (50kW–200kW)",
+                "category": "Electricity",
+                "icon": "☀️",
+                "feather_icon": "sun",
+                "description": "Deploy Tier-1 monocrystalline bifacial solar modules with smart string inverters to offset daytime manufacturing peak loads.",
+                "saving_ratio": 0.42,
+                "cost_base_min": 22000,
+                "cost_base_max": 58000,
+                "difficulty": "Hard",
+                "impact_level": "Critical",
+                "circular_benefit": "Generates 100% emission-free electricity with 25-year panel linear performance guarantee.",
+                "govt_incentives": "Federal Clean Energy 30% ITC Tax Credit + Solar Net Energy Metering (NEM 3.0) export credits."
+            },
+            {
+                "id_prefix": "rec_led_lighting",
+                "title": "High-Efficacy Smart Sensor-Dimmed LED High-Bay Retrofit",
+                "category": "Electricity",
+                "icon": "💡",
+                "feather_icon": "zap",
+                "description": "Replace metal halide and fluorescent fixtures with high-efficacy (160 lm/W) LEDs with microwave occupancy sensors.",
+                "saving_ratio": 0.15,
+                "cost_base_min": 2200,
+                "cost_base_max": 4800,
+                "difficulty": "Easy",
+                "impact_level": "High",
+                "circular_benefit": "Old fixtures recycled via verified zero-landfill e-waste handlers; LED life exceeds 60,000 hours.",
+                "govt_incentives": "Commercial Electric Utility Rebate covers up to $45 per replaced high-bay fixture."
+            },
+            {
+                "id_prefix": "rec_motor_vfd",
+                "title": "Variable Frequency Drives (VFDs) on Heavy Induction Motors & Fans",
+                "category": "Electricity",
+                "icon": "⚙️",
+                "feather_icon": "cpu",
+                "description": "Equip continuous-run ventilation blowers, chillers, and conveyor motors with digital VFD inverters to modulate speed.",
+                "saving_ratio": 0.22,
+                "cost_base_min": 3500,
+                "cost_base_max": 8500,
+                "difficulty": "Medium",
+                "impact_level": "High",
+                "circular_benefit": "Affinity laws reduce power by 50% at 80% motor speed, extending motor bearing lifespan 3x.",
+                "govt_incentives": "State Energy Efficiency Trust VFD Incentive ($60/horsepower rebate)."
+            }
+        ],
+        "Grid Electricity Baseline Load": [
+            {
+                "id_prefix": "rec_solar_pv",
+                "title": "On-Site Commercial Rooftop Bifacial Solar PV Microgrid (50kW–200kW)",
+                "category": "Electricity",
+                "icon": "☀️",
+                "feather_icon": "sun",
+                "description": "Deploy Tier-1 monocrystalline bifacial solar modules with smart string inverters to offset daytime manufacturing peak loads.",
+                "saving_ratio": 0.42,
+                "cost_base_min": 22000,
+                "cost_base_max": 58000,
+                "difficulty": "Hard",
+                "impact_level": "Critical",
+                "circular_benefit": "Generates 100% emission-free electricity with 25-year panel linear performance guarantee.",
+                "govt_incentives": "Federal Clean Energy 30% ITC Tax Credit + Solar Net Energy Metering (NEM 3.0) export credits."
+            }
+        ],
+        "Heavy Freight & Distribution Trucks": [
+            {
+                "id_prefix": "rec_ai_route_opt",
+                "title": "AI Dynamic Route Dispatch, Backhaul Optimization & Anti-Idling Telematics",
+                "category": "Transport",
+                "icon": "🗺️",
+                "feather_icon": "navigation",
+                "description": "Implement automated telematics with turn-by-turn route sequencing, return-trip backhaul load pooling, and 3-minute idle cutoffs.",
+                "saving_ratio": 0.25,
+                "cost_base_min": 1500,
+                "cost_base_max": 3800,
+                "difficulty": "Easy",
+                "impact_level": "High",
+                "circular_benefit": "Cuts empty return haul miles by 35% through circular shared freight network coordination.",
+                "govt_incentives": "Department of Transportation Green Freight Logistics Technology Subsidy."
+            },
+            {
+                "id_prefix": "rec_ev_truck_fleet",
+                "title": "Commercial Fleet Transition to Electric Vehicles (EVs) & Depot Fast Chargers",
+                "category": "Transport",
+                "icon": "⚡",
+                "feather_icon": "truck",
+                "description": "Phased transition of regional distribution vehicles to zero-emission battery electric vans and yard spotters.",
+                "saving_ratio": 0.45,
+                "cost_base_min": 28000,
+                "cost_base_max": 65000,
+                "difficulty": "Hard",
+                "impact_level": "Critical",
+                "circular_benefit": "Zero direct tailpipe emissions; second-life battery repurposing program included.",
+                "govt_incentives": "Clean Commercial Vehicle Federal Credit up to $7,500/vehicle + 50% EV charger grant."
+            }
+        ],
+        "Non-Recycled Landfill Plastics": [
+            {
+                "id_prefix": "rec_plastic_circular",
+                "title": "Closed-Loop Post-Industrial Polymer Regrind Automation & Reusable Totes",
+                "category": "Waste",
+                "icon": "♻️",
+                "feather_icon": "refresh-cw",
+                "description": "Install on-site plastic granulation regrind equipment to blend scrap sprues directly back into primary injection molding lines.",
+                "saving_ratio": 0.45,
+                "cost_base_min": 2800,
+                "cost_base_max": 7500,
+                "difficulty": "Medium",
+                "impact_level": "Critical",
+                "circular_benefit": "Eliminates virgin polymer purchases and diverts 95% of clean plastic purges from landfills.",
+                "govt_incentives": "State Circular Economy & Plastics Reduction Enterprise Capital Grant."
+            }
+        ],
+        "Hazardous Waste & Chemical Solvents": [
+            {
+                "id_prefix": "rec_solvent_distillation",
+                "title": "On-Site Closed-Loop Vacuum Solvent Distillation & Vapor Recovery",
+                "category": "Waste",
+                "icon": "☣️",
+                "feather_icon": "alert-octagon",
+                "description": "Recover 90% of industrial degreasing solvents, thinners, and wash liquids using on-site batch vacuum distillation.",
+                "saving_ratio": 0.50,
+                "cost_base_min": 4500,
+                "cost_base_max": 11500,
+                "difficulty": "Medium",
+                "impact_level": "Critical",
+                "circular_benefit": "Reuses recycled solvents up to 6 cycles before final offsite processing.",
+                "govt_incentives": "EPA Toxic Release Reduction & Hazardous Waste Avoidance Tax Credit."
+            }
+        ],
+        "Organic & Food Byproduct Waste": [
+            {
+                "id_prefix": "rec_compost_biogas",
+                "title": "On-Site Aerobic Biocomposting & Anaerobic Organics Valorization",
+                "category": "Waste",
+                "icon": "🌱",
+                "feather_icon": "feather",
+                "description": "Process food scraps, spent grains, and organic trimmings into certified soil conditioner or regional biogas digester feedstock.",
+                "saving_ratio": 0.40,
+                "cost_base_min": 2200,
+                "cost_base_max": 5800,
+                "difficulty": "Easy",
+                "impact_level": "High",
+                "circular_benefit": "Produces nutrient-rich compost and diverts methane-generating organics from municipal landfills.",
+                "govt_incentives": "Organic Waste Diversion Exemption & Methane Abatement Compliance Credits."
+            }
+        ],
+        "Municipal Cardboard & Paper Waste": [
+            {
+                "id_prefix": "rec_cardboard_shredder",
+                "title": "In-House Corrugated Cardboard Perforating & Reusable Void Fill",
+                "category": "Waste",
+                "icon": "📦",
+                "feather_icon": "box",
+                "description": "Convert incoming discarded cardboard boxes into high-grade honeycomb packaging void-fill to replace plastic bubble wrap.",
+                "saving_ratio": 0.32,
+                "cost_base_min": 1600,
+                "cost_base_max": 3500,
+                "difficulty": "Easy",
+                "impact_level": "Medium",
+                "circular_benefit": "Eliminates single-use plastic air pillows and cuts packaging material procurement spend.",
+                "govt_incentives": "Waste Minimization Small Business Rebate ($1,000 grant)."
+            }
+        ],
+        "Untreated Industrial Wastewater Discharge": [
+            {
+                "id_prefix": "rec_water_mbr",
+                "title": "Closed-Loop Reverse Osmosis & Membrane Bioreactor (MBR) Water Recycling",
+                "category": "Water",
+                "icon": "💧",
+                "feather_icon": "droplet",
+                "description": "Deploy compact ultrafiltration membrane modules to purify process wash water for multi-pass operational reuse.",
+                "saving_ratio": 0.38,
+                "cost_base_min": 5500,
+                "cost_base_max": 16500,
+                "difficulty": "Hard",
+                "impact_level": "Critical",
+                "circular_benefit": "Recycles 75% of effluent back into cooling towers and equipment washing lines.",
+                "govt_incentives": "Municipal Water Conservation Technology Rebate + Sewer Discharge Surcharge Relief."
+            }
+        ],
+        "Process Water Evaporation & Pumping": [
+            {
+                "id_prefix": "rec_water_solenoid",
+                "title": "Automated Solenoid Flow Shutoffs & Low-Pressure Rinse Nozzles",
+                "category": "Water",
+                "icon": "🚰",
+                "feather_icon": "activity",
+                "description": "Install automated line shutoff valves tied to machine operating sensors to eliminate continuous water bleed during idle.",
+                "saving_ratio": 0.25,
+                "cost_base_min": 1800,
+                "cost_base_max": 4200,
+                "difficulty": "Easy",
+                "impact_level": "Medium",
+                "circular_benefit": "Conserves 30% of utility water intake with zero disruptions to active production.",
+                "govt_incentives": "Industrial Water Efficiency Direct Rebate."
+            }
+        ],
+        "Machine Idle Hours & Motor Friction": [
+            {
+                "id_prefix": "rec_machine_iot",
+                "title": "Smart IoT Current Transducers & Production Auto-Standby Sequencing",
+                "category": "Manufacturing",
+                "icon": "⚙️",
+                "feather_icon": "cpu",
+                "description": "Integrate non-invasive split-core current transducers on production lines to automatically switch auxiliary drives to sleep mode.",
+                "saving_ratio": 0.20,
+                "cost_base_min": 2400,
+                "cost_base_max": 5500,
+                "difficulty": "Easy",
+                "impact_level": "High",
+                "circular_benefit": "Cuts phantom idle electrical draw by 70% and prevents mechanical wear-and-tear.",
+                "govt_incentives": "Smart Manufacturing & Digital Transformation Energy Grant."
+            }
+        ],
+        "Commercial Fleet Delivery Vans": [
+            {
+                "id_prefix": "rec_fleet_telematics",
+                "title": "Van Fleet Eco-Routing, Speed Governor Calibration & Anti-Idling",
+                "category": "Transport",
+                "icon": "🚐",
+                "feather_icon": "truck",
+                "description": "Calibrate engine speed governors and install real-time fuel feedback dash meters for delivery drivers.",
+                "saving_ratio": 0.20,
+                "cost_base_min": 1200,
+                "cost_base_max": 2800,
+                "difficulty": "Easy",
+                "impact_level": "Medium",
+                "circular_benefit": "Reduces fuel consumption and extends brake/tire lifecycle by 25%.",
+                "govt_incentives": "Clean Fleet Transition Tax Credit."
+            }
+        ],
+        "Company Passenger Cars & Sales Petrol": [
+            {
+                "id_prefix": "rec_hybrid_ev_cars",
+                "title": "Corporate EV Fleet Policy & Level-2 Workplace Charging Incentive",
+                "category": "Transport",
+                "icon": "🚗",
+                "feather_icon": "battery-charging",
+                "description": "Establish preferred EV leasing for sales reps and install dual-port Level-2 EV charging stations at facility parking.",
+                "saving_ratio": 0.30,
+                "cost_base_min": 3500,
+                "cost_base_max": 7500,
+                "difficulty": "Medium",
+                "impact_level": "Medium",
+                "circular_benefit": "Replaces gasoline combustion with clean electricity.",
+                "govt_incentives": "Alternative Fuel Infrastructure Tax Credit (Section 30C) 30%."
+            }
+        ]
+    }
+
+    generated_recommendations: List[Dict[str, Any]] = []
+    seen_ids = set()
+
+    # Step 1: Generate recommendations for the business's actual ranked leak points (#1, #2, #3, ...)
+    for leak in top_leaks:
+        source_name = leak.get("source", "")
+        solutions = HOTSPOT_SOLUTIONS_MAP.get(source_name, [])
+        leak_co2 = float(leak.get("current_co2", 0.0))
+        leak_cost = float(leak.get("cost_impact", 0.0))
+        leak_rank = int(leak.get("rank", 99))
+        
+        for sol in solutions:
+            rec_id = f"{sol['id_prefix']}_{leak_rank}"
+            if rec_id in seen_ids:
+                continue
+            seen_ids.add(rec_id)
+
+            co2_saved = round(max(0.2, leak_co2 * sol["saving_ratio"]), 1)
+            share_saved_pct = round((co2_saved / total_co2) * 100, 1)
+            
+            # Dollar savings from utility/fuel reduction + carbon credit compliance savings
+            dollar_savings_annual = round(max(150.0, (leak_cost * sol["saving_ratio"]) + (co2_saved * credit_price)), 0)
+            
+            # Scaled CapEx
+            capex_min = int(round(sol["cost_base_min"] * scale_factor, -2))
+            capex_max = int(round(sol["cost_base_max"] * scale_factor, -2))
+            capex_mid = (capex_min + capex_max) / 2.0
+            
+            # ROI % and Payback
+            roi_pct = round((dollar_savings_annual / max(1.0, capex_mid)) * 100, 1)
+            payback_years = round(capex_mid / max(1.0, dollar_savings_annual), 1)
+            if payback_years < 1.0:
+                payback_str = f"{int(max(1, round(payback_years * 12)))} months"
+            else:
+                payback_str = f"{payback_years:.1f} years"
+
+            # Hotspot attribution label
+            hotspot_label = f"🎯 Hotspot #{leak_rank}: {source_name}"
+            priority_tag = "🎯 #1 Hotspot Fix" if leak_rank == 1 else (f"🎯 #{leak_rank} Hotspot Fix" if leak_rank <= 3 else f"Hotspot #{leak_rank}")
+
+            generated_recommendations.append({
+                "id": rec_id,
+                "title": sol["title"],
+                "category": sol["category"],
+                "icon": sol["icon"],
+                "feather_icon": sol["feather_icon"],
+                "description": sol["description"],
+                "targeted_hotspot_rank": leak_rank,
+                "targeted_hotspot_source": source_name,
+                "targeted_hotspot_co2": leak_co2,
+                "targeted_hotspot_label": hotspot_label,
+                "hotspot_priority_tag": priority_tag,
+                "co2_saved_t": co2_saved,
+                "co2_saved_pct": share_saved_pct,
+                "cost_estimate": f"${capex_min:,.0f} – ${capex_max:,.0f}",
+                "annual_savings_usd": dollar_savings_annual,
+                "expected_roi": roi_pct,
+                "payback_time": payback_str,
+                "credits_saved": co2_saved,
+                "compliance_value_usd": round(co2_saved * credit_price, 0),
+                "difficulty": sol["difficulty"],
+                "impact_level": sol["impact_level"],
+                "circular_benefit": sol["circular_benefit"],
+                "govt_incentives": sol["govt_incentives"]
+            })
+
+    # Sort so #1 Hotspot is first, followed by #2, #3, then by ROI descending
+    generated_recommendations.sort(key=lambda x: (x["targeted_hotspot_rank"], -x["expected_roi"]))
+
+    return generated_recommendations
+

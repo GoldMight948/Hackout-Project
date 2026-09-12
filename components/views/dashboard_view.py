@@ -11,7 +11,8 @@ import plotly.express as px
 import pandas as pd
 from datetime import date, datetime
 from components.calculations import (
-    calculate_detailed_emissions, calculate_carbon_credit_audit, get_statutory_carbon_quota
+    calculate_detailed_emissions, calculate_carbon_credit_audit, get_statutory_carbon_quota,
+    generate_hotspot_recommendations
 )
 
 from components.ml_forecast import generate_monthly_timeseries, forecast_emissions_ml
@@ -47,21 +48,22 @@ def render_dashboard_view():
     # Dynamic synchronization with operational activity logs
     agg_stat = get_aggregated_activity_summary(user_email)
     total_logs_count = agg_stat.get("total_entries", 0)
-    last_synced_count = st.session_state.get("dash_synced_entries")
+    current_data_sig = f"{user_email}_{total_logs_count}_{agg_stat.get('total_co2', 0.0):.4f}_{agg_stat.get('latest_date', '')}"
+    last_data_sig = st.session_state.get("dash_data_signature")
     res_co2 = st.session_state.get("emissions_results", {}).get("total_co2", 0.0) if st.session_state.get("emissions_results") else 0.0
 
-    if (
-        not st.session_state.get("manual_setup_override", False) and (
-            st.session_state.get("dash_synced_email") != user_email or
-            last_synced_count != total_logs_count or
-            (total_logs_count > 0 and res_co2 == 0.0)
-        )
+    if total_logs_count > 0 and (
+        last_data_sig != current_data_sig or
+        st.session_state.get("dash_synced_email") != user_email or
+        res_co2 == 0.0
     ):
         synced_res = sync_activity_logs_to_dashboard(user_email, is_demo=is_demo)
         if synced_res:
             st.session_state["emissions_results"] = synced_res
         st.session_state["dash_synced_email"] = user_email
         st.session_state["dash_synced_entries"] = total_logs_count
+        st.session_state["dash_data_signature"] = current_data_sig
+        st.session_state["manual_setup_override"] = False
 
     res = st.session_state["emissions_results"]
     user_logs = get_activity_logs(user_email, limit=500)
@@ -566,6 +568,98 @@ def render_dashboard_view():
             )
             st.plotly_chart(fig_stacked, use_container_width=True)
             st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
+
+        # =========================================================================
+        # TARGETED GREEN RECOMMENDATIONS BASED ON EMISSION LEAK HOTSPOTS
+        # =========================================================================
+        hotspot_recs = generate_hotspot_recommendations(res, user)
+        top_3_hotspot_recs = hotspot_recs[:3]
+
+        recom_head_icon = feather_icon("lightbulb", color=COLOR_AMBER, size=20, margin_right=8)
+        st.markdown(f"""
+            <div class="saas-card" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div class="saas-card-title" style="display: flex; align-items: center; font-size: 1.15rem;">
+                            {recom_head_icon} Green Recommendations Targeted to Operational Leak Hotspots
+                        </div>
+                        <div class="saas-card-subtitle" style="margin-top: 4px;">
+                            Actionable decarbonization & circular solutions dynamically prioritized based on your facility's top emission leak points:
+                        </div>
+                    </div>
+                    <span class="badge-low" style="font-size: 0.82rem; padding: 5px 12px;">
+                        🎯 DYNAMIC HOTSPOT MATCHING ACTIVE
+                    </span>
+                </div>
+        """, unsafe_allow_html=True)
+
+        if not top_3_hotspot_recs:
+            st.info("Complete assessment or log operational shift activity to generate hotspot-targeted recommendations.")
+        else:
+            r_cols = st.columns(len(top_3_hotspot_recs), gap="medium")
+            for r_idx, r in enumerate(top_3_hotspot_recs):
+                with r_cols[r_idx]:
+                    r_card_icon = feather_icon(r.get("feather_icon", "zap"), color="#10B981", size=16, margin_right=6)
+                    diff_badge = "badge-low" if r["difficulty"] == "Easy" else ("badge-medium" if r["difficulty"] == "Medium" else "badge-critical")
+                    st.markdown(f"""
+                        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid {'#10B981' if r['targeted_hotspot_rank'] == 1 else ('#F59E0B' if r['targeted_hotspot_rank'] == 2 else '#3B82F6')};">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 0.75rem; font-weight: 800; background: rgba(16,185,129,0.15); color: #047857; padding: 2px 8px; border-radius: 6px;">
+                                        {r['hotspot_priority_tag']}
+                                    </span>
+                                    <span class="{diff_badge}" style="font-size: 0.72rem; padding: 2px 6px;">
+                                        {r['difficulty']}
+                                    </span>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px;">
+                                    Targeting Hotspot #{r['targeted_hotspot_rank']}: <strong>{r['targeted_hotspot_source']}</strong> ({r['targeted_hotspot_co2']:,.1f} t)
+                                </div>
+                                <div style="font-size: 0.98rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; line-height: 1.35;">
+                                    {r['title']}
+                                </div>
+                                <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 12px;">
+                                    {r['description'][:130]}...
+                                </div>
+                            </div>
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-size: 0.82rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="color: var(--text-muted);">CO₂ Reduction:</span>
+                                    <strong style="color: #10B981;">-{r['co2_saved_t']:,.1f} t/yr ({r['co2_saved_pct']}%)</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="color: var(--text-muted);">Annual Savings:</span>
+                                    <strong style="color: #059669;">+${r['annual_savings_usd']:,.0f}/yr</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="color: var(--text-muted);">CapEx Est:</span>
+                                    <strong>{r['cost_estimate']}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: var(--text-muted);">Payback:</span>
+                                    <strong style="color: #2563EB;">{r['payback_time']} (ROI {r['expected_roi']}%)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+        st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
+        c_rm1, c_rm2 = st.columns([2.5, 1])
+        with c_rm1:
+            st.markdown(f"""
+                <span style="font-size: 0.84rem; color: var(--text-muted);">
+                    💡 Each recommendation is calibrated to your measured emission volume and regulatory compliance quotas ($38/t).
+                </span>
+            """, unsafe_allow_html=True)
+        with c_rm2:
+            if st.button("Explore All Hotspot Recommendations →", key="dash_view_all_recs_btn", type="primary", use_container_width=True):
+                st.session_state["current_step"] = 8
+                st.session_state["nav_section"] = "recommendations"
+                st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
     # Call-to-actions to Deep-Dive Analytics & Leak Points
     st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
