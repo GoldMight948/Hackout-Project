@@ -43,28 +43,48 @@ def render_recommendations_view():
         "Actionable Decarbonization & Circular Interventions",
         level="h2",
         color=COLOR_AMBER,
-        subtitle=f"Directly targeting your facility's primary leak hotspot: <strong>{highest_source}</strong> ({highest_co2:,.1f} t CO₂e, {highest_share}% of footprint)."
+        subtitle="Browse proven decarbonization interventions with verified ROI and circular benefits. Once operational data is entered, solutions will dynamically re-order around your facility's biggest carbon leaks." if highest_co2 == 0.0 else f"Directly targeting your facility's primary leak hotspot: <strong>{highest_source}</strong> ({highest_co2:,.1f} t CO₂e, {highest_share}% of footprint)."
     ), unsafe_allow_html=True)
 
     # Hotspot Context Alert Banner
-    st.markdown(f"""
-        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-            <div style="display: flex; align-items: center;">
-                {feather_icon('target', color='#10B981', size=22, margin_right=10)}
-                <div>
-                    <div style="font-size: 0.95rem; font-weight: 800; color: #065F46;">
-                        🎯 Hotspot-Driven Recommendations Active: Prioritizing Solutions for #{top_leak['rank'] if top_leak else 1} {highest_source}
-                    </div>
-                    <div style="font-size: 0.84rem; color: #047857; margin-top: 2px;">
-                        Interventions below are mathematically calibrated to your measured consumption volume ({highest_co2:,.1f} t CO₂e) and current carbon credit quota balance.
+    if highest_co2 > 0:
+        st.markdown(f"""
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center;">
+                    {feather_icon('target', color='#10B981', size=22, margin_right=10)}
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #065F46;">
+                            🎯 Hotspot-Driven Recommendations Active: Prioritizing Solutions for #{top_leak['rank'] if top_leak else 1} {highest_source}
+                        </div>
+                        <div style="font-size: 0.84rem; color: #047857; margin-top: 2px;">
+                            Interventions below are mathematically calibrated to your measured consumption volume ({highest_co2:,.1f} t CO₂e) and current carbon credit quota balance.
+                        </div>
                     </div>
                 </div>
+                <span class="badge-low" style="padding: 6px 12px; font-size: 0.8rem;">
+                    🟢 100% TAILORED TO YOUR DATA
+                </span>
             </div>
-            <span class="badge-low" style="padding: 6px 12px; font-size: 0.8rem;">
-                🟢 100% TAILORED TO YOUR DATA
-            </span>
-        </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center;">
+                    {feather_icon('compass', color='#10B981', size=22, margin_right=10)}
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #065F46;">
+                            🌱 Decarbonization Catalog Ready
+                        </div>
+                        <div style="font-size: 0.84rem; color: #047857; margin-top: 2px;">
+                            Explore high-ROI engineering solutions and circular loops. Once you enter facility data or log shifts, this engine will automatically calibrate payback calculations to your measured emissions.
+                        </div>
+                    </div>
+                </div>
+                <span class="badge-low" style="padding: 6px 12px; font-size: 0.8rem;">
+                    READY FOR DATA
+                </span>
+            </div>
+        """, unsafe_allow_html=True)
 
     # Filter & Search Controls
     c_search, c_filter_hot, c_filter_diff = st.columns([1.5, 1.2, 1], gap="medium")

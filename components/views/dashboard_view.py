@@ -150,6 +150,37 @@ def render_dashboard_view():
     ])
 
     with tab_annual:
+        # Clean Zero-State Onboarding Banner for New Real Users
+        if res["total_co2"] == 0.0 and total_logs_count == 0 and not is_demo:
+            welcome_icon = feather_icon("compass", color="#10B981", size=24, margin_right=10)
+            c_onb1, c_onb2 = st.columns([3.5, 1.5])
+            with c_onb1:
+                st.markdown(f"""
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center;">
+                        {welcome_icon}
+                        <div>
+                            <div style="font-weight: 800; font-size: 1.0rem; color: #065F46;">
+                                Welcome to Your Enterprise Decarbonization Workspace!
+                            </div>
+                            <div style="font-size: 0.85rem; color: #047857; margin-top: 2px;">
+                                Your operational baseline is currently initialized at <strong>0.0 tonnes CO₂e</strong>. Input your annual utility bills or log shift activities to populate live footprint intelligence.
+                            </div>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with c_onb2:
+                col_oa, col_ob = st.columns(2)
+                with col_oa:
+                    if st.button("⚙️ Setup Baseline", key="dash_zero_setup_btn", use_container_width=True):
+                        st.session_state["nav_section"] = "setup"
+                        st.session_state["current_step"] = 3
+                        st.rerun()
+                with col_ob:
+                    if st.button("📅 Shift Logger", key="dash_zero_log_btn", use_container_width=True):
+                        st.session_state["nav_section"] = "activity_logs"
+                        st.session_state["current_step"] = 4
+                        st.rerun()
+
         # Live Operational Sync Banner (reflects real-time daily activity logs)
         agg_stat = get_aggregated_activity_summary(user_email)
         if agg_stat["total_entries"] > 0:

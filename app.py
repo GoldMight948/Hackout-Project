@@ -53,14 +53,14 @@ def init_app_state():
 def render_sidebar():
     """Renders modern SaaS sidebar with navigation icons, notifications, and presets."""
     user = st.session_state.get("current_user", {})
-    user_name = user.get("owner_name", user.get("name", "David Kovac"))
-    user_company = user.get("company_name", user.get("company", "Apex Precision Metalworks"))
+    is_demo = is_demo_session()
+    user_name = user.get("owner_name", user.get("name", "David Kovac" if is_demo else "User"))
+    user_company = user.get("company_name", user.get("company", "Apex Precision Metalworks" if is_demo else "Enterprise Facility"))
     user_role = user.get("role", "Admin")
     user_avatar = user.get("avatar", "🏭")
     
     with st.sidebar:
         # Organization Card with Feather Icon and Demo / Production Mode Indicator
-        is_demo = is_demo_session()
         org_icon = feather_icon("box", color="#F59E0B" if is_demo else "#10B981", size=24, margin_right=10)
         mode_badge = '<span style="background: rgba(245,158,11,0.2); color: #B45309; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #FCD34D;">DEMO SANDBOX</span>' if is_demo else '<span style="background: rgba(16,185,129,0.2); color: #047857; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #6EE7B7;">VERIFIED ORG</span>'
         
@@ -158,20 +158,32 @@ def render_sidebar():
         notif_header = feather_icon("alert-triangle", color="#95A5A6", size=18, margin_right=6)
         warn_icon = feather_icon("alert-triangle", color="#FF6B6B", size=16, margin_right=6)
         check_icon = feather_icon("check-circle", color="#2ECC71", size=16, margin_right=6)
-        st.markdown(f"""
-            <div style="display: flex; align-items: center; margin-bottom: 8px; margin-top: 10px;">
-                {notif_header}
-                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Compliance Alerts</span>
-            </div>
-            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
-                <div style="font-weight: 700; color: #D97706; display: flex; align-items: center;">{warn_icon} Annual Cap Deadline</div>
-                <div style="color: var(--text-muted); margin-top: 2px;">Statutory carbon audit filing due in 45 days.</div>
-            </div>
-            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
-                <div style="font-weight: 700; color: #10B981; display: flex; align-items: center;">{check_icon} Q3 Solar Credit Verified</div>
-                <div style="color: var(--text-muted); margin-top: 2px;">18.5 tonnes carbon offset recognized by registry.</div>
-            </div>
-        """, unsafe_allow_html=True)
+        if is_demo:
+            st.markdown(f"""
+                <div style="display: flex; align-items: center; margin-bottom: 8px; margin-top: 10px;">
+                    {notif_header}
+                    <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Compliance Alerts</span>
+                </div>
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
+                    <div style="font-weight: 700; color: #D97706; display: flex; align-items: center;">{warn_icon} Annual Cap Deadline</div>
+                    <div style="color: var(--text-muted); margin-top: 2px;">Statutory carbon audit filing due in 45 days.</div>
+                </div>
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
+                    <div style="font-weight: 700; color: #10B981; display: flex; align-items: center;">{check_icon} Q3 Solar Credit Verified</div>
+                    <div style="color: var(--text-muted); margin-top: 2px;">18.5 tonnes carbon offset recognized by registry.</div>
+                </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+                <div style="display: flex; align-items: center; margin-bottom: 8px; margin-top: 10px;">
+                    {feather_icon('shield', color='#10B981', size=18, margin_right=6)}
+                    <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Ledger Status</span>
+                </div>
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
+                    <div style="font-weight: 700; color: #10B981; display: flex; align-items: center;">{check_icon} Production Workspace Active</div>
+                    <div style="color: var(--text-muted); margin-top: 2px;">Emissions ledger isolated and calibrated for user operational data.</div>
+                </div>
+            """, unsafe_allow_html=True)
 
         # Logout button
         if st.button("🚪 Sign Out", key="sidebar_logout_btn", use_container_width=True):

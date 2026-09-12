@@ -33,7 +33,7 @@ def render_leak_detection_view():
     ), unsafe_allow_html=True)
 
     # Top Leak Diagnosis Alert Banner
-    if top_10:
+    if top_10 and res.get("total_co2", 0.0) > 0 and top_10[0]["current_co2"] > 0:
         worst_leak = top_10[0]
         banner_icon = feather_icon("alert-triangle", color="#DC2626", size=32, margin_right=14)
         st.markdown(f"""
@@ -51,6 +51,26 @@ def render_leak_detection_view():
                 </div>
                 <span class="badge-critical" style="font-size: 0.85rem; padding: 6px 14px;">
                     {worst_leak['priority']}
+                </span>
+            </div>
+        """, unsafe_allow_html=True)
+    else:
+        clean_icon = feather_icon("check-circle", color="#10B981", size=32, margin_right=14)
+        st.markdown(f"""
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.08) 100%); border: 1px solid #6EE7B7; border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center;">
+                    {clean_icon}
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.15rem; color: #065F46;">
+                            🌱 Zero Active Emission Leaks Detected
+                        </div>
+                        <div style="font-size: 0.9rem; color: #047857; margin-top: 4px;">
+                            Your facility emissions are currently at <strong>0.0 tonnes CO₂e</strong>. Log operational shifts or input utility data in Setup to run automated hotspot diagnostics.
+                        </div>
+                    </div>
+                </div>
+                <span class="badge-low" style="font-size: 0.85rem; padding: 6px 14px;">
+                    100% DECARBONIZED / ZERO BASELINE
                 </span>
             </div>
         """, unsafe_allow_html=True)

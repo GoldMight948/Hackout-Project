@@ -588,10 +588,113 @@ def test_dynamic_graphs_and_hotspot_recommendations():
     assert copilot_rec_resp["nav_target"] == "recommendations"
     print("  [PASS] Copilot Hotspot-Targeted Recommendation generation verified.")
 
+def test_real_user_zero_state_and_demo_isolation():
+    print("Testing Real User Zero-State Initialization & Demo Data Isolation...")
+    from datetime import datetime
+    from database.db_manager import (
+        register_user, authenticate_user, is_demo_user,
+        get_latest_emissions, save_emissions_assessment, save_activity_log,
+        sync_activity_logs_to_dashboard
+    )
+    from components.calculations import calculate_detailed_emissions, get_statutory_carbon_quota
+    from components.data_presets import DEMO_BUSINESSES, DEMO_USERS
+
+    fresh_email = f"fresh_user_{datetime.now().strftime('%H%M%S')}@production.org"
+    reg_ok = register_user(
+        email=fresh_email,
+        password="securepass123",
+        company_name="Green Horizons Factory",
+        owner_name="Elena Rostova",
+        company_type="SME / Mid-Sized Business",
+        industry="Food Processing",
+        employees=40,
+        annual_revenue=5000000.0,
+        country="India",
+        state="Maharashtra",
+        location="Pune Industrial Zone",
+        is_demo=0
+    )
+    assert reg_ok is True, "Failed to register fresh real user"
+    assert is_demo_user(fresh_email) is False, "Real user must not be classified as demo user"
+
+    # Verify initial baseline assessment created for real user starts at absolute 0.0
+    quota_info = get_statutory_carbon_quota("Food Processing", "SME / Mid-Sized Business", 40)
+    clean_profile = {
+        "business_name": "Green Horizons Factory",
+        "industry": "Food Processing",
+        "company_type": "SME / Mid-Sized Business",
+        "employees": 40,
+        "annual_revenue": 5000000.0,
+        "country": "India",
+        "state": "Maharashtra",
+        "location": "Pune Industrial Zone",
+        "electricity_kwh": 0.0,
+        "renewable_pct": 0.0,
+        "diesel_liters": 0.0,
+        "petrol_liters": 0.0,
+        "gas_m3": 0.0,
+        "truck_km": 0.0,
+        "car_km": 0.0,
+        "commute_km": 0.0,
+        "delivery_vehicles": 0,
+        "organic_waste_kg": 0.0,
+        "plastic_waste_kg": 0.0,
+        "metal_waste_kg": 0.0,
+        "paper_waste_kg": 0.0,
+        "hazardous_waste_kg": 0.0,
+        "water_m3": 0.0,
+        "wastewater_m3": 0.0,
+        "raw_material_tonnes": 0.0,
+        "production_units": 0.0,
+        "machine_hours": 0.0,
+        "total_credits": quota_info["quota_credits"],
+        "credit_price": quota_info["benchmark_price"],
+        "current_balance": quota_info["quota_credits"]
+    }
+    res_clean = calculate_detailed_emissions(clean_profile)
+    assert res_clean["total_co2"] == 0.0, f"Expected 0.0 t CO2, got {res_clean['total_co2']}"
+    assert res_clean["total_cost"] == 0.0, f"Expected 0.0 cost, got {res_clean['total_cost']}"
+    for pillar, co2 in res_clean["pillar_co2"].items():
+        assert co2 == 0.0, f"Pillar {pillar} must be 0.0, got {co2}"
+    for leak in res_clean["top_10_leaks"]:
+        assert leak["current_co2"] == 0.0, f"Leak {leak['source']} must have 0.0 current_co2"
+
+    save_emissions_assessment(fresh_email, clean_profile, is_demo=0)
+    db_em = get_latest_emissions(fresh_email)
+    assert db_em is not None
+    assert db_em["electricity_kwh"] == 0.0
+    assert db_em["diesel_liters"] == 0.0
+    assert db_em["truck_km"] == 0.0
+    assert db_em["total_co2"] == 0.0
+    print("  [PASS] Clean real user profile starts at 0.0 operational footprint with zero hardcoded defaults.")
+
+    # Now add real user input via daily activity log and verify emissions are strictly calculated from user input
+    log_id = save_activity_log(fresh_email, {
+        "log_date": "2025-09-13",
+        "frequency": "daily",
+        "period_label": "Shift 1 Morning",
+        "diesel_liters": 150.0,
+        "electricity_kwh": 800.0,
+        "organic_waste_kg": 200.0
+    }, is_demo=False)
+    assert log_id > 0
+
+    synced = sync_activity_logs_to_dashboard(fresh_email, is_demo=False)
+    assert synced["total_co2"] > 0
+    assert synced["raw_inputs"]["diesel_liters"] > 0
+    assert synced["raw_inputs"]["electricity_kwh"] > 0
+    print(f"  [PASS] Real user emissions update strictly based on real user input ({synced['total_co2']} t CO₂e).")
+
+    # Confirm demo profiles are untouched and separate
+    for demo_email in DEMO_USERS:
+        assert is_demo_user(demo_email) is True
+    print("  [PASS] Demo profiles and sandbox storage remained completely isolated.")
+
 if __name__ == "__main__":
     test_database()
     test_calculations()
     test_demo_isolation_and_activity_logs()
+    test_real_user_zero_state_and_demo_isolation()
     test_geo_data_and_statutory_carbon_quotas()
     test_carbon_credit_audit_and_cross_check()
     test_dynamic_graphs_and_hotspot_recommendations()

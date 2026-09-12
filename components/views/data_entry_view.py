@@ -38,34 +38,35 @@ def render_data_entry_view():
         subtitle="Input 12-month operational consumption data. Choose Quick Mode for estimated category splits or Detailed Mode for granular sub-meter precision."
     ), unsafe_allow_html=True)
 
-    # 1. Preset Loader Bar
-    st.markdown(f"""
-        <div class="saas-card" style="padding: 14px 20px; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
-                    {feather_icon('zap', color=COLOR_WARNING, size=16, margin_right=6)} Quick Pre-Fill from Verified Industry Benchmarks:
-                </span>
+    # 1. Preset Loader Bar (Demo Sandbox Only)
+    if is_demo:
+        st.markdown(f"""
+            <div class="saas-card" style="padding: 14px 20px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
+                        {feather_icon('zap', color=COLOR_WARNING, size=16, margin_right=6)} Quick Pre-Fill from Verified Industry Benchmarks:
+                    </span>
+                </div>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    col_p1, col_p2, col_p3, col_p4 = st.columns(4)
-    with col_p1:
-        if st.button("🥪 Food Processing", key="fill_food_preset", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
-            st.rerun()
-    with col_p2:
-        if st.button("🏪 Retail Store", key="fill_retail_preset", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
-            st.rerun()
-    with col_p3:
-        if st.button("🚚 Logistics Hub", key="fill_logistics_preset", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
-            st.rerun()
-    with col_p4:
-        if st.button("🏭 Manufacturing Plant", key="fill_mfg_preset", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
-            st.rerun()
+        col_p1, col_p2, col_p3, col_p4 = st.columns(4)
+        with col_p1:
+            if st.button("🥪 Food Processing", key="fill_food_preset", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
+                st.rerun()
+        with col_p2:
+            if st.button("🏪 Retail Store", key="fill_retail_preset", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
+                st.rerun()
+        with col_p3:
+            if st.button("🚚 Logistics Hub", key="fill_logistics_preset", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
+                st.rerun()
+        with col_p4:
+            if st.button("🏭 Manufacturing Plant", key="fill_mfg_preset", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
+                st.rerun()
 
     # Current form inputs from session state
     inputs = st.session_state.get("form_inputs", {})
@@ -117,12 +118,12 @@ def render_data_entry_view():
                 "Switch to **Detailed Mode** above if you have granular sub-meter numbers."
             )
 
-            def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 120000.0)))
-            def_fuel = float(inputs.get("fuel", inputs.get("diesel_liters", 8000.0) + inputs.get("petrol_liters", 2000.0)))
-            def_trans = float(inputs.get("transport", inputs.get("truck_km", 25000.0) + inputs.get("car_km", 10000.0)))
-            def_waste = float(inputs.get("waste", inputs.get("organic_waste_kg", 5000.0) + inputs.get("plastic_waste_kg", 3000.0)))
-            def_renew = float(inputs.get("renewable_pct", 10.0))
-            def_prod = float(inputs.get("production_units", 25000.0))
+            def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 120000.0 if is_demo else 0.0)))
+            def_fuel = float(inputs.get("fuel", inputs.get("diesel_liters", 8000.0 if is_demo else 0.0) + inputs.get("petrol_liters", 2000.0 if is_demo else 0.0)))
+            def_trans = float(inputs.get("transport", inputs.get("truck_km", 25000.0 if is_demo else 0.0) + inputs.get("car_km", 10000.0 if is_demo else 0.0)))
+            def_waste = float(inputs.get("waste", inputs.get("organic_waste_kg", 5000.0 if is_demo else 0.0) + inputs.get("plastic_waste_kg", 3000.0 if is_demo else 0.0)))
+            def_renew = float(inputs.get("renewable_pct", 10.0 if is_demo else 0.0))
+            def_prod = float(inputs.get("production_units", 25000.0 if is_demo else 0.0))
 
             c_q1, c_q2 = st.columns(2, gap="large")
             with c_q1:
@@ -180,6 +181,7 @@ def render_data_entry_view():
             # ─────────────────────────────────────────────────────────────
             # DETAILED MODE: Granular 5 Pillars + Carbon Credits
             # ─────────────────────────────────────────────────────────────
+<<<<<<< Updated upstream
             def_elec = safe_float(inputs.get("electricity_kwh") if inputs.get("electricity_kwh") is not None else inputs.get("electricity"), 350000.0)
             def_renew = safe_float(inputs.get("renewable_pct"), 15.0)
             def_diesel = safe_float(inputs.get("diesel_liters") if inputs.get("diesel_liters") is not None else inputs.get("fuel"), 12000.0)
@@ -206,6 +208,41 @@ def render_data_entry_view():
 
             def_credits = safe_float(inputs.get("total_credits") if inputs.get("total_credits") is not None else inputs.get("total_carbon_credits"), 250.0)
             def_price = safe_float(inputs.get("credit_price") if inputs.get("credit_price") is not None else inputs.get("carbon_credit_price"), 2905.0)
+=======
+            def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 350000.0 if is_demo else 0.0)))
+            def_renew = float(inputs.get("renewable_pct", 15.0 if is_demo else 0.0))
+            def_diesel = float(inputs.get("diesel_liters", inputs.get("fuel", 12000.0 if is_demo else 0.0)))
+            def_petrol = float(inputs.get("petrol_liters", 4500.0 if is_demo else 0.0))
+            def_gas = float(inputs.get("gas_m3", 32000.0 if is_demo else 0.0))
+
+            def_truck = float(inputs.get("truck_km", inputs.get("transport", 55000.0 if is_demo else 0.0)))
+            def_car = float(inputs.get("car_km", 18000.0 if is_demo else 0.0))
+            def_commute = float(inputs.get("commute_km", 75000.0 if is_demo else 0.0))
+            def_vehs = int(inputs.get("delivery_vehicles", 6 if is_demo else 0))
+
+            def_org_waste = float(inputs.get("organic_waste_kg", inputs.get("waste", 24000.0 if is_demo else 0.0)))
+            def_plas_waste = float(inputs.get("plastic_waste_kg", 16000.0 if is_demo else 0.0))
+            def_met_waste = float(inputs.get("metal_waste_kg", 8500.0 if is_demo else 0.0))
+            def_pap_waste = float(inputs.get("paper_waste_kg", 14000.0 if is_demo else 0.0))
+            def_haz_waste = float(inputs.get("hazardous_waste_kg", 1200.0 if is_demo else 0.0))
+
+            def_water = float(inputs.get("water_m3", 6400.0 if is_demo else 0.0))
+            def_wastewater = float(inputs.get("wastewater_m3", 5200.0 if is_demo else 0.0))
+
+            def_raw_mat = float(inputs.get("raw_material_tonnes", 380.0 if is_demo else 0.0))
+            def_prod_qty = float(inputs.get("production_units", 150000.0 if is_demo else 0.0))
+            def_mach_hours = float(inputs.get("machine_hours", inputs.get("machine_running_hours", 3200.0 if is_demo else 0.0)))
+
+            from components.calculations import get_statutory_carbon_quota
+            user_prof = st.session_state.get("current_user", {})
+            quota_calc = get_statutory_carbon_quota(
+                industry=user_prof.get("industry", inputs.get("industry", "Manufacturing Plant")),
+                company_type=user_prof.get("company_type", "SME / Mid-Sized Business"),
+                employees=user_prof.get("employees", 50)
+            )
+            def_credits = float(inputs.get("total_credits") or inputs.get("total_carbon_credits") or quota_calc["quota_credits"])
+            def_price = float(inputs.get("credit_price") or inputs.get("carbon_credit_price") or quota_calc["benchmark_price"])
+>>>>>>> Stashed changes
 
             # Pillar 1: Energy
             st.markdown(f"<div style='font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center;'>{feather_icon('zap', color=COLOR_WARNING, size=18, margin_right=6)} 1. Energy & Thermal Fuels</div>", unsafe_allow_html=True)

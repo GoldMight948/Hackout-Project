@@ -30,39 +30,43 @@ def render_setup_view():
         f"Configure Emission Sources for {comp_name}",
         level="h2",
         color=COLOR_NEUTRAL,
-        subtitle="Input your 12-month operational volumes. You can also load benchmark figures from our verified industry presets."
+        subtitle="Input your 12-month operational volumes. You can also load benchmark figures from our verified industry presets." if is_demo else "Input your 12-month operational volumes to calculate your facility carbon footprint."
     ), unsafe_allow_html=True)
 
-    # Preset Loader Bar
-    st.markdown(f"""
-        <div class="saas-card" style="padding: 14px 20px; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
-                    {feather_icon('zap', color=COLOR_WARNING, size=16)} Quick Pre-Fill from Verified Industry Benchmarks:
-                </span>
-    """, unsafe_allow_html=True)
+    # Preset Loader Bar (Demo Sandbox Only)
+    if is_demo:
+        st.markdown(f"""
+            <div class="saas-card" style="padding: 14px 20px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
+                        {feather_icon('zap', color=COLOR_WARNING, size=16)} Quick Pre-Fill from Verified Industry Benchmarks:
+                    </span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
 
-    col_p1, col_p2, col_p3, col_p4 = st.columns(4)
-    with col_p1:
-        if st.button("Food Processing Bakery", key="fill_food", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
-            st.rerun()
-    with col_p2:
-        if st.button("Retail Boutique", key="fill_retail", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
-            st.rerun()
-    with col_p3:
-        if st.button("Logistics Fleet Hub", key="fill_logistics", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
-            st.rerun()
-    with col_p4:
-        if st.button("Manufacturing Plant", key="fill_mfg", use_container_width=True):
-            st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
-            st.rerun()
+        col_p1, col_p2, col_p3, col_p4 = st.columns(4)
+        with col_p1:
+            if st.button("Food Processing Bakery", key="fill_food", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
+                st.rerun()
+        with col_p2:
+            if st.button("Retail Boutique", key="fill_retail", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
+                st.rerun()
+        with col_p3:
+            if st.button("Logistics Fleet Hub", key="fill_logistics", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
+                st.rerun()
+        with col_p4:
+            if st.button("Manufacturing Plant", key="fill_mfg", use_container_width=True):
+                st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
+                st.rerun()
 
     # Current form values
     inputs = st.session_state.get("form_inputs", {})
     comp_name = inputs.get("business_name") or user.get("company_name", "Enterprise Facility")
+<<<<<<< Updated upstream
     def_elec = safe_float(inputs.get("electricity_kwh") if inputs.get("electricity_kwh") is not None else inputs.get("electricity"), 350000.0)
     def_renew = safe_float(inputs.get("renewable_pct"), 15.0)
     def_diesel = safe_float(inputs.get("diesel_liters") if inputs.get("diesel_liters") is not None else inputs.get("fuel"), 12000.0)
@@ -86,6 +90,31 @@ def render_setup_view():
     def_raw_mat = safe_float(inputs.get("raw_material_tonnes"), 380.0)
     def_prod_qty = safe_float(inputs.get("production_units"), 150000.0)
     def_mach_hours = safe_float(inputs.get("machine_hours") if inputs.get("machine_hours") is not None else inputs.get("machine_running_hours"), 3200.0)
+=======
+    def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 350000.0 if is_demo else 0.0)))
+    def_renew = float(inputs.get("renewable_pct", 15.0 if is_demo else 0.0))
+    def_diesel = float(inputs.get("diesel_liters", inputs.get("fuel", 12000.0 if is_demo else 0.0)))
+    def_petrol = float(inputs.get("petrol_liters", 4500.0 if is_demo else 0.0))
+    def_gas = float(inputs.get("gas_m3", 32000.0 if is_demo else 0.0))
+
+    def_truck = float(inputs.get("truck_km", inputs.get("transport", 55000.0 if is_demo else 0.0)))
+    def_car = float(inputs.get("car_km", 18000.0 if is_demo else 0.0))
+    def_commute = float(inputs.get("commute_km", 75000.0 if is_demo else 0.0))
+    def_vehs = int(inputs.get("delivery_vehicles", 6 if is_demo else 0))
+
+    def_org_waste = float(inputs.get("organic_waste_kg", inputs.get("waste", 24000.0 if is_demo else 0.0)))
+    def_plas_waste = float(inputs.get("plastic_waste_kg", 16000.0 if is_demo else 0.0))
+    def_met_waste = float(inputs.get("metal_waste_kg", 8500.0 if is_demo else 0.0))
+    def_pap_waste = float(inputs.get("paper_waste_kg", 14000.0 if is_demo else 0.0))
+    def_haz_waste = float(inputs.get("hazardous_waste_kg", 1200.0 if is_demo else 0.0))
+
+    def_water = float(inputs.get("water_m3", 6400.0 if is_demo else 0.0))
+    def_wastewater = float(inputs.get("wastewater_m3", 5200.0 if is_demo else 0.0))
+
+    def_raw_mat = float(inputs.get("raw_material_tonnes", 380.0 if is_demo else 0.0))
+    def_prod_qty = float(inputs.get("production_units", 150000.0 if is_demo else 0.0))
+    def_mach_hours = float(inputs.get("machine_hours", inputs.get("machine_running_hours", 3200.0 if is_demo else 0.0)))
+>>>>>>> Stashed changes
 
     user = st.session_state.get("current_user", {})
     from components.calculations import get_statutory_carbon_quota
