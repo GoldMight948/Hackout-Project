@@ -15,7 +15,7 @@ from database.db_manager import (
     sync_activity_logs_to_dashboard, ACTIVITY_EMISSION_FACTORS
 )
 from components.auth import is_demo_session
-from components.calculations import calculate_detailed_emissions
+from components.calculations import calculate_detailed_emissions, safe_float
 from components.icons import (
     feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS,
     COLOR_NEUTRAL, COLOR_INFO, COLOR_PRIMARY
@@ -416,17 +416,17 @@ def render_activity_log_view():
                 with st.form(f"edit_log_form_{target_log['id']}"):
                     ce1, ce2, ce3 = st.columns(3)
                     with ce1:
-                        ed_diesel = st.number_input("⛽ Diesel (L)", min_value=0.0, value=float(target_log.get("diesel_liters", 0.0)), step=10.0, key=f"ed_d_{target_log['id']}")
-                        ed_petrol = st.number_input("🚗 Petrol (L)", min_value=0.0, value=float(target_log.get("petrol_liters", 0.0)), step=5.0, key=f"ed_p_{target_log['id']}")
-                        ed_gas = st.number_input("🔥 Gas (m³)", min_value=0.0, value=float(target_log.get("gas_m3", 0.0)), step=25.0, key=f"ed_g_{target_log['id']}")
+                        ed_diesel = st.number_input("⛽ Diesel (L)", min_value=0.0, value=safe_float(target_log.get("diesel_liters"), 0.0), step=10.0, key=f"ed_d_{target_log['id']}")
+                        ed_petrol = st.number_input("🚗 Petrol (L)", min_value=0.0, value=safe_float(target_log.get("petrol_liters"), 0.0), step=5.0, key=f"ed_p_{target_log['id']}")
+                        ed_gas = st.number_input("🔥 Gas (m³)", min_value=0.0, value=safe_float(target_log.get("gas_m3"), 0.0), step=25.0, key=f"ed_g_{target_log['id']}")
                     with ce2:
-                        ed_elec = st.number_input("⚡ Electricity (kWh)", min_value=0.0, value=float(target_log.get("electricity_kwh", 0.0)), step=100.0, key=f"ed_e_{target_log['id']}")
-                        ed_waste_org = st.number_input("🍃 Organic Waste (kg)", min_value=0.0, value=float(target_log.get("organic_waste_kg", 0.0)), step=10.0, key=f"ed_wo_{target_log['id']}")
-                        ed_waste_plas = st.number_input("🥤 Plastic Waste (kg)", min_value=0.0, value=float(target_log.get("plastic_waste_kg", 0.0)), step=10.0, key=f"ed_wp_{target_log['id']}")
+                        ed_elec = st.number_input("⚡ Electricity (kWh)", min_value=0.0, value=safe_float(target_log.get("electricity_kwh"), 0.0), step=100.0, key=f"ed_e_{target_log['id']}")
+                        ed_waste_org = st.number_input("🍃 Organic Waste (kg)", min_value=0.0, value=safe_float(target_log.get("organic_waste_kg"), 0.0), step=10.0, key=f"ed_wo_{target_log['id']}")
+                        ed_waste_plas = st.number_input("🥤 Plastic Waste (kg)", min_value=0.0, value=safe_float(target_log.get("plastic_waste_kg"), 0.0), step=10.0, key=f"ed_wp_{target_log['id']}")
                     with ce3:
-                        ed_waste_met = st.number_input("🔩 Metal Scrap (kg)", min_value=0.0, value=float(target_log.get("metal_waste_kg", 0.0)), step=10.0, key=f"ed_wm_{target_log['id']}")
-                        ed_waste_pap = st.number_input("📦 Paper/Cardboard (kg)", min_value=0.0, value=float(target_log.get("paper_waste_kg", 0.0)), step=10.0, key=f"ed_wpa_{target_log['id']}")
-                        ed_truck = st.number_input("🚚 Freight Distance (km)", min_value=0.0, value=float(target_log.get("truck_km", 0.0)), step=50.0, key=f"ed_t_{target_log['id']}")
+                        ed_waste_met = st.number_input("🔩 Metal Scrap (kg)", min_value=0.0, value=safe_float(target_log.get("metal_waste_kg"), 0.0), step=10.0, key=f"ed_wm_{target_log['id']}")
+                        ed_waste_pap = st.number_input("📦 Paper/Cardboard (kg)", min_value=0.0, value=safe_float(target_log.get("paper_waste_kg"), 0.0), step=10.0, key=f"ed_wpa_{target_log['id']}")
+                        ed_truck = st.number_input("🚚 Freight Distance (km)", min_value=0.0, value=safe_float(target_log.get("truck_km"), 0.0), step=50.0, key=f"ed_t_{target_log['id']}")
                     
                     ed_notes = st.text_input("Operational Shift Notes", value=str(target_log.get("notes") or ""), key=f"ed_n_{target_log['id']}")
                     ed_submit = st.form_submit_button("💾 Save Changes & Recalculate Dashboard", type="primary", use_container_width=True)
@@ -443,10 +443,10 @@ def render_activity_log_view():
                             "plastic_waste_kg": ed_waste_plas,
                             "metal_waste_kg": ed_waste_met,
                             "paper_waste_kg": ed_waste_pap,
-                            "hazardous_waste_kg": float(target_log.get("hazardous_waste_kg", 0.0)),
+                            "hazardous_waste_kg": safe_float(target_log.get("hazardous_waste_kg"), 0.0),
                             "truck_km": ed_truck,
-                            "water_m3": float(target_log.get("water_m3", 0.0)),
-                            "production_units": float(target_log.get("production_units", 0.0)),
+                            "water_m3": safe_float(target_log.get("water_m3"), 0.0),
+                            "production_units": safe_float(target_log.get("production_units"), 0.0),
                             "notes": ed_notes
                         }
                         update_activity_log(target_log["id"], user_email, updated_payload, is_demo=is_demo)

@@ -319,28 +319,53 @@ def calculate_carbon_credit_audit(
 
 
 
+def safe_float(val: Any, default: float = 0.0) -> float:
+    """Safely converts a value to float, returning default if None, empty string, NaN, or invalid."""
+    if val is None or val == "":
+        return float(default)
+    try:
+        f = float(val)
+        import math
+        if math.isnan(f):
+            return float(default)
+        return f
+    except (ValueError, TypeError):
+        return float(default)
+
 def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
     """
     Performs end-to-end greenhouse gas and cost computations across 5 pillars:
     Energy, Transport, Waste, Water, and Manufacturing.
     """
     # 1. Extract inputs with defaults
-    elec_kwh = max(0.0, float(inputs.get("electricity_kwh", inputs.get("electricity", 0.0))))
-    renew_pct = min(100.0, max(0.0, float(inputs.get("renewable_pct", 0.0))))
-    diesel_l = max(0.0, float(inputs.get("diesel_liters", inputs.get("fuel", 0.0) * 0.7)))
-    petrol_l = max(0.0, float(inputs.get("petrol_liters", inputs.get("fuel", 0.0) * 0.3)))
-    gas_m3 = max(0.0, float(inputs.get("gas_m3", 0.0)))
+    elec_val = inputs.get("electricity_kwh") if inputs.get("electricity_kwh") is not None else inputs.get("electricity")
+    elec_kwh = max(0.0, safe_float(elec_val, 0.0))
+    renew_pct = min(100.0, max(0.0, safe_float(inputs.get("renewable_pct"), 0.0)))
+    diesel_val = inputs.get("diesel_liters") if inputs.get("diesel_liters") is not None else (safe_float(inputs.get("fuel"), 0.0) * 0.7)
+    diesel_l = max(0.0, safe_float(diesel_val, 0.0))
+    petrol_val = inputs.get("petrol_liters") if inputs.get("petrol_liters") is not None else (safe_float(inputs.get("fuel"), 0.0) * 0.3)
+    petrol_l = max(0.0, safe_float(petrol_val, 0.0))
+    gas_m3 = max(0.0, safe_float(inputs.get("gas_m3"), 0.0))
 
-    truck_km = max(0.0, float(inputs.get("truck_km", inputs.get("transport", 0.0) * 0.6)))
-    car_km = max(0.0, float(inputs.get("car_km", inputs.get("transport", 0.0) * 0.3)))
-    commute_km = max(0.0, float(inputs.get("commute_km", inputs.get("transport", 0.0) * 0.1)))
-    delivery_vehs = max(0, int(inputs.get("delivery_vehicles", 2)))
+    truck_val = inputs.get("truck_km") if inputs.get("truck_km") is not None else (safe_float(inputs.get("transport"), 0.0) * 0.6)
+    truck_km = max(0.0, safe_float(truck_val, 0.0))
+    car_val = inputs.get("car_km") if inputs.get("car_km") is not None else (safe_float(inputs.get("transport"), 0.0) * 0.3)
+    car_km = max(0.0, safe_float(car_val, 0.0))
+    commute_val = inputs.get("commute_km") if inputs.get("commute_km") is not None else (safe_float(inputs.get("transport"), 0.0) * 0.1)
+    commute_km = max(0.0, safe_float(commute_val, 0.0))
+    delivery_vehs = max(0, int(safe_float(inputs.get("delivery_vehicles"), 2)))
 
-    waste_org_kg = max(0.0, float(inputs.get("organic_waste_kg", inputs.get("waste", 0.0) * 0.4)))
-    waste_plas_kg = max(0.0, float(inputs.get("plastic_waste_kg", inputs.get("waste", 0.0) * 0.3)))
-    waste_met_kg = max(0.0, float(inputs.get("metal_waste_kg", inputs.get("waste", 0.0) * 0.1)))
-    waste_pap_kg = max(0.0, float(inputs.get("paper_waste_kg", inputs.get("waste", 0.0) * 0.15)))
-    waste_haz_kg = max(0.0, float(inputs.get("hazardous_waste_kg", inputs.get("waste", 0.0) * 0.05)))
+    waste_base = safe_float(inputs.get("waste"), 0.0)
+    waste_org_val = inputs.get("organic_waste_kg") if inputs.get("organic_waste_kg") is not None else (waste_base * 0.4)
+    waste_org_kg = max(0.0, safe_float(waste_org_val, 0.0))
+    waste_plas_val = inputs.get("plastic_waste_kg") if inputs.get("plastic_waste_kg") is not None else (waste_base * 0.3)
+    waste_plas_kg = max(0.0, safe_float(waste_plas_val, 0.0))
+    waste_met_val = inputs.get("metal_waste_kg") if inputs.get("metal_waste_kg") is not None else (waste_base * 0.1)
+    waste_met_kg = max(0.0, safe_float(waste_met_val, 0.0))
+    waste_pap_val = inputs.get("paper_waste_kg") if inputs.get("paper_waste_kg") is not None else (waste_base * 0.15)
+    waste_pap_kg = max(0.0, safe_float(waste_pap_val, 0.0))
+    waste_haz_val = inputs.get("hazardous_waste_kg") if inputs.get("hazardous_waste_kg") is not None else (waste_base * 0.05)
+    waste_haz_kg = max(0.0, safe_float(waste_haz_val, 0.0))
 
     # Track silently defaulted fields to surface transparency to user
     defaulted_fields = []
@@ -356,25 +381,25 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
         defaulted_fields.append("machine_hours")
 
     water_val = inputs.get("water_m3")
-    water_m3 = max(0.0, float(water_val if water_val is not None else 1200.0))
+    water_m3 = max(0.0, safe_float(water_val, 1200.0))
 
     ww_val = inputs.get("wastewater_m3")
-    wastewater_m3 = max(0.0, float(ww_val if ww_val is not None else water_m3 * 0.85))
+    wastewater_m3 = max(0.0, safe_float(ww_val, water_m3 * 0.85))
 
     rm_val = inputs.get("raw_material_tonnes")
-    raw_mat_t = max(0.0, float(rm_val if rm_val is not None else 150.0))
+    raw_mat_t = max(0.0, safe_float(rm_val, 150.0))
 
     pu_val = inputs.get("production_units")
-    prod_units = max(0.0, float(pu_val if pu_val is not None else 25000.0))
+    prod_units = max(0.0, safe_float(pu_val, 25000.0))
 
     mh_val = inputs.get("machine_running_hours") if inputs.get("machine_running_hours") is not None else inputs.get("machine_hours")
-    mach_hours = max(0.0, float(mh_val if mh_val is not None else 2200.0))
+    mach_hours = max(0.0, safe_float(mh_val, 2200.0))
 
     gc_val = inputs.get("total_credits") if inputs.get("total_credits") is not None else inputs.get("total_carbon_credits")
-    govt_credits = max(0.0, float(gc_val if gc_val is not None else 150.0))
+    govt_credits = max(0.0, safe_float(gc_val, 150.0))
 
     cp_val = inputs.get("credit_price") if inputs.get("credit_price") is not None else inputs.get("carbon_credit_price")
-    credit_price = max(1.0, float(cp_val if cp_val is not None else 2905.0))
+    credit_price = max(1.0, safe_float(cp_val, 2905.0))
 
     # 2. Emission Calculations (t CO2e)
     # Electricity takes renewable share into account

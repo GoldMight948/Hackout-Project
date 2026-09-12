@@ -6,7 +6,7 @@ Instantly recalculates and updates KPIs, comparison charts, and carbon credit de
 
 import streamlit as st
 import plotly.graph_objects as go
-from components.calculations import calculate_detailed_emissions
+from components.calculations import calculate_detailed_emissions, safe_float
 from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_AMBER, COLOR_ORANGE
 
 def render_simulator_view():
@@ -132,26 +132,26 @@ def render_simulator_view():
 
     # Compute Simulated Footprint Live
     simulated_inputs = baseline_inputs.copy()
-    simulated_inputs["electricity_kwh"] = float(baseline_inputs.get("electricity_kwh", 350000.0)) * (1.0 - sim_elec / 100.0)
-    simulated_inputs["renewable_pct"] = float(sim_renew)
-    simulated_inputs["diesel_liters"] = float(baseline_inputs.get("diesel_liters", 12000.0)) * (1.0 - sim_fuel / 100.0)
-    simulated_inputs["petrol_liters"] = float(baseline_inputs.get("petrol_liters", 4500.0)) * (1.0 - sim_fuel / 100.0)
-    simulated_inputs["gas_m3"] = float(baseline_inputs.get("gas_m3", 32000.0)) * (1.0 - sim_fuel / 100.0)
-    simulated_inputs["truck_km"] = float(baseline_inputs.get("truck_km", 55000.0)) * (1.0 - sim_trans / 100.0)
-    simulated_inputs["car_km"] = float(baseline_inputs.get("car_km", 18000.0)) * (1.0 - sim_trans / 100.0)
-    simulated_inputs["commute_km"] = float(baseline_inputs.get("commute_km", 75000.0)) * (1.0 - sim_trans * 0.5 / 100.0)
+    simulated_inputs["electricity_kwh"] = safe_float(baseline_inputs.get("electricity_kwh"), 350000.0) * (1.0 - sim_elec / 100.0)
+    simulated_inputs["renewable_pct"] = safe_float(sim_renew, 0.0)
+    simulated_inputs["diesel_liters"] = safe_float(baseline_inputs.get("diesel_liters"), 12000.0) * (1.0 - sim_fuel / 100.0)
+    simulated_inputs["petrol_liters"] = safe_float(baseline_inputs.get("petrol_liters"), 4500.0) * (1.0 - sim_fuel / 100.0)
+    simulated_inputs["gas_m3"] = safe_float(baseline_inputs.get("gas_m3"), 32000.0) * (1.0 - sim_fuel / 100.0)
+    simulated_inputs["truck_km"] = safe_float(baseline_inputs.get("truck_km"), 55000.0) * (1.0 - sim_trans / 100.0)
+    simulated_inputs["car_km"] = safe_float(baseline_inputs.get("car_km"), 18000.0) * (1.0 - sim_trans / 100.0)
+    simulated_inputs["commute_km"] = safe_float(baseline_inputs.get("commute_km"), 75000.0) * (1.0 - sim_trans * 0.5 / 100.0)
     
-    simulated_inputs["organic_waste_kg"] = float(baseline_inputs.get("organic_waste_kg", 24000.0)) * (1.0 - sim_waste / 100.0)
-    simulated_inputs["plastic_waste_kg"] = float(baseline_inputs.get("plastic_waste_kg", 16000.0)) * (1.0 - sim_waste / 100.0)
-    simulated_inputs["metal_waste_kg"] = float(baseline_inputs.get("metal_waste_kg", 8500.0)) * (1.0 - sim_waste / 100.0)
-    simulated_inputs["paper_waste_kg"] = float(baseline_inputs.get("paper_waste_kg", 14000.0)) * (1.0 - sim_waste / 100.0)
-    simulated_inputs["hazardous_waste_kg"] = float(baseline_inputs.get("hazardous_waste_kg", 1200.0)) * (1.0 - sim_waste * 0.8 / 100.0)
+    simulated_inputs["organic_waste_kg"] = safe_float(baseline_inputs.get("organic_waste_kg"), 24000.0) * (1.0 - sim_waste / 100.0)
+    simulated_inputs["plastic_waste_kg"] = safe_float(baseline_inputs.get("plastic_waste_kg"), 16000.0) * (1.0 - sim_waste / 100.0)
+    simulated_inputs["metal_waste_kg"] = safe_float(baseline_inputs.get("metal_waste_kg"), 8500.0) * (1.0 - sim_waste / 100.0)
+    simulated_inputs["paper_waste_kg"] = safe_float(baseline_inputs.get("paper_waste_kg"), 14000.0) * (1.0 - sim_waste / 100.0)
+    simulated_inputs["hazardous_waste_kg"] = safe_float(baseline_inputs.get("hazardous_waste_kg"), 1200.0) * (1.0 - sim_waste * 0.8 / 100.0)
 
-    simulated_inputs["water_m3"] = float(baseline_inputs.get("water_m3", 6400.0)) * (1.0 - sim_water / 100.0)
-    simulated_inputs["wastewater_m3"] = float(baseline_inputs.get("wastewater_m3", 5200.0)) * (1.0 - sim_water / 100.0)
+    simulated_inputs["water_m3"] = safe_float(baseline_inputs.get("water_m3"), 6400.0) * (1.0 - sim_water / 100.0)
+    simulated_inputs["wastewater_m3"] = safe_float(baseline_inputs.get("wastewater_m3"), 5200.0) * (1.0 - sim_water / 100.0)
 
     prod_factor = 1.0 + (sim_prod / 100.0)
-    simulated_inputs["production_units"] = float(baseline_inputs.get("production_units", 150000.0)) * prod_factor
+    simulated_inputs["production_units"] = safe_float(baseline_inputs.get("production_units"), 150000.0) * prod_factor
 
     sim_res = calculate_detailed_emissions(simulated_inputs)
 

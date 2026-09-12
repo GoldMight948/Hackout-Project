@@ -9,7 +9,7 @@ Includes inline benchmark validation, verified industry presets, source help gui
 import streamlit as st
 from database.db_manager import save_emissions_assessment
 from components.data_presets import DEMO_BUSINESSES
-from components.calculations import calculate_detailed_emissions, calculate_emissions, INDUSTRY_BENCHMARKS
+from components.calculations import calculate_detailed_emissions, safe_float, calculate_emissions, INDUSTRY_BENCHMARKS
 from components.auth import is_demo_session
 from components.icons import (
     feather_icon, render_icon_heading, COLOR_SECONDARY,
@@ -180,32 +180,32 @@ def render_data_entry_view():
             # ─────────────────────────────────────────────────────────────
             # DETAILED MODE: Granular 5 Pillars + Carbon Credits
             # ─────────────────────────────────────────────────────────────
-            def_elec = float(inputs.get("electricity_kwh", inputs.get("electricity", 350000.0)))
-            def_renew = float(inputs.get("renewable_pct", 15.0))
-            def_diesel = float(inputs.get("diesel_liters", inputs.get("fuel", 12000.0)))
-            def_petrol = float(inputs.get("petrol_liters", 4500.0))
-            def_gas = float(inputs.get("gas_m3", 32000.0))
+            def_elec = safe_float(inputs.get("electricity_kwh") if inputs.get("electricity_kwh") is not None else inputs.get("electricity"), 350000.0)
+            def_renew = safe_float(inputs.get("renewable_pct"), 15.0)
+            def_diesel = safe_float(inputs.get("diesel_liters") if inputs.get("diesel_liters") is not None else inputs.get("fuel"), 12000.0)
+            def_petrol = safe_float(inputs.get("petrol_liters"), 4500.0)
+            def_gas = safe_float(inputs.get("gas_m3"), 32000.0)
 
-            def_truck = float(inputs.get("truck_km", inputs.get("transport", 55000.0)))
-            def_car = float(inputs.get("car_km", 18000.0))
-            def_commute = float(inputs.get("commute_km", 75000.0))
-            def_vehs = int(inputs.get("delivery_vehicles", 6))
+            def_truck = safe_float(inputs.get("truck_km") if inputs.get("truck_km") is not None else inputs.get("transport"), 55000.0)
+            def_car = safe_float(inputs.get("car_km"), 18000.0)
+            def_commute = safe_float(inputs.get("commute_km"), 75000.0)
+            def_vehs = int(safe_float(inputs.get("delivery_vehicles"), 6))
 
-            def_org_waste = float(inputs.get("organic_waste_kg", inputs.get("waste", 24000.0)))
-            def_plas_waste = float(inputs.get("plastic_waste_kg", 16000.0))
-            def_met_waste = float(inputs.get("metal_waste_kg", 8500.0))
-            def_pap_waste = float(inputs.get("paper_waste_kg", 14000.0))
-            def_haz_waste = float(inputs.get("hazardous_waste_kg", 1200.0))
+            def_org_waste = safe_float(inputs.get("organic_waste_kg") if inputs.get("organic_waste_kg") is not None else inputs.get("waste"), 24000.0)
+            def_plas_waste = safe_float(inputs.get("plastic_waste_kg"), 16000.0)
+            def_met_waste = safe_float(inputs.get("metal_waste_kg"), 8500.0)
+            def_pap_waste = safe_float(inputs.get("paper_waste_kg"), 14000.0)
+            def_haz_waste = safe_float(inputs.get("hazardous_waste_kg"), 1200.0)
 
-            def_water = float(inputs.get("water_m3", 6400.0))
-            def_wastewater = float(inputs.get("wastewater_m3", 5200.0))
+            def_water = safe_float(inputs.get("water_m3"), 6400.0)
+            def_wastewater = safe_float(inputs.get("wastewater_m3"), 5200.0)
 
-            def_raw_mat = float(inputs.get("raw_material_tonnes", 380.0))
-            def_prod_qty = float(inputs.get("production_units", 150000.0))
-            def_mach_hours = float(inputs.get("machine_hours", inputs.get("machine_running_hours", 3200.0)))
+            def_raw_mat = safe_float(inputs.get("raw_material_tonnes"), 380.0)
+            def_prod_qty = safe_float(inputs.get("production_units"), 150000.0)
+            def_mach_hours = safe_float(inputs.get("machine_hours") if inputs.get("machine_hours") is not None else inputs.get("machine_running_hours"), 3200.0)
 
-            def_credits = float(inputs.get("total_credits") or inputs.get("total_carbon_credits", 250.0))
-            def_price = float(inputs.get("credit_price") or inputs.get("carbon_credit_price", 2905.0))
+            def_credits = safe_float(inputs.get("total_credits") if inputs.get("total_credits") is not None else inputs.get("total_carbon_credits"), 250.0)
+            def_price = safe_float(inputs.get("credit_price") if inputs.get("credit_price") is not None else inputs.get("carbon_credit_price"), 2905.0)
 
             # Pillar 1: Energy
             st.markdown(f"<div style='font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center;'>{feather_icon('zap', color=COLOR_WARNING, size=18, margin_right=6)} 1. Energy & Thermal Fuels</div>", unsafe_allow_html=True)

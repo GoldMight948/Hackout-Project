@@ -12,6 +12,19 @@ from typing import Dict, List, Optional, Any
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "emissions_app.db")
 
+def safe_float(val: Any, default: float = 0.0) -> float:
+    """Safely converts a value to float, handling None, empty strings, NaN, and invalid types."""
+    if val is None or val == "":
+        return float(default)
+    try:
+        f = float(val)
+        import math
+        if math.isnan(f):
+            return float(default)
+        return f
+    except (ValueError, TypeError):
+        return float(default)
+
 def get_db_connection():
     """Returns a thread-safe connection to the SQLite database with Row factory."""
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
@@ -412,32 +425,32 @@ def save_emissions_assessment(user_email: str, data: Dict[str, Any], is_demo: Op
         )
     """, (
         user_email.lower().strip(),
-        int(data.get("period_year", 2025)),
-        float(data.get("electricity_kwh", data.get("electricity", 0))),
-        float(data.get("renewable_pct", 0)),
-        float(data.get("diesel_liters", 0)),
-        float(data.get("petrol_liters", 0)),
-        float(data.get("gas_m3", 0)),
-        float(data.get("truck_km", data.get("transport", 0))),
-        float(data.get("car_km", 0)),
-        float(data.get("commute_km", 0)),
-        int(data.get("delivery_vehicles", 0)),
-        float(data.get("organic_waste_kg", 0)),
-        float(data.get("plastic_waste_kg", 0)),
-        float(data.get("metal_waste_kg", 0)),
-        float(data.get("paper_waste_kg", 0)),
-        float(data.get("hazardous_waste_kg", 0)),
-        float(data.get("water_m3", 0)),
-        float(data.get("wastewater_m3", 0)),
-        float(data.get("raw_material_tonnes", 0)),
-        float(data.get("production_units", 0)),
-        float(data.get("machine_hours", data.get("machine_running_hours", 0))),
-        float(data.get("total_credits", 0)),
-        float(data.get("credit_price", 2905.0)),
-        float(data.get("current_balance", 0)),
-        float(data.get("total_co2", 0)),
-        float(data.get("total_cost", 0)),
-        float(data.get("sustainability_score", 50)),
+        int(safe_float(data.get("period_year"), 2025)),
+        safe_float(data.get("electricity_kwh") if data.get("electricity_kwh") is not None else data.get("electricity"), 0.0),
+        safe_float(data.get("renewable_pct"), 0.0),
+        safe_float(data.get("diesel_liters"), 0.0),
+        safe_float(data.get("petrol_liters"), 0.0),
+        safe_float(data.get("gas_m3"), 0.0),
+        safe_float(data.get("truck_km") if data.get("truck_km") is not None else data.get("transport"), 0.0),
+        safe_float(data.get("car_km"), 0.0),
+        safe_float(data.get("commute_km"), 0.0),
+        int(safe_float(data.get("delivery_vehicles"), 0)),
+        safe_float(data.get("organic_waste_kg"), 0.0),
+        safe_float(data.get("plastic_waste_kg"), 0.0),
+        safe_float(data.get("metal_waste_kg"), 0.0),
+        safe_float(data.get("paper_waste_kg"), 0.0),
+        safe_float(data.get("hazardous_waste_kg"), 0.0),
+        safe_float(data.get("water_m3"), 0.0),
+        safe_float(data.get("wastewater_m3"), 0.0),
+        safe_float(data.get("raw_material_tonnes"), 0.0),
+        safe_float(data.get("production_units"), 0.0),
+        safe_float(data.get("machine_hours") if data.get("machine_hours") is not None else data.get("machine_running_hours"), 0.0),
+        safe_float(data.get("total_credits"), 0.0),
+        safe_float(data.get("credit_price"), 2905.0),
+        safe_float(data.get("current_balance"), 0.0),
+        safe_float(data.get("total_co2"), 0.0),
+        safe_float(data.get("total_cost"), 0.0),
+        safe_float(data.get("sustainability_score"), 50.0),
         int(is_demo)
     ))
     record_id = cursor.lastrowid
@@ -734,10 +747,10 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
         "commute_km": float(latest.get("commute_km", 0.0)),
         "delivery_vehicles": int(latest.get("delivery_vehicles", 2)),
         "water_m3": annualize_field("water_m3", 1200.0),
-        "wastewater_m3": float(latest.get("wastewater_m3", float(latest.get("water_m3", 1200.0)) * 0.85)),
-        "raw_material_tonnes": float(latest.get("raw_material_tonnes", 150.0)),
+        "wastewater_m3": safe_float(latest.get("wastewater_m3"), safe_float(latest.get("water_m3"), 1200.0) * 0.85),
+        "raw_material_tonnes": safe_float(latest.get("raw_material_tonnes"), 150.0),
         "production_units": annualize_field("production_units", 25000.0),
-        "machine_hours": float(latest.get("machine_hours", 2200.0)),
+        "machine_hours": safe_float(latest.get("machine_hours"), 2200.0),
         "total_credits": total_credits,
         "credit_price": credit_price
     }

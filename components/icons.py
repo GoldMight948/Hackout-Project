@@ -208,15 +208,13 @@ def render_icon_heading(
     }
     f_size = font_sizes.get(level, "1.85rem")
 
-    return f"""
-    <div style="margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; flex-wrap: wrap;">
-            <{level} style="font-size: {f_size}; font-weight: 800; margin: 0; display: inline-flex; align-items: center; letter-spacing: -0.01em;">
-                {icon_svg}
-                <span>{title_text}</span>
-            </{level}>
-            {badge_html}
-        </div>
-        {subtitle_html}
-    </div>
-    """
+    return (
+        f'<div style="margin-bottom: 20px;">'
+        f'<div style="display: flex; align-items: center; flex-wrap: wrap;">'
+        f'<{level} style="font-size: {f_size}; font-weight: 800; margin: 0; display: inline-flex; align-items: center; letter-spacing: -0.01em;">'
+        f'{icon_svg}<span>{title_text}</span>'
+        f'</{level}>{badge_html}'
+        f'</div>'
+        f'{subtitle_html}'
+        f'</div>'
+    )
