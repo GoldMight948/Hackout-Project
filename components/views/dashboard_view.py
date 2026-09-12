@@ -1,219 +1,397 @@
 """
-Step 3: Emissions Dashboard View.
-Strictly adheres to the Dashboard Checklist:
-1. Headline number (Total tonnes CO2/yr)
-2. Emissions breakdown chart (Donut/pie)
-3. Category breakdown (numeric shares & tonnes)
-4. Leak-point ranking (worst to least)
-5. Cost equivalent ($/year estimated utility & operational impact)
-6. Emissions per unit produced (efficiency metric)
-7. Entry point into each leak point (routes directly to suggestions)
-8. Visual priority tags (Very High, High, Medium, Low)
+Step 5: Executive Dashboard View.
+Delivers a modern SaaS analytics interface (similar to Microsoft Power BI & Tableau).
+Includes Top KPI cards, Gauge chart, Donut chart, Pie chart, Bar chart,
+Stacked Bar chart, Line chart, Area chart, and quick links to Analytics.
 """
 
 import streamlit as st
 import plotly.graph_objects as go
-from components.calculations import calculate_emissions, CATEGORY_METADATA
+import plotly.express as px
+import pandas as pd
+from components.calculations import calculate_detailed_emissions
+from components.ml_forecast import generate_monthly_timeseries, forecast_emissions_ml
 
 def render_dashboard_view():
-    # Retrieve or compute emissions results
+    """Renders executive KPI cards and core Plotly visualizations."""
     if "emissions_results" not in st.session_state or st.session_state["emissions_results"] is None:
         inputs = st.session_state.get("form_inputs", {})
         if not inputs:
-            st.warning("No data found. Please complete the data entry form first.")
-            if st.button("Go to Data Entry"):
-                st.session_state["current_step"] = 2
+            st.warning("No data found. Please complete Setup or load a demo dataset.")
+            if st.button("Go to Setup"):
+                st.session_state["current_step"] = 3
                 st.rerun()
             return
-        st.session_state["emissions_results"] = calculate_emissions(inputs)
+        st.session_state["emissions_results"] = calculate_detailed_emissions(inputs)
 
-    results = st.session_state["emissions_results"]
-    total_co2 = results["total_co2"]
-    total_cost = results["total_cost"]
-    ranked_cats = results["ranked_categories"]
-    top_leak = results.get("top_leak")
-    per_unit = results.get("emissions_per_unit")
-    business_name = st.session_state.get("form_inputs", {}).get("business_name", "Your Enterprise")
+    res = st.session_state["emissions_results"]
+    user = st.session_state.get("current_user", {})
+    comp_name = user.get("company_name", res.get("raw_inputs", {}).get("business_name", "Enterprise Facility"))
+    theme_mode = st.session_state.get("theme_mode", "light")
+    chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
 
-    # Header title
+    # Header section
     st.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
             <div>
-                <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #059669; font-weight: 700;">
-                    Emissions Diagnosis & Leak Ranking
+                <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+                    Executive Overview & Carbon Intelligence
                 </span>
-                <h2 style="font-size: 1.8rem; font-weight: 800; color: #0F172A; margin: 4px 0 0 0;">
-                    {business_name} Footprint Overview
-                </h2>
+                <h1 style="font-size: 2.1rem; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em;">
+                    {comp_name} Carbon Dashboard
+                </h1>
             </div>
-            <div>
-                <span style="background: #F1F5F9; color: #475569; padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;">
-                    📅 12-Month Operational Period
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;">
+                    📅 12-Month Compliance Period
+                </span>
+                <span class="{'badge-low' if not res['is_deficit'] else 'badge-critical'}">
+                    {res['net_carbon_status']}
                 </span>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # 1. Headline Number & 5. Cost Equivalent & 6. Emissions Per Unit Produced
-    col_headline, col_cost, col_unit = st.columns([1.6, 1.2, 1.2], gap="medium")
-
-    with col_headline:
+    # Top 7 KPIs Cards
+    k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
+    
+    with k1:
         st.markdown(f"""
-            <div class="headline-card">
-                <div class="headline-title">1. Total Annual Footprint</div>
-                <div class="headline-number">{total_co2:,.1f} <span style="font-size: 1.2rem; font-weight: 500; color: #A7F3D0;">tonnes CO₂e</span></div>
-                <div class="headline-subtitle">
-                    Equivalent to driving ~{int(total_co2 * 5800):,} km in an average gasoline car.
-                </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Total Emissions</div>
+                <div class="kpi-value">{res['total_co2']:,.1f}</div>
+                <div class="kpi-subtext">tonnes CO₂e / yr</div>
             </div>
         """, unsafe_allow_html=True)
 
-    with col_cost:
+    with k2:
         st.markdown(f"""
-            <div class="clean-card" style="height: 100%; border-top: 4px solid #F59E0B;">
-                <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B; font-weight: 700; margin-bottom: 6px;">
-                    5. Cost Equivalent
-                </div>
-                <div style="font-size: 2.1rem; font-weight: 800; color: #0F172A; line-height: 1.1; margin-bottom: 6px;">
-                    ${total_cost:,.0f} <span style="font-size: 0.9rem; font-weight: 500; color: #64748B;">/ yr</span>
-                </div>
-                <p style="font-size: 0.82rem; color: #64748B; margin: 0; line-height: 1.4;">
-                    Estimated annual utility, fuel, and disposal expenses contributing to these emissions.
-                </p>
+            <div class="kpi-card info">
+                <div class="kpi-title">Govt Credits</div>
+                <div class="kpi-value">{res['govt_credits']:,.0f}</div>
+                <div class="kpi-subtext">credits allocated</div>
             </div>
         """, unsafe_allow_html=True)
 
-    with col_unit:
-        unit_text = f"{per_unit['kg_co2_per_unit']} kg CO₂" if per_unit else "Not specified"
-        unit_sub = f"Across {int(per_unit['units']):,} units produced" if per_unit else "Add units in data entry"
+    with k3:
         st.markdown(f"""
-            <div class="clean-card" style="height: 100%; border-top: 4px solid #10B981;">
-                <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B; font-weight: 700; margin-bottom: 6px;">
-                    6. Emissions Intensity
+            <div class="kpi-card warning">
+                <div class="kpi-title">Credits Used</div>
+                <div class="kpi-value">{res['credits_used']:,.1f}</div>
+                <div class="kpi-subtext">1 credit = 1 t CO₂</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with k4:
+        deficit_class = "deficit" if res['is_deficit'] else "low"
+        st.markdown(f"""
+            <div class="kpi-card {deficit_class}">
+                <div class="kpi-title">Credit Deficit</div>
+                <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#10B981'};">
+                    {res['credits_required']:,.1f}
                 </div>
-                <div style="font-size: 2.1rem; font-weight: 800; color: #0F172A; line-height: 1.1; margin-bottom: 6px;">
-                    {unit_text}
-                </div>
-                <p style="font-size: 0.82rem; color: #64748B; margin: 0; line-height: 1.4;">
-                    {unit_sub} — key efficiency metric to track as you scale.
-                </p>
+                <div class="kpi-subtext">{'required to buy' if res['is_deficit'] else 'no deficit'}</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with k5:
+        st.markdown(f"""
+            <div class="kpi-card">
+                <div class="kpi-title">Remaining Credits</div>
+                <div class="kpi-value">{res['credits_remaining']:,.1f}</div>
+                <div class="kpi-subtext">surplus balance</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with k6:
+        st.markdown(f"""
+            <div class="kpi-card {'deficit' if res['compliance_cost'] > 0 else ''}">
+                <div class="kpi-title">Compliance Cost</div>
+                <div class="kpi-value">${res['compliance_cost']:,.0f}</div>
+                <div class="kpi-subtext">@ ${res['credit_price']:.0f}/tonne</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with k7:
+        score_val = res['sustainability_score']
+        score_color = "#10B981" if score_val >= 70 else ("#F59E0B" if score_val >= 45 else "#EF4444")
+        st.markdown(f"""
+            <div class="kpi-card">
+                <div class="kpi-title">Eco Score</div>
+                <div class="kpi-value" style="color: {score_color};">{score_val:.0f}</div>
+                <div class="kpi-subtext">scale 0–100</div>
             </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
 
-    # 2. Emissions Breakdown Chart & 3. Numeric Breakdown
-    col_chart, col_ranks = st.columns([1.15, 1.35], gap="large")
+    # Monthly Timeseries Data for Visuals
+    monthly_df = generate_monthly_timeseries(res["pillar_co2"])
 
-    with col_chart:
-        st.markdown("#### 2. Emissions Breakdown")
-        
-        # Prepare Plotly Donut Chart
-        labels = [cat["label"] for cat in ranked_cats]
-        values = [cat["co2_tonnes"] for cat in ranked_cats]
-        icons = [cat["icon"] for cat in ranked_cats]
-        # Colors corresponding to categories
-        cat_colors = [cat["priority_color"] for cat in ranked_cats]
+    # Row 1 Charts: Gauge Chart (Sustainability Score) & Donut Chart (Carbon Credits) & Pie Chart (Pillars)
+    col_gauge, col_donut, col_pie = st.columns([1, 1, 1], gap="medium")
 
-        fig = go.Figure(data=[
-            go.Pie(
-                labels=labels,
-                values=values,
-                hole=0.56,
-                marker=dict(colors=cat_colors, line=dict(color='#FFFFFF', width=2)),
-                textinfo='label+percent',
-                textposition='inside',
-                hoverinfo='label+value+percent',
-                hovertemplate='<b>%{label}</b><br>Emissions: %{value} t CO₂<br>Share: %{percent}<extra></extra>'
-            )
-        ])
-        fig.update_layout(
-            margin=dict(t=10, b=10, l=10, r=10),
-            height=300,
+    with col_gauge:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Overall Sustainability Score (0–100)</div>
+                <div class="saas-card-subtitle">Multi-factor operational green efficiency index</div>
+        """, unsafe_allow_html=True)
+
+        fig_gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=res["sustainability_score"],
+            number={'suffix': "/100", 'font': {'size': 28, 'color': chart_text_color}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': chart_text_color},
+                'bar': {'color': "#10B981", 'thickness': 0.28},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 1,
+                'bordercolor': "var(--border-color)",
+                'steps': [
+                    {'range': [0, 45], 'color': 'rgba(239, 68, 68, 0.25)'},
+                    {'range': [45, 70], 'color': 'rgba(245, 158, 11, 0.25)'},
+                    {'range': [70, 100], 'color': 'rgba(16, 185, 129, 0.25)'}
+                ],
+                'threshold': {
+                    'line': {'color': "#065F46", 'width': 4},
+                    'thickness': 0.75,
+                    'value': 85
+                }
+            }
+        ))
+        fig_gauge.update_layout(
+            height=240,
+            margin=dict(l=20, r=20, t=20, b=10),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font={'color': chart_text_color}
+        )
+        st.plotly_chart(fig_gauge, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with col_donut:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Carbon Credits: Used vs. Remaining</div>
+                <div class="saas-card-subtitle">Statutory compliance balance</div>
+        """, unsafe_allow_html=True)
+
+        donut_labels = ["Credits Used", "Credits Remaining"]
+        donut_vals = [res["credits_used"], res["credits_remaining"]]
+        donut_colors = ["#F97316", "#10B981"] if not res["is_deficit"] else ["#EF4444", "#3B82F6"]
+
+        fig_donut = go.Figure(data=[go.Pie(
+            labels=donut_labels,
+            values=donut_vals,
+            hole=0.62,
+            marker=dict(colors=donut_colors, line=dict(color='var(--bg-card)', width=2)),
+            textinfo='label+percent',
+            textposition='inside',
+            hovertemplate='<b>%{label}</b><br>%{value:,.1f} tonnes (%{percent})<extra></extra>'
+        )])
+        fig_donut.update_layout(
+            height=240,
+            margin=dict(l=10, r=10, t=10, b=10),
             showlegend=False,
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            annotations=[dict(text=f'<b>{total_co2} t</b><br>Total', x=0.5, y=0.5, font_size=15, showarrow=False)]
+            annotations=[dict(
+                text=f"<b>{res['govt_credits']:,.0f} t</b><br>Quota",
+                x=0.5, y=0.5, font_size=13, showarrow=False, font_color=chart_text_color
+            )]
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig_donut, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        # 3. Category Breakdown (numeric shares)
-        st.markdown("##### 3. Exact Category Share")
-        for cat in ranked_cats:
-            st.markdown(f"""
-                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding: 4px 0; border-bottom: 1px dotted #E2E8F0;">
-                    <span>{cat['icon']} <strong>{cat['label']}</strong></span>
-                    <span><strong>{cat['share_pct']}%</strong> &bull; {cat['co2_tonnes']} t &bull; ${cat['cost_dollars']:,.0f}</span>
-                </div>
-            """, unsafe_allow_html=True)
-
-    # 4. Leak-Point Ranking & 7. Entry Point into each leak point & 8. Visual Priority Tags
-    with col_ranks:
-        st.markdown("#### 4. Ranked Leak Points (Worst to Least)")
-        st.caption("Click any leak category below to jump straight to targeted green fixes:")
-
-        for cat in ranked_cats:
-            priority_class = f"badge-priority-{cat['priority'].lower().replace(' ', '-')}"
-            
-            # Row container with styling
-            st.markdown(f"""
-                <div class="leak-row">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="leak-rank-badge" style="background: {'#FEE2E2' if cat['rank'] == 1 else '#F1F5F9'}; color: {'#DC2626' if cat['rank'] == 1 else '#475569'};">
-                            #{cat['rank']}
-                        </div>
-                        <div>
-                            <div style="font-weight: 700; font-size: 1rem; color: #0F172A;">
-                                {cat['icon']} {cat['label']}
-                            </div>
-                            <div style="font-size: 0.8rem; color: #64748B;">
-                                {cat['co2_tonnes']} tonnes CO₂ ({cat['share_pct']}%) &bull; est. ${cat['cost_dollars']:,.0f}/yr
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="{priority_class}">8. {cat['priority']}</span>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-
-            # 7. Entry Point button for each leak point
-            btn_label = f"Inspect #{cat['rank']} {cat['label']} Fixes →" if cat['rank'] == 1 else f"View {cat['label']} Fixes →"
-            if st.button(btn_label, key=f"route_leak_{cat['category']}", use_container_width=True):
-                st.session_state["selected_leak_category"] = cat["category"]
-                st.session_state["current_step"] = 4 # Navigate to recommendations
-                st.rerun()
-
-            st.markdown("<div style='margin-bottom: 6px;'></div>", unsafe_allow_html=True)
-
-    st.markdown("<hr style='margin: 30px 0 20px 0; border: none; border-top: 1px solid #E2E8F0;'/>", unsafe_allow_html=True)
-
-    # Top leak callout banner
-    if top_leak:
-        st.markdown(f"""
-            <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 1.6rem;">🎯</span>
-                    <div>
-                        <strong style="color: #92400E; font-size: 0.95rem;">Primary Leak Diagnosis: {top_leak['label']}</strong>
-                        <div style="color: #B45309; font-size: 0.85rem;">
-                            Accounts for <strong>{top_leak['share_pct']}%</strong> of your total emissions and ~${top_leak['cost_dollars']:,.0f}/year. Prioritizing fixes here will give your business the highest return.
-                        </div>
-                    </div>
-                </div>
-            </div>
+    with col_pie:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Emission Contribution by Pillar</div>
+                <div class="saas-card-subtitle">Operational source distribution</div>
         """, unsafe_allow_html=True)
 
-    # Navigation buttons
-    col_nav_left, col_nav_right = st.columns([1, 1])
-    with col_nav_left:
-        if st.button("← Back to Data Entry", key="dash_back"):
-            st.session_state["current_step"] = 2
-            st.rerun()
+        pie_labels = list(res["pillar_co2"].keys())
+        pie_values = list(res["pillar_co2"].values())
+        pillar_palette = ["#F59E0B", "#EF4444", "#F97316", "#10B981", "#06B6D4", "#6366F1"]
 
-    with col_nav_right:
-        if st.button("Proceed to Recommendations & Fixes →", type="primary", key="dash_next", use_container_width=True):
-            if "selected_leak_category" not in st.session_state or not st.session_state["selected_leak_category"]:
-                st.session_state["selected_leak_category"] = top_leak["category"] if top_leak else "electricity"
-            st.session_state["current_step"] = 4
+        fig_pie = go.Figure(data=[go.Pie(
+            labels=pie_labels,
+            values=pie_values,
+            marker=dict(colors=pillar_palette, line=dict(color='var(--bg-card)', width=2)),
+            textinfo='percent',
+            hovertemplate='<b>%{label}</b><br>Emissions: %{value:,.1f} t CO₂<br>Share: %{percent}<extra></extra>'
+        )])
+        fig_pie.update_layout(
+            height=240,
+            margin=dict(l=10, r=10, t=10, b=10),
+            legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.02, font=dict(size=10, color=chart_text_color)),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        st.plotly_chart(fig_pie, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
+
+    # Row 2 Charts: Bar Chart (Top Categories) & Stacked Bar Chart (Monthly Trajectory)
+    col_bar, col_stacked = st.columns([1.1, 1.3], gap="large")
+
+    with col_bar:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Top Emission Categories (tonnes CO₂e)</div>
+                <div class="saas-card-subtitle">Highest volume industrial sources</div>
+        """, unsafe_allow_html=True)
+
+        sorted_cats = sorted(res["pillar_co2"].items(), key=lambda x: x[1], reverse=True)
+        cat_names = [k for k, v in sorted_cats]
+        cat_vals = [v for k, v in sorted_cats]
+
+        fig_bar = go.Figure(data=[go.Bar(
+            x=cat_vals,
+            y=cat_names,
+            orientation='h',
+            marker=dict(
+                color=cat_vals,
+                colorscale=[[0, '#10B981'], [0.5, '#F59E0B'], [1.0, '#DC2626']],
+                line=dict(width=0)
+            ),
+            text=[f"{v:,.1f} t" for v in cat_vals],
+            textposition='auto',
+            hovertemplate='<b>%{y}</b>: %{x:,.1f} tonnes CO₂e<extra></extra>'
+        )])
+        fig_bar.update_layout(
+            height=290,
+            margin=dict(l=10, r=20, t=10, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color)),
+            yaxis=dict(autorange="reversed", font=dict(color=chart_text_color))
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with col_stacked:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Stacked 12-Month Emission Breakdown</div>
+                <div class="saas-card-subtitle">Seasonal monthly operational trajectory across all pillars</div>
+        """, unsafe_allow_html=True)
+
+        fig_stacked = go.Figure()
+        pillars = [c for c in monthly_df.columns if c not in ["Month", "Month_Num", "Total_Monthly_CO2"]]
+        palette = ["#F59E0B", "#EF4444", "#F97316", "#10B981", "#06B6D4", "#6366F1"]
+
+        for idx, pillar in enumerate(pillars):
+            fig_stacked.add_trace(go.Bar(
+                name=pillar,
+                x=monthly_df["Month"],
+                y=monthly_df[pillar],
+                marker_color=palette[idx % len(palette)],
+                hovertemplate=f'<b>{pillar}</b>: %{{y:,.1f}} t<extra></extra>'
+            ))
+
+        fig_stacked.update_layout(
+            barmode='stack',
+            height=290,
+            margin=dict(l=10, r=10, t=10, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(font=dict(color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+        )
+        st.plotly_chart(fig_stacked, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='margin-bottom: 24px;'></div>", unsafe_allow_html=True)
+
+    # Row 3 Charts: Line Chart (Trends) & Area Chart (Cumulative Carbon Footprint)
+    col_line, col_area = st.columns([1, 1], gap="large")
+
+    with col_line:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Emission Trends Over Months (Line Chart)</div>
+                <div class="saas-card-subtitle">Monthly profile with peak operational variance</div>
+        """, unsafe_allow_html=True)
+
+        fig_line = go.Figure()
+        fig_line.add_trace(go.Scatter(
+            x=monthly_df["Month"],
+            y=monthly_df["Total_Monthly_CO2"],
+            mode='lines+markers',
+            name='Total Monthly CO₂',
+            line=dict(color='#059669', width=3),
+            marker=dict(size=7, color='#10B981'),
+            hovertemplate='<b>%{x}</b>: %{y:,.1f} tonnes CO₂<extra></extra>'
+        ))
+        fig_line.update_layout(
+            height=260,
+            margin=dict(l=10, r=10, t=10, b=20),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(font=dict(color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+        )
+        st.plotly_chart(fig_line, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with col_area:
+        st.markdown("""
+            <div class="saas-card">
+                <div class="saas-card-title">Cumulative Carbon Footprint (Area Chart)</div>
+                <div class="saas-card-subtitle">Accrued compliance footprint against carbon allowance</div>
+        """, unsafe_allow_html=True)
+
+        cumulative_vals = monthly_df["Total_Monthly_CO2"].cumsum()
+        quota_runrate = [(res["govt_credits"] / 12.0) * (i + 1) for i in range(12)]
+
+        fig_area = go.Figure()
+        fig_area.add_trace(go.Scatter(
+            x=monthly_df["Month"],
+            y=cumulative_vals,
+            fill='tozeroy',
+            name='Cumulative Emitted',
+            line=dict(color='#3B82F6', width=2),
+            fillcolor='rgba(59, 130, 246, 0.2)',
+            hovertemplate='Cumulative: %{y:,.1f} t<extra></extra>'
+        ))
+        fig_area.add_trace(go.Scatter(
+            x=monthly_df["Month"],
+            y=quota_runrate,
+            mode='lines',
+            name='Credit Allocation Trajectory',
+            line=dict(color='#10B981', dash='dash', width=2),
+            hovertemplate='Quota Target: %{y:,.1f} t<extra></extra>'
+        ))
+        fig_area.update_layout(
+            height=260,
+            margin=dict(l=10, r=10, t=10, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(font=dict(color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+        )
+        st.plotly_chart(fig_area, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # Call-to-actions to Deep-Dive Analytics & Leak Points
+    st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
+    c_act1, c_act2, c_act3 = st.columns(3)
+    with c_act1:
+        if st.button("📊 View Deep-Dive Analytics (Sankey, Treemap, Heatmap) →", use_container_width=True):
+            st.session_state["nav_section"] = "analytics"
+            st.rerun()
+    with c_act2:
+        if st.button("🔥 Inspect Top 10 Emission Leak Points →", type="primary", use_container_width=True):
+            st.session_state["current_step"] = 6
+            st.session_state["nav_section"] = "leak_detection"
+            st.rerun()
+    with c_act3:
+        if st.button("🌍 Reconcile Carbon Credits & Marketplace →", use_container_width=True):
+            st.session_state["current_step"] = 7
+            st.session_state["nav_section"] = "carbon_credits"
             st.rerun()
