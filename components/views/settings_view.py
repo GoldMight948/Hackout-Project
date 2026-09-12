@@ -8,6 +8,7 @@ import streamlit as st
 from database.db_manager import update_user_profile, get_user_profile
 from components.auth import logout_user
 from components.calculations import EMISSION_FACTORS, COST_FACTORS, calculate_detailed_emissions
+from components.icons import feather_icon, render_icon_heading, COLOR_SECONDARY, COLOR_NEUTRAL, COLOR_SUCCESS
 
 def render_settings_view():
     """Renders Step 12 Settings screen."""
@@ -16,28 +17,29 @@ def render_settings_view():
     db_profile = get_user_profile(user_email) or user
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 12 — Platform Settings & Enterprise Configuration
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Configuration, Theming & Emission Factor Settings
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Update organization details, calibrate regional carbon market prices, or toggle between Light and Dark interface themes.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "settings",
+        "Configuration, Theming & Emission Factor Settings",
+        level="h2",
+        color=COLOR_SECONDARY,
+        subtitle="Update organization details, calibrate regional carbon market prices, or toggle between Light and Dark interface themes."
+    ), unsafe_allow_html=True)
 
     tab_theme, tab_profile, tab_factors, tab_account = st.tabs([
-        "🎨 Appearance & Theme", "🏢 Business Profile", "📐 Emission Factors & Pricing", "👤 Account & Role"
+        "Appearance & Theme", "Business Profile", "Emission Factors & Pricing", "Account & Role"
     ])
 
     # Tab 1: Appearance & Theme
     with tab_theme:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Interface Theme & Visual Contrast</div>
+                <div class="saas-card-title">{feather_icon('sun', color=COLOR_NEUTRAL, size=18)} Interface Theme & Visual Contrast</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                     Ensure high contrast and readability across daytime and evening environments:
                 </div>
@@ -49,8 +51,10 @@ def render_settings_view():
         with col_th1:
             st.markdown(f"""
                 <div style="padding: 16px; border: 2px solid {'#10B981' if current_theme == 'light' else 'var(--border-color)'}; border-radius: 12px; background: #FFFFFF; color: #0F172A;">
-                    <div style="font-weight: 700; font-size: 1.05rem;">☀️ Clean Light SaaS Mode</div>
-                    <div style="font-size: 0.85rem; color: #64748B; margin-top: 4px;">
+                    <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center;">
+                        {feather_icon('sun', color='#F59E0B', size=20)} <span>Clean Light SaaS Mode</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748B; margin-top: 6px;">
                         Optimized for well-lit office environments and executive presentations.
                     </div>
                 </div>
@@ -62,8 +66,10 @@ def render_settings_view():
         with col_th2:
             st.markdown(f"""
                 <div style="padding: 16px; border: 2px solid {'#10B981' if current_theme == 'dark' else 'var(--border-color)'}; border-radius: 12px; background: #0F172A; color: #F8FAFC;">
-                    <div style="font-weight: 700; font-size: 1.05rem;">🌙 High-Contrast Dark Mode</div>
-                    <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 4px;">
+                    <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center;">
+                        {feather_icon('moon', color='#818CF8', size=20)} <span>High-Contrast Dark Mode</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 6px;">
                         Deep navy glassmorphism with high-contrast emerald and amber accents.
                     </div>
                 </div>
@@ -76,9 +82,9 @@ def render_settings_view():
 
     # Tab 2: Business Profile
     with tab_profile:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Edit Company Information</div>
+                <div class="saas-card-title">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Edit Company Information</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                     Update your facility name, operational address, and industry taxonomy:
                 </div>
@@ -95,7 +101,7 @@ def render_settings_view():
                 e_state = st.text_input("State / Province", value=db_profile.get("state", "California"))
                 e_loc = st.text_input("Facility Plant Location", value=db_profile.get("location", "Plant #1"))
 
-            save_profile_btn = st.form_submit_button("Save Profile Changes 💾", type="primary", use_container_width=True)
+            save_profile_btn = st.form_submit_button("Save Profile Changes", type="primary", use_container_width=True)
             if save_profile_btn:
                 updates = {
                     "company_name": e_comp,
@@ -115,9 +121,9 @@ def render_settings_view():
 
     # Tab 3: Emission Factors & Carbon Price
     with tab_factors:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">GHG Protocol Emission Factors & Spot Carbon Price</div>
+                <div class="saas-card-title">{feather_icon('sliders', color=COLOR_NEUTRAL, size=18)} GHG Protocol Emission Factors & Spot Carbon Price</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                     Fine-tune regional emission coefficients (e.g. state grid intensity or localized fuel blends):
                 </div>
@@ -134,7 +140,7 @@ def render_settings_view():
                 f_plas = st.number_input("Plastic Waste Factor (t CO₂e/kg)", min_value=0.0001, max_value=0.01, value=float(EMISSION_FACTORS["waste_plastic"]), format="%.5f")
                 f_gas = st.number_input("Natural Gas Factor (t CO₂e/m³)", min_value=0.0001, max_value=0.01, value=float(EMISSION_FACTORS["natural_gas"]), format="%.5f")
 
-            save_factors_btn = st.form_submit_button("Update Emission Coefficients & Recalculate 📐", type="primary", use_container_width=True)
+            save_factors_btn = st.form_submit_button("Update Emission Coefficients & Recalculate", type="primary", use_container_width=True)
             if save_factors_btn:
                 EMISSION_FACTORS["electricity_grid"] = f_elec
                 EMISSION_FACTORS["diesel"] = f_diesel
@@ -145,7 +151,7 @@ def render_settings_view():
                 if "form_inputs" in st.session_state and st.session_state["form_inputs"]:
                     st.session_state["form_inputs"]["credit_price"] = f_price
                     st.session_state["emissions_results"] = calculate_detailed_emissions(st.session_state["form_inputs"])
-                st.success("✅ Emission factors and credit pricing updated! Baseline recalculated.")
+                st.success("Emission factors and credit pricing updated! Baseline recalculated.")
                 st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
@@ -154,7 +160,7 @@ def render_settings_view():
     with tab_account:
         st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">User Account & Permission Role</div>
+                <div class="saas-card-title">{feather_icon('shield', color=COLOR_NEUTRAL, size=18)} User Account & Permission Role</div>
                 <div style="margin-top: 10px; font-size: 0.9rem;">
                     <div>Signed in as: <strong>{db_profile.get('owner_name', 'User')}</strong> ({user_email})</div>
                     <div style="margin-top: 4px;">Assigned Role: <span class="badge-low">{db_profile.get('role', 'Admin')}</span></div>
@@ -165,7 +171,7 @@ def render_settings_view():
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);"/>
         """, unsafe_allow_html=True)
 
-        if st.button("🚪 Sign Out of Platform", key="settings_logout_btn", type="primary", use_container_width=True):
+        if st.button("Sign Out of Platform", key="settings_logout_btn", type="primary", use_container_width=True):
             logout_user()
 
         st.markdown("</div>", unsafe_allow_html=True)

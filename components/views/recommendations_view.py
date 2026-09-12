@@ -7,6 +7,7 @@ payback periods, difficulty ratings, circular benefits, and government incentive
 
 import streamlit as st
 from components.data_presets import AI_RECOMMENDATIONS
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_AMBER, COLOR_SECONDARY, COLOR_INFO
 
 def render_recommendations_view():
     """Renders Step 8 AI Decarbonization Recommendations."""
@@ -21,24 +22,25 @@ def render_recommendations_view():
     if "selected_action_recs" not in st.session_state:
         st.session_state["selected_action_recs"] = {"rec_led", "rec_insulation", "rec_route_opt", "rec_water_recycle"}
 
-    st.markdown(f"""
-        <div style="margin-bottom: 20px;">
+    st.markdown("""
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 8 — AI Recommendation Engine
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Actionable Decarbonization & Circular Interventions
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Targeting your primary operational leak hotspot: <strong>{highest_category}</strong> ({top_leak['share_pct'] if top_leak else 0}% of footprint).
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "lightbulb",
+        "Actionable Decarbonization & Circular Interventions",
+        level="h2",
+        color=COLOR_AMBER,
+        subtitle=f"Targeting your primary operational leak hotspot: {highest_category} ({top_leak['share_pct'] if top_leak else 0}% of footprint)."
+    ), unsafe_allow_html=True)
 
     # Filter & Search Controls
     c_search, c_filter_cat, c_filter_diff = st.columns([1.5, 1, 1], gap="medium")
     with c_search:
-        search_query = st.text_input("🔍 Search Interventions", placeholder="e.g. Solar, LED, Insulation, VFD, Water")
+        search_query = st.text_input("Search Interventions", placeholder="e.g. Solar, LED, Insulation, VFD, Water")
     with c_filter_cat:
         cat_filter = st.selectbox("Filter Category", ["All Categories", "Electricity", "Fuel", "Transport", "Water", "Manufacturing"])
     with c_filter_diff:
@@ -59,17 +61,27 @@ def render_recommendations_view():
 
     st.markdown(f"##### Displaying {len(filtered_recs)} Actionable AI Recommendations:")
 
+    cat_icon_map = {
+        "electricity": "zap",
+        "fuel": "droplet",
+        "transport": "truck",
+        "water": "droplet",
+        "manufacturing": "settings"
+    }
+
     for idx, rec in enumerate(filtered_recs):
         is_selected = rec["id"] in st.session_state["selected_action_recs"]
         diff_badge = "badge-low" if rec["difficulty"] == "Easy" else ("badge-medium" if rec["difficulty"] == "Medium" else "badge-critical")
+        rec_f_icon = cat_icon_map.get(rec["category"].lower(), "lightbulb")
+        card_icon = feather_icon(rec_f_icon, color="#10B981", size=16, margin_right=5)
         
         with st.container():
             st.markdown(f"""
                 <div class="saas-card" style="margin-bottom: 14px; border-left: 5px solid {'#10B981' if rec['difficulty'] == 'Easy' else ('#F59E0B' if rec['difficulty'] == 'Medium' else '#EF4444')};">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
                         <div>
-                            <span style="font-size: 0.78rem; font-weight: 700; color: #10B981; text-transform: uppercase;">
-                                {rec['icon']} {rec['category']} &bull; Impact: {rec['impact_level']}
+                            <span style="font-size: 0.78rem; font-weight: 700; color: #10B981; text-transform: uppercase; display: flex; align-items: center;">
+                                {card_icon} {rec['category']} &bull; Impact: {rec['impact_level']}
                             </span>
                             <div style="font-size: 1.15rem; font-weight: 800; margin-top: 4px; color: var(--text-primary);">
                                 {rec['title']}
@@ -84,23 +96,23 @@ def render_recommendations_view():
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; padding: 12px; background: var(--bg-subtle); border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.85rem;">
                         <div>
-                            <span style="color: var(--text-muted);">🌱 CO₂ Saved:</span><br/>
+                            <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('leaf', color=COLOR_SUCCESS, size=13, margin_right=4)} CO₂ Saved:</span>
                             <strong style="color: #10B981; font-size: 0.95rem;">-{rec['co2_saved_t']} t/yr ({rec['co2_saved_pct']}%)</strong>
                         </div>
                         <div>
-                            <span style="color: var(--text-muted);">💵 Est. Investment:</span><br/>
+                            <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('dollar-sign', color=COLOR_NEUTRAL, size=13, margin_right=4)} Est. Investment:</span>
                             <strong>{rec['cost_estimate']}</strong>
                         </div>
                         <div>
-                            <span style="color: var(--text-muted);">📈 Expected ROI:</span><br/>
+                            <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('trending-up', color=COLOR_SUCCESS, size=13, margin_right=4)} Expected ROI:</span>
                             <strong style="color: #2563EB;">+{rec['expected_roi']}%</strong>
                         </div>
                         <div>
-                            <span style="color: var(--text-muted);">⏱️ Payback Period:</span><br/>
+                            <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('calendar', color=COLOR_SECONDARY, size=13, margin_right=4)} Payback Period:</span>
                             <strong style="color: #059669;">{rec['payback_time']}</strong>
                         </div>
                         <div>
-                            <span style="color: var(--text-muted);">🏛️ Credits Preserved:</span><br/>
+                            <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('shield', color=COLOR_INFO, size=13, margin_right=4)} Credits Saved:</span>
                             <strong>+{rec['credits_saved']} credits</strong>
                         </div>
                     </div>

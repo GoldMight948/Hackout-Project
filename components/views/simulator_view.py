@@ -7,6 +7,7 @@ Instantly recalculates and updates KPIs, comparison charts, and carbon credit de
 import streamlit as st
 import plotly.graph_objects as go
 from components.calculations import calculate_detailed_emissions
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_AMBER, COLOR_ORANGE
 
 def render_simulator_view():
     """Renders Step 9 Before vs After Simulator."""
@@ -22,24 +23,26 @@ def render_simulator_view():
     chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 9 — Interactive What-If Scenario Simulator
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Before vs. After Decarbonization Sandbox
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Drag operational reduction sliders and renewable % targets below. Observe instant live updates to emissions, savings, and credit status.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "sliders",
+        "Before vs. After Decarbonization Sandbox",
+        level="h2",
+        color=COLOR_NEUTRAL,
+        subtitle="Drag operational reduction sliders and renewable % targets below. Observe instant live updates to emissions, savings, and credit status."
+    ), unsafe_allow_html=True)
 
     # Preset Simulation Buttons
-    st.markdown("""
+    sim_icon = feather_icon("sliders", color=COLOR_NEUTRAL, size=16, margin_right=6)
+    st.markdown(f"""
         <div class="saas-card" style="padding: 12px 18px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <span style="font-weight: 700; font-size: 0.9rem;">⚡ Quick Simulation Scenarios:</span>
+                <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">{sim_icon} Quick Simulation Scenarios:</span>
     """, unsafe_allow_html=True)
 
     c_s1, c_s2, c_s3 = st.columns(3)
@@ -76,7 +79,8 @@ def render_simulator_view():
     col_sliders, col_results = st.columns([1.1, 1.3], gap="large")
 
     with col_sliders:
-        st.markdown("#### 🎛️ Live Operational Sliders")
+        slider_icon = feather_icon("sliders", color=COLOR_NEUTRAL, size=20, margin_right=8)
+        st.markdown(f"<div style='display: flex; align-items: center; margin-bottom: 12px;'>{slider_icon} <h4 style='margin: 0;'>Live Operational Sliders</h4></div>", unsafe_allow_html=True)
 
         sim_elec = st.slider(
             "⚡ Electricity Efficiency Cut (%)", min_value=0, max_value=80,
@@ -158,7 +162,8 @@ def render_simulator_view():
     diff_cost = round(baseline_cost - sim_res["total_cost"], 0)
 
     with col_results:
-        st.markdown("#### 🎯 Projected Decarbonization Impact")
+        impact_icon = feather_icon("columns", color=COLOR_SUCCESS, size=20, margin_right=8)
+        st.markdown(f"<div style='display: flex; align-items: center; margin-bottom: 12px;'>{impact_icon} <h4 style='margin: 0;'>Projected Decarbonization Impact</h4></div>", unsafe_allow_html=True)
 
         # Metric cards
         m1, m2, m3 = st.columns(3)
@@ -200,8 +205,8 @@ def render_simulator_view():
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color=chart_text_color)),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(title="Tonnes CO₂e", font=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
+            xaxis=dict(tickfont=dict(color=chart_text_color)),
+            yaxis=dict(title=dict(text="Tonnes CO₂e", font=dict(color=chart_text_color)), tickfont=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
         )
         st.plotly_chart(fig_sim, use_container_width=True)
 

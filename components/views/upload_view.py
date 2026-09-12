@@ -1,14 +1,10 @@
-"""
-Step 4: Upload Existing Data & Interactive Data Editor View.
-Supports CSV & Excel file uploads, demo dataset loading, and live tabular editing with st.data_editor.
-"""
-
 import streamlit as st
 import pandas as pd
 import io
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
 from database.db_manager import save_emissions_assessment, log_audit
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_INFO
 
 def render_upload_view():
     """Renders Step 4 Upload & Data Editor screen."""
@@ -16,49 +12,51 @@ def render_upload_view():
     user_email = user.get("email", "guest@enterprise.com")
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 4 — Data Ingestion & Live Table Editor
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Upload Operational Spreadsheet or Use Demo Datasets
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Import existing utility records via CSV or Excel (.xlsx). You can also edit and fine-tune figures directly in the interactive grid below.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "upload",
+        "Upload Operational Spreadsheet or Use Demo Datasets",
+        level="h2",
+        color="#10B981",
+        subtitle="Import existing utility records via CSV or Excel (.xlsx). You can also edit and fine-tune figures directly in the interactive grid below."
+    ), unsafe_allow_html=True)
 
     # Demo Datasets Quick Switcher
-    st.markdown("""
+    folder_icon = feather_icon("box", color=COLOR_NEUTRAL, size=16, margin_right=6)
+    st.markdown(f"""
         <div class="saas-card" style="margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="font-weight: 700; font-size: 0.95rem;">📂 1-Click Load Calibrated Demo Industry Datasets:</span>
+                <span style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center;">{folder_icon} 1-Click Load Calibrated Demo Industry Datasets:</span>
                 <span class="badge-low">PRE-LOADED</span>
             </div>
     """, unsafe_allow_html=True)
 
     c_d1, c_d2, c_d3, c_d4 = st.columns(4)
     with c_d1:
-        if st.button("🥪 Food Processing Demo", key="upload_demo_food", use_container_width=True):
+        if st.button("Food Processing Demo", key="upload_demo_food", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
             st.session_state["emissions_results"] = calculate_detailed_emissions(st.session_state["form_inputs"])
             st.success("Loaded Food Processing dataset!")
             st.rerun()
     with c_d2:
-        if st.button("🏪 Retail Store Demo", key="upload_demo_retail", use_container_width=True):
+        if st.button("Retail Store Demo", key="upload_demo_retail", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
             st.session_state["emissions_results"] = calculate_detailed_emissions(st.session_state["form_inputs"])
             st.success("Loaded Retail Store dataset!")
             st.rerun()
     with c_d3:
-        if st.button("🚚 Logistics Company Demo", key="upload_demo_log", use_container_width=True):
+        if st.button("Logistics Company Demo", key="upload_demo_log", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
             st.session_state["emissions_results"] = calculate_detailed_emissions(st.session_state["form_inputs"])
             st.success("Loaded Logistics Fleet dataset!")
             st.rerun()
     with c_d4:
-        if st.button("🏭 Manufacturing Plant Demo", key="upload_demo_mfg", use_container_width=True):
+        if st.button("Manufacturing Plant Demo", key="upload_demo_mfg", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
             st.session_state["emissions_results"] = calculate_detailed_emissions(st.session_state["form_inputs"])
             st.success("Loaded Manufacturing Plant dataset!")
@@ -70,9 +68,10 @@ def render_upload_view():
     c_up1, c_up2 = st.columns([1.2, 0.8], gap="large")
 
     with c_up1:
-        st.markdown("""
+        up_title = feather_icon("upload", color=COLOR_NEUTRAL, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">📤 Upload CSV or Excel Workbook</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{up_title} Upload CSV or Excel Workbook</div>
                 <div class="saas-card-subtitle">
                     Select a CSV or .xlsx file containing utility metrics, transport mileage, and waste weights:
                 </div>
@@ -113,9 +112,10 @@ def render_upload_view():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with c_up2:
-        st.markdown("""
+        dl_title = feather_icon("download", color=COLOR_NEUTRAL, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">📥 Template Download</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{dl_title} Template Download</div>
                 <div class="saas-card-subtitle">
                     Download an empty pre-formatted spreadsheet template with the required columns:
                 </div>

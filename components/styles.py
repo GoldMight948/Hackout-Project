@@ -338,6 +338,29 @@ def inject_custom_css():
             font-size: 1.5rem !important;
         }}
     }}
+
+    /* Feather Icon Alignment & Consistency */
+    .feather-icon-wrap {{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+        line-height: 1;
+        flex-shrink: 0;
+    }}
+
+    .feather-icon-wrap svg {{
+        display: inline-block;
+        vertical-align: middle;
+        overflow: visible;
+    }}
+
+    .icon-inline-title {{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+    }}
     </style>
     """
     st.markdown(custom_css, unsafe_allow_html=True)

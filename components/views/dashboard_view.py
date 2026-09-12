@@ -11,6 +11,10 @@ import plotly.express as px
 import pandas as pd
 from components.calculations import calculate_detailed_emissions
 from components.ml_forecast import generate_monthly_timeseries, forecast_emissions_ml
+from components.icons import (
+    feather_icon, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL,
+    COLOR_SECONDARY, COLOR_INFO, COLOR_AMBER
+)
 
 def render_dashboard_view():
     """Renders executive KPI cards and core Plotly visualizations."""
@@ -30,20 +34,22 @@ def render_dashboard_view():
     theme_mode = st.session_state.get("theme_mode", "light")
     chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
 
-    # Header section
+    # Header section with Feather Icon
+    head_icon = feather_icon("pie-chart", color="#10B981", size=30, margin_right=10)
+    cal_icon = feather_icon("calendar", color="var(--text-muted)", size=15, margin_right=6)
     st.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
             <div>
                 <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                     Executive Overview & Carbon Intelligence
                 </span>
-                <h1 style="font-size: 2.1rem; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em;">
-                    {comp_name} Carbon Dashboard
+                <h1 style="font-size: 2.1rem; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.02em; display: flex; align-items: center;">
+                    {head_icon} {comp_name} Carbon Dashboard
                 </h1>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <span style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;">
-                    📅 12-Month Compliance Period
+                <span style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center;">
+                    {cal_icon} 12-Month Compliance Period
                 </span>
                 <span class="{'badge-low' if not res['is_deficit'] else 'badge-critical'}">
                     {res['net_carbon_status']}
@@ -52,13 +58,15 @@ def render_dashboard_view():
         </div>
     """, unsafe_allow_html=True)
 
-    # Top 7 KPIs Cards
+    # Top 7 KPIs Cards with Feather Icons
     k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
     
     with k1:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Total Emissions</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("leaf", color=COLOR_SUCCESS, size=15, margin_right=5)} Total Emissions
+                </div>
                 <div class="kpi-value">{res['total_co2']:,.1f}</div>
                 <div class="kpi-subtext">tonnes CO₂e / yr</div>
             </div>
@@ -67,7 +75,9 @@ def render_dashboard_view():
     with k2:
         st.markdown(f"""
             <div class="kpi-card info">
-                <div class="kpi-title">Govt Credits</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("award", color=COLOR_INFO, size=15, margin_right=5)} Govt Credits
+                </div>
                 <div class="kpi-value">{res['govt_credits']:,.0f}</div>
                 <div class="kpi-subtext">credits allocated</div>
             </div>
@@ -76,7 +86,9 @@ def render_dashboard_view():
     with k3:
         st.markdown(f"""
             <div class="kpi-card warning">
-                <div class="kpi-title">Credits Used</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("activity", color=COLOR_AMBER, size=15, margin_right=5)} Credits Used
+                </div>
                 <div class="kpi-value">{res['credits_used']:,.1f}</div>
                 <div class="kpi-subtext">1 credit = 1 t CO₂</div>
             </div>
@@ -84,9 +96,12 @@ def render_dashboard_view():
 
     with k4:
         deficit_class = "deficit" if res['is_deficit'] else "low"
+        def_icon = feather_icon("alert-triangle", color=COLOR_WARNING if res['is_deficit'] else COLOR_SUCCESS, size=15, margin_right=5)
         st.markdown(f"""
             <div class="kpi-card {deficit_class}">
-                <div class="kpi-title">Credit Deficit</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {def_icon} Credit Deficit
+                </div>
                 <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#10B981'};">
                     {res['credits_required']:,.1f}
                 </div>
@@ -97,7 +112,9 @@ def render_dashboard_view():
     with k5:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Remaining Credits</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("shield", color=COLOR_SUCCESS, size=15, margin_right=5)} Remaining Credits
+                </div>
                 <div class="kpi-value">{res['credits_remaining']:,.1f}</div>
                 <div class="kpi-subtext">surplus balance</div>
             </div>
@@ -106,7 +123,9 @@ def render_dashboard_view():
     with k6:
         st.markdown(f"""
             <div class="kpi-card {'deficit' if res['compliance_cost'] > 0 else ''}">
-                <div class="kpi-title">Compliance Cost</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("dollar-sign", color=COLOR_NEUTRAL, size=15, margin_right=5)} Compliance Cost
+                </div>
                 <div class="kpi-value">${res['compliance_cost']:,.0f}</div>
                 <div class="kpi-subtext">@ ${res['credit_price']:.0f}/tonne</div>
             </div>
@@ -117,7 +136,9 @@ def render_dashboard_view():
         score_color = "#10B981" if score_val >= 70 else ("#F59E0B" if score_val >= 45 else "#EF4444")
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Eco Score</div>
+                <div class="kpi-title" style="display: flex; align-items: center;">
+                    {feather_icon("target", color=score_color, size=15, margin_right=5)} Eco Score
+                </div>
                 <div class="kpi-value" style="color: {score_color};">{score_val:.0f}</div>
                 <div class="kpi-subtext">scale 0–100</div>
             </div>
@@ -132,9 +153,10 @@ def render_dashboard_view():
     col_gauge, col_donut, col_pie = st.columns([1, 1, 1], gap="medium")
 
     with col_gauge:
-        st.markdown("""
+        gauge_title = feather_icon("target", color=COLOR_SUCCESS, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Overall Sustainability Score (0–100)</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{gauge_title} Overall Sustainability Score (0–100)</div>
                 <div class="saas-card-subtitle">Multi-factor operational green efficiency index</div>
         """, unsafe_allow_html=True)
 
@@ -171,9 +193,10 @@ def render_dashboard_view():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_donut:
-        st.markdown("""
+        donut_icon = feather_icon("pie-chart", color=COLOR_INFO, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Carbon Credits: Used vs. Remaining</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{donut_icon} Carbon Credits: Used vs. Remaining</div>
                 <div class="saas-card-subtitle">Statutory compliance balance</div>
         """, unsafe_allow_html=True)
 
@@ -205,9 +228,10 @@ def render_dashboard_view():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_pie:
-        st.markdown("""
+        pie_icon = feather_icon("pie-chart", color=COLOR_AMBER, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Emission Contribution by Pillar</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{pie_icon} Emission Contribution by Pillar</div>
                 <div class="saas-card-subtitle">Operational source distribution</div>
         """, unsafe_allow_html=True)
 
@@ -238,9 +262,10 @@ def render_dashboard_view():
     col_bar, col_stacked = st.columns([1.1, 1.3], gap="large")
 
     with col_bar:
-        st.markdown("""
+        bar_icon = feather_icon("bar-chart-2", color=COLOR_WARNING, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Top Emission Categories (tonnes CO₂e)</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{bar_icon} Top Emission Categories (tonnes CO₂e)</div>
                 <div class="saas-card-subtitle">Highest volume industrial sources</div>
         """, unsafe_allow_html=True)
 
@@ -266,16 +291,17 @@ def render_dashboard_view():
             margin=dict(l=10, r=20, t=10, b=20),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color)),
-            yaxis=dict(autorange="reversed", font=dict(color=chart_text_color))
+            xaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', tickfont=dict(size=12, color=chart_text_color)),
+            yaxis=dict(autorange="reversed", tickfont=dict(size=12, color=chart_text_color))
         )
         st.plotly_chart(fig_bar, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_stacked:
-        st.markdown("""
+        stack_icon = feather_icon("columns", color=COLOR_NEUTRAL, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Stacked 12-Month Emission Breakdown</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{stack_icon} Stacked 12-Month Emission Breakdown</div>
                 <div class="saas-card-subtitle">Seasonal monthly operational trajectory across all pillars</div>
         """, unsafe_allow_html=True)
 
@@ -299,8 +325,8 @@ def render_dashboard_view():
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+            xaxis=dict(tickfont=dict(size=11, color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', tickfont=dict(size=11, color=chart_text_color))
         )
         st.plotly_chart(fig_stacked, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
@@ -311,9 +337,10 @@ def render_dashboard_view():
     col_line, col_area = st.columns([1, 1], gap="large")
 
     with col_line:
-        st.markdown("""
+        trend_icon = feather_icon("trending-down", color=COLOR_SUCCESS, size=18, margin_right=6)
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Emission Trends Over Months (Line Chart)</div>
+                <div class="saas-card-title" style="display: flex; align-items: center;">{trend_icon} Emission Trends Over Months (Line Chart)</div>
                 <div class="saas-card-subtitle">Monthly profile with peak operational variance</div>
         """, unsafe_allow_html=True)
 
@@ -332,8 +359,8 @@ def render_dashboard_view():
             margin=dict(l=10, r=10, t=10, b=20),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+            xaxis=dict(tickfont=dict(size=11, color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', tickfont=dict(size=11, color=chart_text_color))
         )
         st.plotly_chart(fig_line, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
@@ -372,8 +399,8 @@ def render_dashboard_view():
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', font=dict(color=chart_text_color))
+            xaxis=dict(tickfont=dict(size=11, color=chart_text_color)),
+            yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.15)', tickfont=dict(size=11, color=chart_text_color))
         )
         st.plotly_chart(fig_area, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)

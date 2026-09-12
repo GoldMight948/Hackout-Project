@@ -7,6 +7,7 @@ and features a simulated Carbon Offset Marketplace (buy/sell credits).
 import streamlit as st
 import pandas as pd
 from database.db_manager import record_market_transaction, get_market_transactions
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_INFO
 
 def render_carbon_credits_view():
     """Renders Step 7 Carbon Credit Analysis and Marketplace."""
@@ -19,25 +20,28 @@ def render_carbon_credits_view():
     user_email = user.get("email", "guest@enterprise.com")
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 7 — Carbon Credit Reconciliation & Compliance Ledger
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Government Allowance Reconciliation & Market Exposure
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Reconcile your annual emissions against government-allocated credits, calculate financial exposure, and trade surplus credits.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "dollar-sign",
+        "Government Allowance Reconciliation & Market Exposure",
+        level="h2",
+        color=COLOR_SUCCESS,
+        subtitle="Reconcile your annual emissions against government-allocated credits, calculate financial exposure, and trade surplus credits."
+    ), unsafe_allow_html=True)
 
     # Net Carbon Status Banner
     if not res["is_deficit"]:
         st.markdown(f"""
             <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #6EE7B7; border-radius: 14px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <span style="font-size: 2.5rem;">🟢</span>
+                    <div style="background: rgba(16, 185, 129, 0.15); padding: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        {feather_icon('check-circle', color=COLOR_SUCCESS, size=32, margin_right=0)}
+                    </div>
                     <div>
                         <div style="font-size: 1.25rem; font-weight: 800; color: #065F46;">
                             Status: Carbon Neutral / Surplus Allowance
@@ -58,7 +62,9 @@ def render_carbon_credits_view():
         st.markdown(f"""
             <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #FCA5A5; border-radius: 14px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <span style="font-size: 2.5rem;">🔴</span>
+                    <div style="background: rgba(239, 68, 68, 0.15); padding: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        {feather_icon('alert-triangle', color=COLOR_WARNING, size=32, margin_right=0)}
+                    </div>
                     <div>
                         <div style="font-size: 1.25rem; font-weight: 800; color: #991B1B;">
                             Status: Carbon Credit Deficit — Action Required
@@ -81,7 +87,7 @@ def render_carbon_credits_view():
     with c1:
         st.markdown(f"""
             <div class="kpi-card info">
-                <div class="kpi-title">Govt Credits</div>
+                <div class="kpi-title">{feather_icon('shield', color=COLOR_INFO, size=14)} Govt Credits</div>
                 <div class="kpi-value">{res['govt_credits']:,.0f}</div>
                 <div class="kpi-subtext">allocated cap</div>
             </div>
@@ -89,7 +95,7 @@ def render_carbon_credits_view():
     with c2:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Credits Used</div>
+                <div class="kpi-title">{feather_icon('activity', color=COLOR_NEUTRAL, size=14)} Credits Used</div>
                 <div class="kpi-value">{res['credits_used']:,.1f}</div>
                 <div class="kpi-subtext">actual emissions</div>
             </div>
@@ -97,7 +103,7 @@ def render_carbon_credits_view():
     with c3:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Credits Remaining</div>
+                <div class="kpi-title">{feather_icon('leaf', color=COLOR_SUCCESS, size=14)} Credits Remaining</div>
                 <div class="kpi-value" style="color: #10B981;">{res['credits_remaining']:,.1f}</div>
                 <div class="kpi-subtext">surplus balance</div>
             </div>
@@ -105,7 +111,7 @@ def render_carbon_credits_view():
     with c4:
         st.markdown(f"""
             <div class="kpi-card {'deficit' if res['is_deficit'] else ''}">
-                <div class="kpi-title">Credits Required</div>
+                <div class="kpi-title">{feather_icon('alert-triangle', color=COLOR_WARNING, size=14)} Credits Required</div>
                 <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#10B981'};">
                     {res['credits_required']:,.1f}
                 </div>
@@ -115,7 +121,7 @@ def render_carbon_credits_view():
     with c5:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Market Price</div>
+                <div class="kpi-title">{feather_icon('dollar-sign', color=COLOR_NEUTRAL, size=14)} Market Price</div>
                 <div class="kpi-value">${res['credit_price']:.0f}</div>
                 <div class="kpi-subtext">per tonne CO₂</div>
             </div>
@@ -123,7 +129,7 @@ def render_carbon_credits_view():
     with c6:
         st.markdown(f"""
             <div class="kpi-card {'deficit' if res['is_deficit'] else ''}">
-                <div class="kpi-title">Est. Buying Cost</div>
+                <div class="kpi-title">{feather_icon('trending-down', color=COLOR_WARNING, size=14)} Est. Buying Cost</div>
                 <div class="kpi-value">${res['est_purchase_cost']:,.0f}</div>
                 <div class="kpi-subtext">compliance purchase</div>
             </div>
@@ -131,7 +137,7 @@ def render_carbon_credits_view():
     with c7:
         st.markdown(f"""
             <div class="kpi-card">
-                <div class="kpi-title">Selling Value</div>
+                <div class="kpi-title">{feather_icon('trending-up', color=COLOR_SUCCESS, size=14)} Selling Value</div>
                 <div class="kpi-value" style="color: #059669;">${res['est_revenue']:,.0f}</div>
                 <div class="kpi-subtext">if surplus sold</div>
             </div>
@@ -140,11 +146,11 @@ def render_carbon_credits_view():
     st.markdown("<div style='margin-bottom: 28px;'></div>", unsafe_allow_html=True)
 
     # Carbon Offset Marketplace Section (UI Simulation)
-    st.markdown("""
+    st.markdown(f"""
         <div class="saas-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <div>
-                    <div class="saas-card-title">🛒 Carbon Offset Marketplace (Simulated Trading Desk)</div>
+                    <div class="saas-card-title">{feather_icon('dollar-sign', color=COLOR_SUCCESS, size=18)} Carbon Offset Marketplace (Simulated Trading Desk)</div>
                     <div class="saas-card-subtitle">
                         Purchase verified carbon credits (Verra VCS / Gold Standard) to eliminate deficits, or list surplus credits:
                     </div>
@@ -156,7 +162,11 @@ def render_carbon_credits_view():
     col_trade1, col_trade2 = st.columns([1.2, 0.8], gap="large")
 
     with col_trade1:
-        st.markdown("##### 🌿 Verified Projects Available on Spot Market")
+        st.markdown(f"""
+            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center;">
+                {feather_icon('leaf', color=COLOR_SUCCESS, size=18)} <span>Verified Projects Available on Spot Market</span>
+            </div>
+        """, unsafe_allow_html=True)
         
         market_projects = [
             {"name": "Appalachian Reforestation Carbon Project", "type": "Forestry & Land Use", "registry": "Verra VCS", "price": 34.50, "avail": 1250},
@@ -191,11 +201,15 @@ def render_carbon_credits_view():
                         # Execute simulated purchase
                         qty = res['credits_required'] if res['is_deficit'] and res['credits_required'] > 0 else 25.0
                         record_market_transaction(user_email, "BUY", qty, proj['price'], f"Offset via {proj['name']}")
-                        st.success(f"🎉 Successfully purchased {qty:.1f} credits from {proj['name']} at ${proj['price']:.2f}/credit!")
+                        st.success(f"Successfully purchased {qty:.1f} credits from {proj['name']} at ${proj['price']:.2f}/credit!")
                         st.rerun()
 
     with col_trade2:
-        st.markdown("##### ⚡ Instant Transaction Desk")
+        st.markdown(f"""
+            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center;">
+                {feather_icon('zap', color=COLOR_WARNING, size=18)} <span>Instant Transaction Desk</span>
+            </div>
+        """, unsafe_allow_html=True)
         with st.form("trade_form"):
             t_action = st.radio("Order Type", ["Buy Carbon Credits (Offset Deficit)", "Sell Surplus Credits"], horizontal=True)
             default_qty = float(res['credits_required']) if res['is_deficit'] else float(res['credits_remaining'])
@@ -211,7 +225,7 @@ def render_carbon_credits_view():
             """, unsafe_allow_html=True)
 
             submit_trade = st.form_submit_button(
-                "Execute Simulated Market Order →",
+                "Execute Simulated Market Order",
                 type="primary",
                 use_container_width=True
             )
@@ -225,7 +239,11 @@ def render_carbon_credits_view():
         # Recent Transactions
         txs = get_market_transactions(user_email)
         if txs:
-            st.markdown("##### 📜 Recent Ledger Orders")
+            st.markdown(f"""
+                <div style="font-weight: 700; font-size: 1rem; margin-top: 14px; margin-bottom: 8px; display: flex; align-items: center;">
+                    {feather_icon('file-text', color=COLOR_NEUTRAL, size=16)} <span>Recent Ledger Orders</span>
+                </div>
+            """, unsafe_allow_html=True)
             for t in txs[:3]:
                 t_color = "#10B981" if t["tx_type"] == "SELL" else "#3B82F6"
                 st.markdown(f"""

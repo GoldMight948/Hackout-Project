@@ -6,6 +6,7 @@ Displays colored priority badges, potential savings, and direct drill-downs into
 
 import streamlit as st
 import pandas as pd
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL
 
 def render_leak_detection_view():
     """Renders Step 6 Top 10 Leak Points ranking table and diagnostic cards."""
@@ -17,26 +18,28 @@ def render_leak_detection_view():
     top_10 = res.get("top_10_leaks", [])
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 6 — Automated Operational Leak Detection
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Top 10 Emission Hotspots & Financial Waste Points
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Our multi-factor diagnostic algorithm ranked all operational activities by greenhouse gas volume, annual dollar spend, and urgency index.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "alert-triangle",
+        "Top 10 Emission Hotspots & Financial Waste Points",
+        level="h2",
+        color=COLOR_WARNING,
+        subtitle="Our multi-factor diagnostic algorithm ranked all operational activities by greenhouse gas volume, annual dollar spend, and urgency index."
+    ), unsafe_allow_html=True)
 
     # Top Leak Diagnosis Alert Banner
     if top_10:
         worst_leak = top_10[0]
+        banner_icon = feather_icon("alert-triangle", color="#DC2626", size=32, margin_right=14)
         st.markdown(f"""
             <div style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%); border: 1px solid #FCA5A5; border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <span style="font-size: 2.2rem;">🎯</span>
+                <div style="display: flex; align-items: center;">
+                    {banner_icon}
                     <div>
                         <div style="font-weight: 800; font-size: 1.15rem; color: #991B1B;">
                             #1 Primary Leak Hotspot: {worst_leak['source']}
@@ -53,15 +56,17 @@ def render_leak_detection_view():
         """, unsafe_allow_html=True)
 
     # Top 10 Table Header / Filter
-    st.markdown("""
+    matrix_icon = feather_icon("list", color=COLOR_NEUTRAL, size=18, margin_right=6)
+    st.markdown(f"""
         <div class="saas-card">
-            <div class="saas-card-title" style="margin-bottom: 6px;">Ranked Leak Points Matrix (1–10)</div>
+            <div class="saas-card-title" style="margin-bottom: 6px; display: flex; align-items: center;">{matrix_icon} Ranked Leak Points Matrix (1–10)</div>
             <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                 Click any hotspot below to inspect engineering solutions, circular substitutions, and payback calculations:
             </div>
     """, unsafe_allow_html=True)
 
     for leak in top_10:
+        leak_icon = feather_icon(leak.get("feather_icon", "alert-triangle"), color=COLOR_WARNING if leak['rank'] <= 3 else COLOR_NEUTRAL, size=18, margin_right=6)
         with st.container():
             st.markdown(f"""
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; transition: all 0.2s ease;">
@@ -71,8 +76,8 @@ def render_leak_detection_view():
                                 #{leak['rank']}
                             </div>
                             <div>
-                                <div style="font-weight: 700; font-size: 1.05rem;">
-                                    {leak['icon']} {leak['source']}
+                                <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center;">
+                                    {leak_icon} {leak['source']}
                                 </div>
                                 <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
                                     Category: <strong>{leak['category']}</strong> &bull; Share: <strong>{leak['share_pct']}%</strong> &bull; Current Activity: {leak['activity_val']:,.0f} {leak['unit']}

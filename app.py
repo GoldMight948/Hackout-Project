@@ -18,6 +18,7 @@ from components.styles import inject_custom_css
 from components.auth import init_auth_state, logout_user, quick_demo_login
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_SECONDARY
 
 # Import all 12 views
 from components.views.landing_view import render_landing_view
@@ -34,20 +35,20 @@ from components.views.circular_view import render_circular_view
 from components.views.reports_view import render_reports_view
 from components.views.settings_view import render_settings_view
 
-# 12-Step Guided Stages
+# 12-Step Guided Stages with Mapped Feather Icons
 STEPS = [
-    {"num": 1, "id": "landing", "name": "Landing", "icon": "🌐"},
-    {"num": 2, "id": "auth", "name": "Auth", "icon": "🔐"},
-    {"num": 3, "id": "setup", "name": "Setup", "icon": "🏢"},
-    {"num": 4, "id": "upload", "name": "Upload", "icon": "📥"},
-    {"num": 5, "id": "dashboard", "name": "Dashboard", "icon": "🏠"},
-    {"num": 6, "id": "leak_detection", "name": "Leaks", "icon": "🔥"},
-    {"num": 7, "id": "carbon_credits", "name": "Credits", "icon": "🌍"},
-    {"num": 8, "id": "recommendations", "name": "AI Fixes", "icon": "💡"},
-    {"num": 9, "id": "simulator", "name": "Simulator", "icon": "📈"},
-    {"num": 10, "id": "circular", "name": "Circular", "icon": "♻️"},
-    {"num": 11, "id": "reports", "name": "Reports", "icon": "📄"},
-    {"num": 12, "id": "settings", "name": "Settings", "icon": "⚙️"},
+    {"num": 1, "id": "landing", "name": "Landing", "feather_icon": "home"},
+    {"num": 2, "id": "auth", "name": "Auth", "feather_icon": "user"},
+    {"num": 3, "id": "setup", "name": "Setup", "feather_icon": "settings"},
+    {"num": 4, "id": "upload", "name": "Upload", "feather_icon": "upload"},
+    {"num": 5, "id": "dashboard", "name": "Dashboard", "feather_icon": "pie-chart"},
+    {"num": 6, "id": "leak_detection", "name": "Leaks", "feather_icon": "alert-triangle"},
+    {"num": 7, "id": "carbon_credits", "name": "Credits", "feather_icon": "dollar-sign"},
+    {"num": 8, "id": "recommendations", "name": "AI Fixes", "feather_icon": "lightbulb"},
+    {"num": 9, "id": "simulator", "name": "Simulator", "feather_icon": "sliders"},
+    {"num": 10, "id": "circular", "name": "Circular", "feather_icon": "refresh-cw"},
+    {"num": 11, "id": "reports", "name": "Reports", "feather_icon": "download"},
+    {"num": 12, "id": "settings", "name": "Settings", "feather_icon": "settings"},
 ]
 
 def init_app_state():
@@ -65,28 +66,34 @@ def init_app_state():
         st.session_state["theme_mode"] = "light"
 
 def render_top_stepper():
-    """Renders sleek top breadcrumbs progress bar."""
+    """Renders sleek top breadcrumbs progress bar with Feather vector icons."""
     cur = st.session_state.get("current_step", 1)
     
     pills_html = ""
     for s in STEPS:
         num = s["num"]
-        icon = s["icon"]
+        f_icon = s["feather_icon"]
         name = s["name"]
         if num == cur:
             css_class = "step-pill active"
+            icon_color = "#FFFFFF"
         elif num < cur:
             css_class = "step-pill completed"
+            icon_color = "#10B981"
         else:
             css_class = "step-pill upcoming"
-        pills_html += f'<span class="{css_class}">{icon} {num}. {name}</span>'
+            icon_color = "#94A3B8"
+        
+        icon_svg = feather_icon(f_icon, color=icon_color, size=14, margin_right=6)
+        pills_html += f'<span class="{css_class}">{icon_svg} {num}. {name}</span>'
 
+    top_icon = feather_icon("leaf", color="#10B981", size=22, margin_right=8)
     st.markdown(f"""
         <div class="step-indicator-wrapper">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1.4rem;">🌍</span>
+            <div style="display: flex; align-items: center;">
+                {top_icon}
                 <span style="font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em;">Industrial Emission Leak Detector</span>
-                <span class="step-badge">Stage {cur} of {len(STEPS)}: {STEPS[cur-1]['name']}</span>
+                <span class="step-badge" style="margin-left: 12px;">Stage {cur} of {len(STEPS)}: {STEPS[cur-1]['name']}</span>
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                 {pills_html}
@@ -103,11 +110,12 @@ def render_sidebar():
     user_avatar = user.get("avatar", "🏭")
     
     with st.sidebar:
-        # Organization Card
+        # Organization Card with Feather Icon
+        org_icon = feather_icon("box", color="#10B981", size=24, margin_right=10)
         st.markdown(f"""
             <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: var(--shadow-card);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 2rem;">{user_avatar}</span>
+                <div style="display: flex; align-items: center;">
+                    {org_icon}
                     <div>
                         <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);">{user_company}</div>
                         <div style="font-size: 0.78rem; color: var(--text-muted);">{user_name} &bull; <span style="color: #10B981; font-weight: 700;">{user_role}</span></div>
@@ -116,20 +124,27 @@ def render_sidebar():
             </div>
         """, unsafe_allow_html=True)
 
-        # Main Navigation List (as requested in spec)
-        st.markdown("##### 📌 Platform Navigation")
+        # Main Navigation List with Feather Icon Header
+        nav_header = feather_icon("columns", color="#95A5A6", size=18, margin_right=6)
+        st.markdown(f"""
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                {nav_header}
+                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Platform Navigation</span>
+            </div>
+        """, unsafe_allow_html=True)
 
         nav_items = [
-            ("🏠 Dashboard", "dashboard", 5),
-            ("🏢 Company Profile", "setup", 3),
-            ("📥 Upload Data", "upload", 4),
-            ("📊 Analytics", "analytics", 5),
-            ("🌍 Carbon Credits", "carbon_credits", 7),
-            ("🔥 Leak Detection", "leak_detection", 6),
-            ("♻ Recommendations", "recommendations", 8),
-            ("📈 Simulator", "simulator", 9),
-            ("📄 Reports", "reports", 11),
-            ("⚙ Settings", "settings", 12),
+            ("Dashboard", "dashboard", 5),
+            ("Company Profile", "setup", 3),
+            ("Upload Data", "upload", 4),
+            ("Analytics Matrix", "analytics", 5),
+            ("Carbon Credits", "carbon_credits", 7),
+            ("Leak Detection", "leak_detection", 6),
+            ("Recommendations", "recommendations", 8),
+            ("Simulator", "simulator", 9),
+            ("Circular Economy", "circular", 10),
+            ("Reports & Export", "reports", 11),
+            ("Settings", "settings", 12),
         ]
 
         cur_nav = st.session_state.get("nav_section", "dashboard")
@@ -146,36 +161,32 @@ def render_sidebar():
 
         # Quick Theme Mode Toggle
         curr_th = st.session_state.get("theme_mode", "light")
-        th_label = "🌙 Dark Mode" if curr_th == "light" else "☀️ Light Mode"
+        th_label = "Switch to Dark Mode" if curr_th == "light" else "Switch to Light Mode"
         if st.button(th_label, key="quick_theme_toggle", use_container_width=True):
             st.session_state["theme_mode"] = "dark" if curr_th == "light" else "light"
             st.rerun()
 
-        # Notification Panel
-        st.markdown("##### 🔔 Compliance Notifications")
-        st.markdown("""
+        # Notification Panel with Feather Icons
+        notif_header = feather_icon("alert-triangle", color="#95A5A6", size=18, margin_right=6)
+        warn_icon = feather_icon("alert-triangle", color="#FF6B6B", size=16, margin_right=6)
+        check_icon = feather_icon("check-circle", color="#2ECC71", size=16, margin_right=6)
+        st.markdown(f"""
+            <div style="display: flex; align-items: center; margin-bottom: 8px; margin-top: 10px;">
+                {notif_header}
+                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Compliance Alerts</span>
+            </div>
             <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
-                <div style="font-weight: 700; color: #D97706;">⚠️ Annual Cap Deadline</div>
+                <div style="font-weight: 700; color: #D97706; display: flex; align-items: center;">{warn_icon} Annual Cap Deadline</div>
                 <div style="color: var(--text-muted); margin-top: 2px;">Statutory carbon audit filing due in 45 days.</div>
             </div>
             <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
-                <div style="font-weight: 700; color: #10B981;">🟢 Q3 Solar Credit Verified</div>
+                <div style="font-weight: 700; color: #10B981; display: flex; align-items: center;">{check_icon} Q3 Solar Credit Verified</div>
                 <div style="color: var(--text-muted); margin-top: 2px;">18.5 tonnes carbon offset recognized by registry.</div>
             </div>
         """, unsafe_allow_html=True)
 
-        # Achievement Badges
-        st.markdown("##### 🏅 Achievement Badges")
-        st.markdown("""
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-                <span class="badge-low" title="Energy audited">⚡ Green Plant</span>
-                <span class="badge-low" title="Over 40% waste diverted">♻️ Circular Champ</span>
-                <span class="badge-medium" title="Tracking Scope 1-3">🌍 Scope Master</span>
-            </div>
-        """, unsafe_allow_html=True)
-
         # Logout button
-        if st.button("🚪 Logout", key="sidebar_logout_btn", use_container_width=True):
+        if st.button("Sign Out", key="sidebar_logout_btn", use_container_width=True):
             logout_user()
 
 def main():

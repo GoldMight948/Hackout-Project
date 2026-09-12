@@ -13,6 +13,7 @@ import pandas as pd
 import io
 from components.data_presets import AI_RECOMMENDATIONS
 from database.db_manager import get_audit_logs
+from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_INFO
 
 def render_reports_view():
     """Renders Step 11 Reports & Compliance screen."""
@@ -26,20 +27,21 @@ def render_reports_view():
     comp_name = user.get("company_name", res.get("raw_inputs", {}).get("business_name", "Enterprise Facility"))
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 11 — Compliance Reporting & Data Export
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Verified Sustainability Reports & Export Engine
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Generate certified carbon audits, executive briefs, and circular economy roadmaps in PDF, Excel, and CSV formats.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "download",
+        "Verified Sustainability Reports & Export Engine",
+        level="h2",
+        color=COLOR_NEUTRAL,
+        subtitle="Generate certified carbon audits, executive briefs, and circular economy roadmaps in PDF, Excel, and CSV formats."
+    ), unsafe_allow_html=True)
 
-    tab_reports, tab_esg, tab_audit = st.tabs(["📄 Exportable Reports", "📋 ESG Compliance Checklist", "📜 SQLite Audit Trail"])
+    tab_reports, tab_esg, tab_audit = st.tabs(["Exportable Reports", "ESG Compliance Checklist", "SQLite Audit Trail"])
 
     # Tab 1: Exportable Reports
     with tab_reports:
@@ -86,16 +88,16 @@ def render_reports_view():
         csv_bytes = df_leaks.to_csv(index=False).encode('utf-8')
 
         with c_exp_l:
-            st.markdown("""
+            st.markdown(f"""
                 <div class="saas-card">
-                    <div class="saas-card-title">📥 Multi-Format Downloads</div>
+                    <div class="saas-card-title">{feather_icon('download', color=COLOR_NEUTRAL, size=18)} Multi-Format Downloads</div>
                     <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                         Enterprise data packages formatted for Microsoft Excel, Google Sheets, or ERP integration:
                     </div>
             """, unsafe_allow_html=True)
 
             st.download_button(
-                label="📊 Download Complete Excel Workbook (.XLSX)",
+                label="Download Complete Excel Workbook (.XLSX)",
                 data=excel_bytes,
                 file_name=f"{comp_name.lower().replace(' ', '_')}_sustainability_workbook.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -106,7 +108,7 @@ def render_reports_view():
             st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
 
             st.download_button(
-                label="📄 Download Top 10 Leaks CSV (.CSV)",
+                label="Download Top 10 Leaks CSV (.CSV)",
                 data=csv_bytes,
                 file_name=f"{comp_name.lower().replace(' ', '_')}_leak_points.csv",
                 mime="text/csv",
@@ -116,16 +118,16 @@ def render_reports_view():
             st.markdown("</div>", unsafe_allow_html=True)
 
             # Executive Summary Brief snippet
-            st.markdown("""
+            st.markdown(f"""
                 <div class="saas-card">
-                    <div class="saas-card-title">📋 Executive Boardroom Summary</div>
+                    <div class="saas-card-title">{feather_icon('file-text', color=COLOR_NEUTRAL, size=18)} Executive Boardroom Summary</div>
                     <div class="saas-card-subtitle" style="margin-bottom: 12px;">
                         Formatted text for quick copy-pasting into executive memos and investor emails:
                     </div>
             """, unsafe_allow_html=True)
 
             exec_text = (
-                f"🌍 SUSTAINABILITY AUDIT BRIEF — {comp_name.upper()}\n"
+                f"SUSTAINABILITY AUDIT BRIEF — {comp_name.upper()}\n"
                 f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                 f"• Gross Operational Emissions: {res['total_co2']:,.1f} tonnes CO₂e/yr\n"
                 f"• Direct Annual Cost Exposure: ${res['total_cost']:,.0f}/yr\n"
@@ -140,10 +142,10 @@ def render_reports_view():
             st.markdown("</div>", unsafe_allow_html=True)
 
         with c_exp_r:
-            st.markdown("""
+            st.markdown(f"""
                 <div class="saas-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div class="saas-card-title">🖨️ Printable PDF Audit Dossier</div>
+                        <div class="saas-card-title">{feather_icon('download', color=COLOR_NEUTRAL, size=18)} Printable PDF Audit Dossier</div>
                         <span class="badge-low">PRINT / PDF READY</span>
                     </div>
                     <div class="saas-card-subtitle" style="margin-bottom: 14px;">
@@ -153,16 +155,16 @@ def render_reports_view():
                         <div style="border-bottom: 2px solid #10B981; padding-bottom: 10px; margin-bottom: 14px;">
                             <h3 style="margin: 0; color: #065F46; font-size: 1.25rem;">CARBON EMISSION AUDIT & CIRCULAR ROADMAP</h3>
                             <div style="color: var(--text-muted); font-size: 0.82rem; margin-top: 2px;">
-                                Facility: <strong>""" + comp_name + """</strong> &bull; Lead Auditor: """ + user.get("owner_name", "Sustainability Lead") + """
+                                Facility: <strong>{comp_name}</strong> &bull; Lead Auditor: {user.get("owner_name", "Sustainability Lead")}
                             </div>
                         </div>
                         <div style="margin-bottom: 14px;">
                             <strong>Operational Key Metrics:</strong>
                             <ul style="margin: 6px 0 12px 20px; padding: 0; line-height: 1.6;">
-                                <li>Total Greenhouse Footprint: <strong>""" + f"{res['total_co2']:,.1f}" + """ tonnes CO₂e</strong></li>
-                                <li>Associated Operational Utilities: <strong>$""" + f"{res['total_cost']:,.0f}" + """ / yr</strong></li>
-                                <li>Regulatory Status: <strong>""" + res['net_carbon_status'] + """</strong></li>
-                                <li>Eco Sustainability Rating: <strong>""" + str(res['sustainability_score']) + """ / 100</strong></li>
+                                <li>Total Greenhouse Footprint: <strong>{res['total_co2']:,.1f} tonnes CO₂e</strong></li>
+                                <li>Associated Operational Utilities: <strong>${res['total_cost']:,.0f} / yr</strong></li>
+                                <li>Regulatory Status: <strong>{res['net_carbon_status']}</strong></li>
+                                <li>Eco Sustainability Rating: <strong>{str(res['sustainability_score'])} / 100</strong></li>
                             </ul>
                         </div>
                         <div style="margin-bottom: 14px;">
@@ -194,9 +196,9 @@ def render_reports_view():
 
     # Tab 2: ESG Compliance Checklist
     with tab_esg:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Corporate ESG & Regulatory Compliance Readiness</div>
+                <div class="saas-card-title">{feather_icon('check-circle', color=COLOR_SUCCESS, size=18)} Corporate ESG & Regulatory Compliance Readiness</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                     Track statutory reporting requirements against GHG Protocol, ISO 14064, EU CSRD, and SEC climate disclosure rules:
                 </div>
@@ -213,10 +215,13 @@ def render_reports_view():
 
         for item_title, status_text, is_passed, note in esg_items:
             s_badge = "badge-low" if is_passed else "badge-critical"
+            status_icon = feather_icon("check-circle", color=COLOR_SUCCESS, size=16) if is_passed else feather_icon("alert-triangle", color=COLOR_WARNING, size=16)
             st.markdown(f"""
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <strong style="font-size: 0.95rem;">{'✅' if is_passed else '⚠️'} {item_title}</strong>
+                        <div style="font-size: 0.95rem; font-weight: 600; display: flex; align-items: center;">
+                            {status_icon} <span>{item_title}</span>
+                        </div>
                         <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">{note}</div>
                     </div>
                     <span class="{s_badge}">{status_text}</span>
@@ -227,9 +232,9 @@ def render_reports_view():
 
     # Tab 3: SQLite Audit Trail
     with tab_audit:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">Immutable Data Audit Trail (SQLite)</div>
+                <div class="saas-card-title">{feather_icon('file-text', color=COLOR_NEUTRAL, size=18)} Immutable Data Audit Trail (SQLite)</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 14px;">
                     Chronological record of all updates, assessments, file uploads, and carbon trading transactions:
                 </div>

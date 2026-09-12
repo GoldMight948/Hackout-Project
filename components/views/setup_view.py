@@ -8,6 +8,7 @@ import streamlit as st
 from database.db_manager import save_emissions_assessment
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
+from components.icons import feather_icon, render_icon_heading, COLOR_SECONDARY, COLOR_NEUTRAL, COLOR_SUCCESS, COLOR_WARNING, COLOR_INFO
 
 def render_setup_view():
     """Renders Step 3 complete emissions activity inputs."""
@@ -15,42 +16,45 @@ def render_setup_view():
     user_email = user.get("email", "guest@enterprise.com")
     comp_name = user.get("company_name", "Enterprise Facility")
 
-    st.markdown(f"""
-        <div style="margin-bottom: 20px;">
+    st.markdown("""
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Step 3 — Operational Activity Entry
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Configure Emission Sources for {comp_name}
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                Input your 12-month operational volumes. You can also load benchmark figures from our verified industry presets.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "settings",
+        f"Configure Emission Sources for {comp_name}",
+        level="h2",
+        color=COLOR_NEUTRAL,
+        subtitle="Input your 12-month operational volumes. You can also load benchmark figures from our verified industry presets."
+    ), unsafe_allow_html=True)
 
     # Preset Loader Bar
-    st.markdown("""
+    st.markdown(f"""
         <div class="saas-card" style="padding: 14px 20px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <span style="font-weight: 700; font-size: 0.9rem;">⚡ Quick Pre-Fill from Verified Industry Benchmarks:</span>
+                <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
+                    {feather_icon('zap', color=COLOR_WARNING, size=16)} Quick Pre-Fill from Verified Industry Benchmarks:
+                </span>
     """, unsafe_allow_html=True)
 
     col_p1, col_p2, col_p3, col_p4 = st.columns(4)
     with col_p1:
-        if st.button("🥪 Food Processing Bakery", key="fill_food", use_container_width=True):
+        if st.button("Food Processing Bakery", key="fill_food", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processing"]["data"].copy()
             st.rerun()
     with col_p2:
-        if st.button("🏪 Retail Boutique", key="fill_retail", use_container_width=True):
+        if st.button("Retail Boutique", key="fill_retail", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["retail_store"]["data"].copy()
             st.rerun()
     with col_p3:
-        if st.button("🚚 Logistics Fleet Hub", key="fill_logistics", use_container_width=True):
+        if st.button("Logistics Fleet Hub", key="fill_logistics", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics_company"]["data"].copy()
             st.rerun()
     with col_p4:
-        if st.button("🏭 Manufacturing Plant", key="fill_mfg", use_container_width=True):
+        if st.button("Manufacturing Plant", key="fill_mfg", use_container_width=True):
             st.session_state["form_inputs"] = DEMO_BUSINESSES["manufacturing_plant"]["data"].copy()
             st.rerun()
 
@@ -86,7 +90,7 @@ def render_setup_view():
 
     with st.form("setup_emission_form"):
         # Section 1: Energy & Fuel
-        st.markdown("### ⚡ 1. Energy & Thermal Fuel Consumption")
+        st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('zap', color=COLOR_WARNING, size=20)} <span>1. Energy & Thermal Fuel Consumption</span></div>", unsafe_allow_html=True)
         c_e1, c_e2, c_e3 = st.columns(3)
         with c_e1:
             inp_elec = st.number_input("Electricity Consumption (kWh / yr)", min_value=0.0, value=def_elec, step=5000.0, help="Grid metered electric power")
@@ -100,7 +104,7 @@ def render_setup_view():
         st.markdown("<hr style='margin: 18px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
 
         # Section 2: Transport & Fleet Logistics
-        st.markdown("### 🚚 2. Transport & Fleet Logistics")
+        st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('truck', color=COLOR_INFO, size=20)} <span>2. Transport & Fleet Logistics</span></div>", unsafe_allow_html=True)
         c_t1, c_t2, c_t3, c_t4 = st.columns(4)
         with c_t1:
             inp_truck = st.number_input("Truck Freight Distance (km / yr)", min_value=0.0, value=def_truck, step=2500.0, help="Heavy freight & distribution shipping")
@@ -114,7 +118,7 @@ def render_setup_view():
         st.markdown("<hr style='margin: 18px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
 
         # Section 3: Waste Generation & Streams
-        st.markdown("### ♻️ 3. Industrial Solid Waste Streams (kg / yr)")
+        st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('trash-2', color='#EF4444', size=20)} <span>3. Industrial Solid Waste Streams (kg / yr)</span></div>", unsafe_allow_html=True)
         c_w1, c_w2, c_w3, c_w4, c_w5 = st.columns(5)
         with c_w1:
             inp_org_waste = st.number_input("Organic Waste (kg)", min_value=0.0, value=def_org_waste, step=500.0)
@@ -130,7 +134,7 @@ def render_setup_view():
         st.markdown("<hr style='margin: 18px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
 
         # Section 4: Water & Manufacturing Production
-        st.markdown("### 💧 4. Water, Effluent & Manufacturing Output")
+        st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('droplet', color=COLOR_INFO, size=20)} <span>4. Water, Effluent & Manufacturing Output</span></div>", unsafe_allow_html=True)
         c_m1, c_m2, c_m3 = st.columns(3)
         with c_m1:
             inp_water = st.number_input("Water Consumption (m³ / yr)", min_value=0.0, value=def_water, step=500.0, help="Freshwater municipal meter volume")
@@ -144,7 +148,7 @@ def render_setup_view():
         st.markdown("<hr style='margin: 18px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
 
         # Section 5: Government Carbon Credits
-        st.markdown("### 🏛️ 5. Government Carbon Credits & Market Pricing")
+        st.markdown(f"<div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center;'>{feather_icon('dollar-sign', color=COLOR_SUCCESS, size=20)} <span>5. Government Carbon Credits & Market Pricing</span></div>", unsafe_allow_html=True)
         c_c1, c_c2, c_c3 = st.columns(3)
         with c_c1:
             inp_credits = st.number_input("Total Carbon Credits Allocated (tonnes)", min_value=0.0, value=def_credits, step=25.0, help="Statutory compliance allowance assigned by environmental agency")
@@ -155,7 +159,7 @@ def render_setup_view():
 
         st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
 
-        submit_setup = st.form_submit_button("Calculate Emissions, Diagnose Leaks & Save →", type="primary", use_container_width=True)
+        submit_setup = st.form_submit_button("Calculate Emissions, Diagnose Leaks & Save", type="primary", use_container_width=True)
 
         if submit_setup:
             updated_data = {
@@ -195,7 +199,7 @@ def render_setup_view():
             # Persist to SQLite
             save_emissions_assessment(user_email, updated_data)
 
-            st.success("✅ Operational footprint saved & calculated! Redirecting to Dashboard...")
+            st.success("Operational footprint saved & calculated! Redirecting to Dashboard...")
             st.session_state["current_step"] = 5
             st.rerun()
 

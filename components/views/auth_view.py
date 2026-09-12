@@ -8,13 +8,18 @@ import streamlit as st
 from database.db_manager import authenticate_user, register_user
 from components.auth import login_user_session, quick_demo_login
 from components.data_presets import DEMO_USERS, DEMO_BUSINESSES
+from components.icons import feather_icon, render_icon_heading, COLOR_PRIMARY, COLOR_NEUTRAL, COLOR_SUCCESS, COLOR_WARNING
 
 def render_auth_view():
     """Renders Login & Create Business Profile screen."""
     
-    st.markdown("""
+    st.markdown(f"""
         <div style="text-align: center; margin-bottom: 24px;">
-            <span style="font-size: 2.4rem;">🔐</span>
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <div style="background: rgba(16, 185, 129, 0.12); padding: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                    {feather_icon('lock', color=COLOR_PRIMARY, size=36, margin_right=0)}
+                </div>
+            </div>
             <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
                 Enterprise Sustainability Portal
             </h2>
@@ -25,21 +30,21 @@ def render_auth_view():
     """, unsafe_allow_html=True)
 
     default_tab_idx = 1 if st.session_state.get("auth_tab") == "register" else 0
-    tab_login, tab_register, tab_demo = st.tabs(["🔑 Sign In", "🏢 Create Business Profile", "⚡ 1-Click Demo Profiles"])
+    tab_login, tab_register, tab_demo = st.tabs(["Sign In", "Create Business Profile", "1-Click Demo Profiles"])
 
     # 1. Sign In Tab
     with tab_login:
         c1, c2, c3 = st.columns([1, 2, 1])
         with c2:
-            st.markdown("""
+            st.markdown(f"""
                 <div class="saas-card">
-                    <div class="saas-card-title" style="margin-bottom: 12px;">Sign In to Your Account</div>
+                    <div class="saas-card-title" style="margin-bottom: 12px;">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Sign In to Your Account</div>
             """, unsafe_allow_html=True)
 
             with st.form("login_form"):
                 login_email = st.text_input("Work Email Address", placeholder="e.g. alex@greenbite.com")
                 login_password = st.text_input("Password", type="password", placeholder="••••••••")
-                submit_login = st.form_submit_button("Sign In →", type="primary", use_container_width=True)
+                submit_login = st.form_submit_button("Sign In", type="primary", use_container_width=True)
 
                 if submit_login:
                     if not login_email or not login_password:
@@ -56,9 +61,9 @@ def render_auth_view():
 
     # 2. Create Business Profile Tab
     with tab_register:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title" style="margin-bottom: 6px;">Register Facility & Business Profile</div>
+                <div class="saas-card-title" style="margin-bottom: 6px;">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Register Facility & Business Profile</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
                     Stored securely in the local SQLite persistence layer. This information calibrates your emissions baseline.
                 </div>
@@ -83,7 +88,7 @@ def render_auth_view():
                 p_state = st.text_input("State / Region", value="Ohio")
                 p_location = st.text_input("Factory / Facility Location", placeholder="e.g. Plant #3 - Cleveland West Park")
 
-            submit_reg = st.form_submit_button("Create Business Profile & Enter Setup →", type="primary", use_container_width=True)
+            submit_reg = st.form_submit_button("Create Business Profile & Enter Setup", type="primary", use_container_width=True)
 
             if submit_reg:
                 if not p_comp_name.strip() or not p_owner_name.strip() or not p_email.strip() or not p_password.strip():
@@ -115,11 +120,11 @@ def render_auth_view():
 
     # 3. Quick Demo Login Tab
     with tab_demo:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <div>
-                        <div class="saas-card-title">Instant 1-Click Verified Demo Accounts</div>
+                        <div class="saas-card-title">{feather_icon('zap', color=COLOR_WARNING, size=18)} Instant 1-Click Verified Demo Accounts</div>
                         <div class="saas-card-subtitle">
                             Instantly test the full platform with realistic operational data across 4 core industries:
                         </div>
@@ -135,7 +140,7 @@ def render_auth_view():
                 st.markdown(f"""
                     <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; height: 170px; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
-                            <div style="font-size: 1.6rem; margin-bottom: 4px;">{user['avatar']}</div>
+                            <div style="margin-bottom: 8px;">{feather_icon('user', color=COLOR_PRIMARY, size=24, margin_right=0)}</div>
                             <div style="font-weight: 700; font-size: 0.95rem;">{user['name']}</div>
                             <div style="font-size: 0.78rem; color: var(--text-muted);">{user['company']}</div>
                             <div style="font-size: 0.74rem; color: #10B981; font-weight: 600; margin-top: 4px;">{preset['type_label']}</div>

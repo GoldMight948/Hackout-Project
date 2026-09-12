@@ -420,6 +420,7 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
     "plastic_waste": {
         "title": "Plastic Packaging & Extrusion Waste",
         "icon": "🧴",
+        "feather_icon": "box",
         "current_impact": "High carbon footprint (2.1 kg CO2/kg) and municipal tipping costs.",
         "reuse": {
             "title": "Returnable Closed-Loop Packaging Totes",
@@ -453,6 +454,7 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
     "organic_waste": {
         "title": "Organic Food & Biological Trimmings",
         "icon": "🍎",
+        "feather_icon": "leaf",
         "current_impact": "Generates fugitive methane in landfill (0.45 kg CO2/kg).",
         "reuse": {
             "title": "Surplus Food Redistribution Network",
@@ -486,6 +488,7 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
     "metal_waste": {
         "title": "Machining Swarf, Stampings & Off-Cuts",
         "icon": "🔩",
+        "feather_icon": "settings",
         "current_impact": "High virgin material embodied energy (1.8 kg CO2/kg).",
         "reuse": {
             "title": "Secondary Small-Component Stamping",
@@ -519,6 +522,7 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
     "water_effluent": {
         "title": "Industrial Process Water & Effluent",
         "icon": "💧",
+        "feather_icon": "droplet",
         "current_impact": "Rising utility tariff + surcharge effluent penalties (0.71 kg CO2/m³).",
         "reuse": {
             "title": "Cooling Tower Bleed-Off Greywater",

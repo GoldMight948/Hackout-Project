@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from components.ml_forecast import generate_monthly_timeseries, forecast_emissions_ml, get_emission_intensity_matrix
 from components.calculations import INDUSTRY_BENCHMARKS
+from components.icons import feather_icon, render_icon_heading, COLOR_NEUTRAL, COLOR_INFO, COLOR_SUCCESS, COLOR_WARNING
 
 def render_analytics_view():
     """Renders advanced Plotly diagrams & predictive analytics."""
@@ -30,23 +31,24 @@ def render_analytics_view():
     forecast_df = forecast_emissions_ml(monthly_df, target_reduction_pct=30.0)
 
     st.markdown("""
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
                 Advanced Analytics & Systems Modeling
             </span>
-            <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-                Deep-Dive Visualizations & Circular Flow Dynamics
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--text-muted);">
-                High-fidelity Sankey material flow, departmental treemaps, intensity heatmaps, and predictive machine learning models.
-            </p>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown(render_icon_heading(
+        "bar-chart-2",
+        "Deep-Dive Visualizations & Circular Flow Dynamics",
+        level="h2",
+        color=COLOR_NEUTRAL,
+        subtitle="High-fidelity Sankey material flow, departmental treemaps, intensity heatmaps, and predictive machine learning models."
+    ), unsafe_allow_html=True)
 
     # 1. Sankey Diagram: Industrial Material Flow
-    st.markdown("""
+    st.markdown(f"""
         <div class="saas-card">
-            <div class="saas-card-title">1. Industrial Material Flow (Sankey Diagram)</div>
+            <div class="saas-card-title">{feather_icon('refresh-cw', color=COLOR_SUCCESS, size=18)} 1. Industrial Material Flow (Sankey Diagram)</div>
             <div class="saas-card-subtitle">
                 Tracks virgin material input through production, scrap generation, circular recycling, and recovered raw feedstock:
             </div>
@@ -111,9 +113,9 @@ def render_analytics_view():
     c_tree, c_heat = st.columns([1, 1], gap="large")
 
     with c_tree:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">2. Departmental Emission Treemap</div>
+                <div class="saas-card-title">{feather_icon('pie-chart', color=COLOR_INFO, size=18)} 2. Departmental Emission Treemap</div>
                 <div class="saas-card-subtitle">Hierarchical footprint allocation across plant divisions</div>
         """, unsafe_allow_html=True)
 
@@ -145,9 +147,9 @@ def render_analytics_view():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with c_heat:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">3. Monthly Emission Intensity Heatmap</div>
+                <div class="saas-card-title">{feather_icon('activity', color=COLOR_WARNING, size=18)} 3. Monthly Emission Intensity Heatmap</div>
                 <div class="saas-card-subtitle">Operational hotspot matrix across 12 months & sources</div>
         """, unsafe_allow_html=True)
 
@@ -165,8 +167,8 @@ def render_analytics_view():
             margin=dict(l=10, r=10, t=10, b=20),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(font=dict(color=chart_text_color))
+            xaxis=dict(tickfont=dict(color=chart_text_color)),
+            yaxis=dict(tickfont=dict(color=chart_text_color))
         )
         st.plotly_chart(fig_heat, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
@@ -175,9 +177,9 @@ def render_analytics_view():
     c_scatter, c_forecast = st.columns([1, 1.2], gap="large")
 
     with c_scatter:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">4. Emission vs Production Output (Scatter Plot)</div>
+                <div class="saas-card-title">{feather_icon('trending-up', color=COLOR_NEUTRAL, size=18)} 4. Emission vs Production Output (Scatter Plot)</div>
                 <div class="saas-card-subtitle">Correlation between manufacturing volume and carbon footprint</div>
         """, unsafe_allow_html=True)
 
@@ -196,27 +198,41 @@ def render_analytics_view():
             x="Production_Units",
             y="Monthly_CO2",
             text="Month",
-            trendline="ols",
             labels={"Production_Units": "Units Produced", "Monthly_CO2": "Monthly CO₂ (t)"},
             color="Monthly_CO2",
             color_continuous_scale="Viridis"
         )
-        fig_scatter.update_traces(textposition='top center', marker=dict(size=10))
+        try:
+            m, b = np.polyfit(df_scatter["Production_Units"], df_scatter["Monthly_CO2"], 1)
+            x_line = np.linspace(df_scatter["Production_Units"].min(), df_scatter["Production_Units"].max(), 50)
+            y_line = m * x_line + b
+            fig_scatter.add_trace(go.Scatter(
+                x=x_line,
+                y=y_line,
+                mode="lines",
+                name="OLS Trendline",
+                line=dict(color="#EF4444", dash="dash", width=2),
+                hoverinfo="skip"
+            ))
+        except Exception:
+            pass
+
+        fig_scatter.update_traces(textposition='top center', selector=dict(mode='markers+text'))
         fig_scatter.update_layout(
             height=300,
             margin=dict(l=10, r=10, t=10, b=20),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)'),
-            yaxis=dict(font=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
+            xaxis=dict(tickfont=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)'),
+            yaxis=dict(tickfont=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
         )
         st.plotly_chart(fig_scatter, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with c_forecast:
-        st.markdown("""
+        st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title">5. ML 12-Month Trajectory Forecasting</div>
+                <div class="saas-card-title">{feather_icon('sliders', color=COLOR_SUCCESS, size=18)} 5. ML 12-Month Trajectory Forecasting</div>
                 <div class="saas-card-subtitle">Business-As-Usual (BAU) vs Decarbonization Pathway (-30% Target)</div>
         """, unsafe_allow_html=True)
 
@@ -242,16 +258,16 @@ def render_analytics_view():
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(font=dict(color=chart_text_color)),
-            yaxis=dict(font=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
+            xaxis=dict(tickfont=dict(color=chart_text_color)),
+            yaxis=dict(tickfont=dict(color=chart_text_color), showgrid=True, gridcolor='rgba(128,128,128,0.15)')
         )
         st.plotly_chart(fig_forecast, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # 6. Industry Benchmarking Table
-    st.markdown("""
+    st.markdown(f"""
         <div class="saas-card">
-            <div class="saas-card-title">6. Peer Industry Benchmark Comparison</div>
+            <div class="saas-card-title">{feather_icon('award', color=COLOR_INFO, size=18)} 6. Peer Industry Benchmark Comparison</div>
             <div class="saas-card-subtitle">
                 How your facility compares to average sector peers across renewable share, waste diversion, and emission intensity:
             </div>
