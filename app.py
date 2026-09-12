@@ -156,13 +156,6 @@ def render_sidebar():
 
         st.markdown("<hr style='margin: 16px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
 
-        # Quick Theme Mode Toggle
-        curr_th = st.session_state.get("theme_mode", "light")
-        th_label = "🌙 Switch to Dark Mode" if curr_th == "light" else "☀️ Switch to Light Mode"
-        if st.button(th_label, key="quick_theme_toggle", use_container_width=True):
-            st.session_state["theme_mode"] = "dark" if curr_th == "light" else "light"
-            st.rerun()
-
         # Notification Panel with Feather Icons
         notif_header = feather_icon("alert-triangle", color="#95A5A6", size=18, margin_right=6)
         warn_icon = feather_icon("alert-triangle", color="#FF6B6B", size=16, margin_right=6)

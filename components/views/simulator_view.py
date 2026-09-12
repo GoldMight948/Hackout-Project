@@ -19,8 +19,7 @@ def render_simulator_view():
     baseline_inputs = res.get("raw_inputs", {})
     baseline_co2 = res["total_co2"]
     baseline_cost = res["total_cost"]
-    theme_mode = st.session_state.get("theme_mode", "light")
-    chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
+    chart_text_color = "#1E293B"
 
     st.markdown("""
         <div style="margin-bottom: 8px;">

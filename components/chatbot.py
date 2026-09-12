@@ -45,7 +45,7 @@ def detect_navigation_intent(query: str):
         return "upload"
     if any(k in q for k in ["report", "export", "pdf", "dossier", "download", "audit"]):
         return "reports"
-    if any(k in q for k in ["setting", "theme", "dark mode", "factor", "config"]):
+    if any(k in q for k in ["setting", "factor", "config", "profile"]):
         return "settings"
     return None
 

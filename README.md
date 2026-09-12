@@ -47,7 +47,7 @@ Designed for SMEs, industrial factories, manufacturers, logistics fleets, and co
     - Multi-format exports: Excel (`.xlsx` multi-sheet workbook), CSV data tables, and browser Print/PDF Audit Dossier
     - ESG compliance checklist (GHG Protocol Scope 1-3, ISO 14064, CSRD readiness)
     - Immutable SQLite data audit trail
-13. **Step 12 — Platform Settings (`settings_view.py`)**: Light/Dark theme toggle with high contrast, profile editing, and customizable regional GHG emission factors.
+13. **Step 12 — Platform Settings (`settings_view.py`)**: Organization profile editing, customizable regional GHG emission factors, and user role management.
 
 ---
 

@@ -25,8 +25,7 @@ def render_analytics_view():
         st.warning("Please complete Step 3 Setup or load a preset first.")
         return
 
-    theme_mode = st.session_state.get("theme_mode", "light")
-    chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
+    chart_text_color = "#1E293B"
     monthly_df = generate_monthly_timeseries(res["pillar_co2"])
     forecast_df = forecast_emissions_ml(monthly_df, target_reduction_pct=30.0)
 

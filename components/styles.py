@@ -1,44 +1,27 @@
 """
 Modern SaaS UI Design System & Theming Engine for Emission Leak Detector.
 Provides Microsoft Power BI / Tableau-grade styling, crisp contrast, glassmorphism,
-smooth responsiveness, and high-visibility light/dark themes.
+smooth responsiveness, and high-visibility clean SaaS theme.
 """
 
 import streamlit as st
 
 def inject_custom_css():
     """Injects responsive, enterprise-grade CSS with guaranteed text contrast and SaaS layout."""
-    # Determine current theme mode from session state (defaults to light)
-    theme_mode = st.session_state.get("theme_mode", "light")
-    
-    if theme_mode == "dark":
-        bg_main = "#0F172A"
-        bg_card = "#1E293B"
-        bg_card_hover = "#243248"
-        bg_subtle = "#182234"
-        text_primary = "#F8FAFC"
-        text_secondary = "#CBD5E1"
-        text_muted = "#94A3B8"
-        border_color = "#334155"
-        border_hover = "#475569"
-        shadow_card = "0 6px 20px rgba(0, 0, 0, 0.3)"
-        input_bg = "#0F172A"
-        input_text = "#F8FAFC"
-        metric_bg = "#182234"
-    else:
-        bg_main = "#F8FAFC"
-        bg_card = "#FFFFFF"
-        bg_card_hover = "#F1F5F9"
-        bg_subtle = "#F8FAFC"
-        text_primary = "#0F172A"
-        text_secondary = "#334155"
-        text_muted = "#64748B"
-        border_color = "#E2E8F0"
-        border_hover = "#CBD5E1"
-        shadow_card = "0 4px 16px rgba(0, 0, 0, 0.04)"
-        input_bg = "#FFFFFF"
-        input_text = "#0F172A"
-        metric_bg = "#F8FAFC"
+    # Enterprise Light Theme Design Variables
+    bg_main = "#F8FAFC"
+    bg_card = "#FFFFFF"
+    bg_card_hover = "#F1F5F9"
+    bg_subtle = "#F8FAFC"
+    text_primary = "#0F172A"
+    text_secondary = "#334155"
+    text_muted = "#64748B"
+    border_color = "#E2E8F0"
+    border_hover = "#CBD5E1"
+    shadow_card = "0 4px 16px rgba(0, 0, 0, 0.04)"
+    input_bg = "#FFFFFF"
+    input_text = "#0F172A"
+    metric_bg = "#F8FAFC"
 
     custom_css = f"""
     <style>

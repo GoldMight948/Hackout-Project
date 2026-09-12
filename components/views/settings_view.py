@@ -1,7 +1,7 @@
 """
 Step 12: Settings & Administration View.
 Enables user profile editing, updating carbon credit spot prices,
-customizing GHG Protocol emission factors, toggling Dark/Light Mode, and managing user roles.
+customizing GHG Protocol emission factors, and managing user roles.
 """
 
 import streamlit as st
@@ -25,62 +25,17 @@ def render_settings_view():
     """, unsafe_allow_html=True)
     st.markdown(render_icon_heading(
         "settings",
-        "Configuration, Theming & Emission Factor Settings",
+        "Configuration & Emission Factor Settings",
         level="h2",
         color=COLOR_SECONDARY,
-        subtitle="Update organization details, calibrate regional carbon market prices, or toggle between Light and Dark interface themes."
+        subtitle="Update organization details, calibrate regional carbon market prices, and manage user roles."
     ), unsafe_allow_html=True)
 
-    tab_theme, tab_profile, tab_factors, tab_account = st.tabs([
-        "Appearance & Theme", "Business Profile", "Emission Factors & Pricing", "Account & Role"
+    tab_profile, tab_factors, tab_account = st.tabs([
+        "Business Profile", "Emission Factors & Pricing", "Account & Role"
     ])
 
-    # Tab 1: Appearance & Theme
-    with tab_theme:
-        st.markdown(f"""
-            <div class="saas-card">
-                <div class="saas-card-title">{feather_icon('sun', color=COLOR_NEUTRAL, size=18)} Interface Theme & Visual Contrast</div>
-                <div class="saas-card-subtitle" style="margin-bottom: 16px;">
-                    Ensure high contrast and readability across daytime and evening environments:
-                </div>
-        """, unsafe_allow_html=True)
-
-        current_theme = st.session_state.get("theme_mode", "light")
-        col_th1, col_th2 = st.columns(2)
-
-        with col_th1:
-            st.markdown(f"""
-                <div style="padding: 16px; border: 2px solid {'#10B981' if current_theme == 'light' else 'var(--border-color)'}; border-radius: 12px; background: #FFFFFF; color: #0F172A;">
-                    <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center;">
-                        {feather_icon('sun', color='#F59E0B', size=20)} <span>Clean Light SaaS Mode</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #64748B; margin-top: 6px;">
-                        Optimized for well-lit office environments and executive presentations.
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            if st.button("Activate Light Theme", key="btn_theme_light", use_container_width=True, type="primary" if current_theme == "light" else "secondary"):
-                st.session_state["theme_mode"] = "light"
-                st.rerun()
-
-        with col_th2:
-            st.markdown(f"""
-                <div style="padding: 16px; border: 2px solid {'#10B981' if current_theme == 'dark' else 'var(--border-color)'}; border-radius: 12px; background: #0F172A; color: #F8FAFC;">
-                    <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center;">
-                        {feather_icon('moon', color='#818CF8', size=20)} <span>High-Contrast Dark Mode</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 6px;">
-                        Deep navy glassmorphism with high-contrast emerald and amber accents.
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            if st.button("Activate Dark Theme", key="btn_theme_dark", use_container_width=True, type="primary" if current_theme == "dark" else "secondary"):
-                st.session_state["theme_mode"] = "dark"
-                st.rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # Tab 2: Business Profile
+    # Tab 1: Business Profile
     with tab_profile:
         st.markdown(f"""
             <div class="saas-card">

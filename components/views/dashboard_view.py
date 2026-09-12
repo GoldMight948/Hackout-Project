@@ -69,8 +69,7 @@ def render_dashboard_view():
     user_logs = get_activity_logs(user_email, limit=500)
     audit_data = calculate_carbon_credit_audit(user, user_logs, res)
     comp_name = res.get("raw_inputs", {}).get("business_name") or st.session_state.get("form_inputs", {}).get("business_name") or user.get("company_name", "Enterprise Facility")
-    theme_mode = st.session_state.get("theme_mode", "light")
-    chart_text_color = "#F8FAFC" if theme_mode == "dark" else "#1E293B"
+    chart_text_color = "#1E293B"
 
     # Demo Profile Isolation Banner
     if is_demo:
