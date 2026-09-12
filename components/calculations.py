@@ -36,25 +36,25 @@ EMISSION_FACTORS = {
     "machine_hour": 0.0085,          # 8.5 kg CO2e / machine running hour (idle & wear)
 }
 
-# Standard Commercial Cost Factors ($ USD per unit)
+# Standard Commercial Cost Factors (₹ INR per unit)
 COST_FACTORS = {
-    "electricity": 0.155,       # $ / kWh
-    "diesel": 1.42,             # $ / Liter
-    "petrol": 1.35,             # $ / Liter
-    "natural_gas": 0.65,        # $ / m³
-    "truck": 0.85,              # $ / km (fuel, maintenance, wear)
-    "car": 0.35,                # $ / km
-    "commute": 0.20,            # $ / km
-    "delivery_vehicle": 4200.0, # $ / vehicle annual service overhead
-    "waste_organic": 0.08,      # $ / kg tipping fee
-    "waste_plastic": 0.18,      # $ / kg
-    "waste_metal": 0.22,        # $ / kg
-    "waste_paper": 0.11,        # $ / kg
-    "waste_hazardous": 0.75,    # $ / kg specialized disposal
-    "water_supply": 2.45,       # $ / m³
-    "wastewater": 3.80,         # $ / m³ sewer surcharge
-    "raw_material": 480.0,      # $ / tonne
-    "machine_hour": 32.0,       # $ / hour operating overhead
+"electricity": 12.87,       # ₹ / kWh
+"diesel": 117.9,             # ₹ / Liter
+"petrol": 112.1,             # ₹ / Liter
+"natural_gas": 53.95,        # ₹ / m³
+"truck": 70.55,              # ₹ / km (fuel, maintenance, wear)
+"car": 29.05,                # ₹ / km
+"commute": 16.60,            # ₹ / km
+"delivery_vehicle": 348600.0, # ₹ / vehicle annual service overhead
+"waste_organic": 6.64,      # ₹ / kg tipping fee
+"waste_plastic": 14.94,      # ₹ / kg
+"waste_metal": 18.26,        # ₹ / kg
+"waste_paper": 9.13,        # ₹ / kg
+"waste_hazardous": 62.25,    # ₹ / kg specialized disposal
+"water_supply": 203.4,       # ₹ / m³
+"wastewater": 315.4,         # ₹ / m³ sewer surcharge
+"raw_material": 39840.0,      # ₹ / tonne
+"machine_hour": 2656.0,       # ₹ / hour operating overhead
 }
 
 # Industry Benchmarks (average t CO2e per 1,000 units or normalized turnover)
@@ -103,7 +103,7 @@ INDUSTRY_QUOTA_BENCHMARKS = {
     "Food Processing": {
         "annual_per_employee_co2": 6.8,
         "min_credits": 250.0,
-        "benchmark_price": 35.0,
+        "benchmark_price": 2905.0,
         "regulatory_regime": "Agri-Industrial Processing Quota",
         "description": "Commercial refrigeration, industrial ovens, steam boilers, and food canning"
     },
@@ -270,7 +270,7 @@ def calculate_carbon_credit_audit(
     else:
         audit_verdict = "QUOTA DEFICIT WARNING 🔴"
         audit_status_color = "#EF4444"
-        audit_summary_text = f"Operational run-rate ({expected_annual_burn:,.1f} t) exceeds initial government quota ({initial_govt_quota:,.0f} t). Projected deficit: {projected_credits_needed:,.1f} credits (${projected_compliance_cost:,.0f} liability)."
+        audit_summary_text = f"Operational run-rate ({expected_annual_burn:,.1f} t) exceeds initial government quota ({initial_govt_quota:,.0f} t). Projected deficit: {projected_credits_needed:,.1f} credits (₹{projected_compliance_cost:,.0f} liability)."
         
     return {
         # Government Quota
@@ -374,7 +374,7 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
     govt_credits = max(0.0, float(gc_val if gc_val is not None else 150.0))
 
     cp_val = inputs.get("credit_price") if inputs.get("credit_price") is not None else inputs.get("carbon_credit_price")
-    credit_price = max(1.0, float(cp_val if cp_val is not None else 35.0))
+    credit_price = max(1.0, float(cp_val if cp_val is not None else 2905.0))
 
     # 2. Emission Calculations (t CO2e)
     # Electricity takes renewable share into account
@@ -409,7 +409,7 @@ def calculate_detailed_emissions(inputs: Dict[str, Any]) -> Dict[str, Any]:
     # Total CO2e
     total_co2 = round(co2_energy + co2_transport + co2_waste + co2_water_total + co2_manufacturing, 2)
 
-    # 3. Cost Calculations ($ USD)
+    # 3. Cost Calculations (₹ INR)
     cost_electricity = round(elec_kwh * COST_FACTORS["electricity"], 0)
     cost_diesel = round(diesel_l * COST_FACTORS["diesel"], 0)
     cost_petrol = round(petrol_l * COST_FACTORS["petrol"], 0)
@@ -864,7 +864,7 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "difficulty": "Medium",
                 "impact_level": "High",
                 "circular_benefit": "Prevents incomplete hydrocarbon combustion and cuts NOx emissions by 40%.",
-                "govt_incentives": "Regional Clean Air District Energy Abatement Rebate ($2,500 direct incentive)."
+                "govt_incentives": "Regional Clean Air District Energy Abatement Rebate (₹207,500 direct incentive)."
             }
         ],
         "Grid Electricity Base-Load": [
@@ -896,7 +896,7 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "difficulty": "Easy",
                 "impact_level": "High",
                 "circular_benefit": "Old fixtures recycled via verified zero-landfill e-waste handlers; LED life exceeds 60,000 hours.",
-                "govt_incentives": "Commercial Electric Utility Rebate covers up to $45 per replaced high-bay fixture."
+                "govt_incentives": "Commercial Electric Utility Rebate covers up to ₹3,735 per replaced high-bay fixture."
             },
             {
                 "id_prefix": "rec_motor_vfd",
@@ -911,7 +911,7 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "difficulty": "Medium",
                 "impact_level": "High",
                 "circular_benefit": "Affinity laws reduce power by 50% at 80% motor speed, extending motor bearing lifespan 3x.",
-                "govt_incentives": "State Energy Efficiency Trust VFD Incentive ($60/horsepower rebate)."
+                "govt_incentives": "State Energy Efficiency Trust VFD Incentive (₹4,980/horsepower rebate)."
             }
         ],
         "Grid Electricity Baseline Load": [
@@ -960,7 +960,7 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "difficulty": "Hard",
                 "impact_level": "Critical",
                 "circular_benefit": "Zero direct tailpipe emissions; second-life battery repurposing program included.",
-                "govt_incentives": "Clean Commercial Vehicle Federal Credit up to $7,500/vehicle + 50% EV charger grant."
+                "govt_incentives": "Clean Commercial Vehicle Federal Credit up to ₹622,500/vehicle + 50% EV charger grant."
             }
         ],
         "Non-Recycled Landfill Plastics": [
@@ -1028,7 +1028,7 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "difficulty": "Easy",
                 "impact_level": "Medium",
                 "circular_benefit": "Eliminates single-use plastic air pillows and cuts packaging material procurement spend.",
-                "govt_incentives": "Waste Minimization Small Business Rebate ($1,000 grant)."
+                "govt_incentives": "Waste Minimization Small Business Rebate (₹83,000 grant)."
             }
         ],
         "Untreated Industrial Wastewater Discharge": [
@@ -1172,12 +1172,12 @@ def generate_hotspot_recommendations(emissions_res: Dict[str, Any], user_prof: O
                 "hotspot_priority_tag": priority_tag,
                 "co2_saved_t": co2_saved,
                 "co2_saved_pct": share_saved_pct,
-                "cost_estimate": f"${capex_min:,.0f} – ${capex_max:,.0f}",
-                "annual_savings_usd": dollar_savings_annual,
+                "cost_estimate": f"₹{capex_min:,.0f} – ₹{capex_max:,.0f}",
+                "annual_savings_inr": dollar_savings_annual,
                 "expected_roi": roi_pct,
                 "payback_time": payback_str,
                 "credits_saved": co2_saved,
-                "compliance_value_usd": round(co2_saved * credit_price, 0),
+                "compliance_value_inr": round(co2_saved * credit_price, 0),
                 "difficulty": sol["difficulty"],
                 "impact_level": sol["impact_level"],
                 "circular_benefit": sol["circular_benefit"],

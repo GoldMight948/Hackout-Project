@@ -199,7 +199,7 @@ def render_upload_view():
         {"Category": "Manufacturing", "Metric": "Production Output Units", "Value": float(current_inputs.get("production_units", 150000.0)), "Unit": "units / yr"},
         {"Category": "Manufacturing", "Metric": "Machine Running Hours", "Value": float(current_inputs.get("machine_hours", 3200.0)), "Unit": "hrs / yr"},
         {"Category": "Carbon Credits", "Metric": "Allocated Carbon Credits", "Value": float(current_inputs.get("total_credits", 350.0)), "Unit": "Credits (t CO2)"},
-        {"Category": "Carbon Credits", "Metric": "Carbon Credit Price", "Value": float(current_inputs.get("credit_price", 38.0)), "Unit": "$ / Credit"}
+        {"Category": "Carbon Credits", "Metric": "Carbon Credit Price", "Value": float(current_inputs.get("credit_price", 38.0)), "Unit": "₹ / Credit"}
     ]
 
     df_editor = pd.DataFrame(grid_rows)

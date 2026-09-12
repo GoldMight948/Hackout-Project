@@ -80,7 +80,7 @@ def init_db():
             production_units REAL DEFAULT 0,
             machine_hours REAL DEFAULT 0,
             total_credits REAL DEFAULT 0,
-            credit_price REAL DEFAULT 35.0,
+            credit_price REAL DEFAULT 2905.0,
             current_balance REAL DEFAULT 0,
             total_co2 REAL DEFAULT 0,
             total_cost REAL DEFAULT 0,
@@ -433,7 +433,7 @@ def save_emissions_assessment(user_email: str, data: Dict[str, Any], is_demo: Op
         float(data.get("production_units", 0)),
         float(data.get("machine_hours", data.get("machine_running_hours", 0))),
         float(data.get("total_credits", 0)),
-        float(data.get("credit_price", 35.0)),
+        float(data.get("credit_price", 2905.0)),
         float(data.get("current_balance", 0)),
         float(data.get("total_co2", 0)),
         float(data.get("total_cost", 0)),
@@ -1015,7 +1015,7 @@ def record_market_transaction(user_email: str, tx_type: str, credits: float, pri
     conn.commit()
     conn.close()
 
-    log_audit(user_email, f"MARKET_{tx_type.upper()}", "Carbon Credits", "", f"{credits} credits @ ${price_per_credit} = ${total_val}")
+    log_audit(user_email, f"MARKET_{tx_type.upper()}", "Carbon Credits", "", f"{credits} credits @ ₹{price_per_credit} = ₹{total_val}")
     return tx_id
 
 def get_market_transactions(user_email: str) -> List[Dict[str, Any]]:

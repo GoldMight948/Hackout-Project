@@ -132,7 +132,7 @@ def render_settings_view():
         with st.form("factors_form"):
             cf1, cf2 = st.columns(2)
             with cf1:
-                f_price = st.number_input("Carbon Credit Market Price ($/tonne)", min_value=1.0, value=float(st.session_state.get("form_inputs", {}).get("credit_price", 38.0)), step=1.0)
+                f_price = st.number_input("Carbon Credit Market Price (₹/tonne)", min_value=1.0, value=float(st.session_state.get("form_inputs", {}).get("credit_price", 38.0)), step=1.0)
                 f_elec = st.number_input("Grid Electricity Factor (t CO₂e/kWh)", min_value=0.00001, max_value=0.005, value=float(EMISSION_FACTORS["electricity_grid"]), format="%.5f")
                 f_diesel = st.number_input("Diesel Combustion Factor (t CO₂e/L)", min_value=0.0001, max_value=0.01, value=float(EMISSION_FACTORS["diesel"]), format="%.5f")
             with cf2:

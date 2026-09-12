@@ -118,7 +118,7 @@ def generate_copilot_response(user_prompt: str, user_email: str, company_name: s
             f"- **Primary Operational Leak**: `{top_pillar[0]}` ({top_pillar[1]:,.1f} t CO₂e)\n"
             f"- **Government Carbon Quota**: `{govt_credits:,.0f} credits`\n"
             f"- **Net Compliance Position**: `{'⚠️ Deficit: ' + f'{credits_required:,.1f} tonnes' if is_deficit else '🟢 Surplus: ' + f'{credits_remaining:,.1f} credits'}`\n"
-            f"- **Statutory Financial Liability**: `${comp_cost:,.0f}` (benchmark `${credit_price:,.0f}/credit`)\n"
+            f"- **Statutory Financial Liability**: `₹{comp_cost:,.0f}` (benchmark `₹{credit_price:,.0f}/credit`)\n"
             f"- **Sustainability Eco-Score**: `{s_score:.0f} / 100` ({grade})\n"
             f"- **High-Frequency Ledger**: `{agg_activity['total_entries']} entries logged` (`{agg_activity['total_diesel_liters']:,.0f} L diesel`, `{agg_activity['total_gas_m3']:,.0f} m³ gas`, `{agg_activity['total_waste_kg']:,.0f} kg waste`)\n\n"
             f"Would you like to jump to any operational area or log new entries?"
@@ -140,7 +140,7 @@ def generate_copilot_response(user_prompt: str, user_email: str, company_name: s
             rec_lines.append(
                 f"{i}. **{rec['title']}** ({badge})\n"
                 f"   - **CO₂ Saved**: Cuts `{rec['co2_saved_t']:,.1f} t CO₂e/yr` ({rec['co2_saved_pct']:.1f}% of total)\n"
-                f"   - **Financial Savings**: `${rec['annual_savings_usd']:,.0f}/yr` &bull; CapEx `{rec['cost_estimate']}` &bull; ROI `{rec['expected_roi']}`\n"
+                f"   - **Financial Savings**: `₹{rec['annual_savings_inr']:,.0f}/yr` &bull; CapEx `{rec['cost_estimate']}` &bull; ROI `{rec['expected_roi']}`\n"
                 f"   - **Incentive**: {rec.get('govt_incentives', 'Standard green transition tax credit')}"
             )
         recs_formatted = "\n\n".join(rec_lines)
@@ -203,7 +203,7 @@ def generate_copilot_response(user_prompt: str, user_email: str, company_name: s
                 f"- **Government Allocation**: `{govt_credits:,.0f} credits`\n"
                 f"- **Credits Consumed**: `{credits_used:,.1f} tonnes CO₂e`\n"
                 f"- **Net Deficit**: `{credits_required:,.1f} tonnes` beyond statutory quota\n"
-                f"- **Compliance Financial Liability**: `${comp_cost:,.0f}` (based on statutory rate of `${credit_price:,.0f}/credit`)\n\n"
+                f"- **Compliance Financial Liability**: `₹{comp_cost:,.0f}` (based on statutory rate of `₹{credit_price:,.0f}/credit`)\n\n"
                 f"💡 **Recommendation**: Purchase verified offsets on the Carbon Credit Desk or implement equipment retrofits to mitigate compliance penalties."
             )
         else:
@@ -212,7 +212,7 @@ def generate_copilot_response(user_prompt: str, user_email: str, company_name: s
                 f"- **Allocated Quota**: `{govt_credits:,.0f} credits`\n"
                 f"- **Credits Consumed**: `{credits_used:,.1f} tonnes`\n"
                 f"- **Surplus Registry Balance**: `{credits_remaining:,.1f} excess credits`\n"
-                f"- **Monetization Potential**: You can trade surplus credits on the spot exchange for approximately `${credits_remaining * credit_price:,.0f}`!"
+                f"- **Monetization Potential**: You can trade surplus credits on the spot exchange for approximately `₹{credits_remaining * credit_price:,.0f}`!"
             )
         return {"text": text, "nav_target": "carbon_credits", "suggestions": ["🌍 Open Carbon Credit Desk", "🔥 View Emission Leaks", "📊 View Dashboard"]}
 

@@ -141,7 +141,7 @@ def render_recommendations_view():
                         </div>
                         <div>
                             <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('dollar-sign', color=COLOR_SUCCESS, size=13, margin_right=4)} Annual Savings:</span>
-                            <strong style="color: #059669; font-size: 0.95rem;">+${rec.get('annual_savings_usd', 0):,.0f}/yr</strong>
+                            <strong style="color: #059669; font-size: 0.95rem;">+₹{rec.get('annual_savings_inr', 0):,.0f}/yr</strong>
                         </div>
                         <div>
                             <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('briefcase', color=COLOR_NEUTRAL, size=13, margin_right=4)} Est. Investment:</span>

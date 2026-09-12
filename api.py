@@ -42,7 +42,7 @@ class EmissionInputModel(BaseModel):
     production_units: float = Field(0.0, ge=0.0, description="Total units produced")
     machine_running_hours: float = Field(0.0, ge=0.0, description="Machine operating hours")
     total_credits: float = Field(0.0, ge=0.0, description="Government allocated carbon credits")
-    credit_price: float = Field(35.0, ge=1.0, description="Carbon credit market price ($/t)")
+    credit_price: float = Field(2905.0, ge=1.0, description="Carbon credit market price (₹/t)")
 
 class SimulationInputModel(BaseModel):
     baseline_data: EmissionInputModel

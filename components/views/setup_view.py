@@ -171,7 +171,7 @@ def render_setup_view():
         with c_c1:
             inp_credits = st.number_input("Total Carbon Credits Allocated (tonnes)", min_value=0.0, value=def_credits, step=25.0, help="Statutory compliance allowance assigned by environmental agency")
         with c_c2:
-            inp_price = st.number_input("Carbon Credit Market Price ($ / tonne)", min_value=1.0, value=def_price, step=1.0, help="Prevailing spot carbon trading price")
+            inp_price = st.number_input("Carbon Credit Market Price (₹ / tonne)", min_value=1.0, value=def_price, step=1.0, help="Prevailing spot carbon trading price")
         with c_c3:
             inp_bal = st.number_input("Current Credit Balance (tonnes)", min_value=0.0, value=def_bal, step=25.0, help="Current available credit reserve in registry")
 

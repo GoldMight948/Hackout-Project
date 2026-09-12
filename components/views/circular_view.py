@@ -116,7 +116,7 @@ def render_circular_view():
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 12px; min-width: 160px;">
                     <div style="margin-bottom: 6px;">{feather_icon('dollar-sign', color='#059669', size=28, margin_right=0)}</div>
                     <strong style="font-size: 0.95rem;">Cost Recovery</strong>
-                    <div style="font-size: 0.8rem; color: #059669; margin-top: 2px;">Up to $8,200/yr Saved</div>
+                    <div style="font-size: 0.8rem; color: #059669; margin-top: 2px;">Up to ₹680,600/yr Saved</div>
                 </div>
                 <div style="font-size: 1.4rem; color: var(--text-muted);">{feather_icon('arrow-right', color='var(--text-muted)', size=20, margin_right=0)}</div>
                 <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 12px; min-width: 160px;">

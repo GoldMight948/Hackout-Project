@@ -52,11 +52,11 @@ def render_reports_view():
         df_summary = pd.DataFrame([{
             "Company": comp_name,
             "Total Baseline CO2 (tonnes)": res["total_co2"],
-            "Annual Operational Spend ($)": res["total_cost"],
+            "Annual Operational Spend (₹)": res["total_cost"],
             "Govt Credits Allocated": res["govt_credits"],
             "Credit Balance": res["credit_balance"],
             "Compliance Status": res["net_carbon_status"],
-            "Estimated Compliance Cost ($)": res["compliance_cost"],
+            "Estimated Compliance Cost (₹)": res["compliance_cost"],
             "Sustainability Score (0-100)": res["sustainability_score"]
         }])
 
@@ -130,7 +130,7 @@ def render_reports_view():
                 f"SUSTAINABILITY AUDIT BRIEF — {comp_name.upper()}\n"
                 f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                 f"• Gross Operational Emissions: {res['total_co2']:,.1f} tonnes CO₂e/yr\n"
-                f"• Direct Annual Cost Exposure: ${res['total_cost']:,.0f}/yr\n"
+                f"• Direct Annual Cost Exposure: ₹{res['total_cost']:,.0f}/yr\n"
                 f"• Statutory Government Cap: {res['govt_credits']:,.0f} carbon credits\n"
                 f"• Net Compliance Status: {res['net_carbon_status']}\n"
                 f"• Compliance Deficit / Surplus: {res['credit_balance']:+,.1f} credits\n"
@@ -162,7 +162,7 @@ def render_reports_view():
                             <strong>Operational Key Metrics:</strong>
                             <ul style="margin: 6px 0 12px 20px; padding: 0; line-height: 1.6;">
                                 <li>Total Greenhouse Footprint: <strong>{res['total_co2']:,.1f} tonnes CO₂e</strong></li>
-                                <li>Associated Operational Utilities: <strong>${res['total_cost']:,.0f} / yr</strong></li>
+                                <li>Associated Operational Utilities: <strong>₹{res['total_cost']:,.0f} / yr</strong></li>
                                 <li>Regulatory Status: <strong>{res['net_carbon_status']}</strong></li>
                                 <li>Eco Sustainability Rating: <strong>{str(res['sustainability_score'])} / 100</strong></li>
                             </ul>

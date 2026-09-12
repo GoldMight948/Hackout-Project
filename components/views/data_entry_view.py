@@ -205,7 +205,7 @@ def render_data_entry_view():
             def_mach_hours = float(inputs.get("machine_hours", inputs.get("machine_running_hours", 3200.0)))
 
             def_credits = float(inputs.get("total_credits") or inputs.get("total_carbon_credits", 250.0))
-            def_price = float(inputs.get("credit_price") or inputs.get("carbon_credit_price", 35.0))
+            def_price = float(inputs.get("credit_price") or inputs.get("carbon_credit_price", 2905.0))
 
             # Pillar 1: Energy
             st.markdown(f"<div style='font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center;'>{feather_icon('zap', color=COLOR_WARNING, size=18, margin_right=6)} 1. Energy & Thermal Fuels</div>", unsafe_allow_html=True)
@@ -271,7 +271,7 @@ def render_data_entry_view():
             with c_d_c1:
                 d_cred = st.number_input("Statutory Carbon Quota (tonnes allowance)", min_value=0.0, value=def_credits, step=25.0)
             with c_d_c2:
-                d_cprice = st.number_input("Market Trading Price ($ / tonne)", min_value=1.0, value=def_price, step=1.0)
+                d_cprice = st.number_input("Market Trading Price (₹ / tonne)", min_value=1.0, value=def_price, step=1.0)
 
         st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
         submit_btn = st.form_submit_button(
@@ -328,7 +328,7 @@ def render_data_entry_view():
                 "raw_material_tonnes": None,
                 "machine_hours": None,
                 "total_credits": None,
-                "credit_price": 35.0
+                "credit_price": 2905.0
             }
         else:
             tot_act = d_elec + d_diesel + d_petrol + d_gas + d_truck + d_car + d_commute + d_org + d_plas

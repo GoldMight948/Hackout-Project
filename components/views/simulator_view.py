@@ -177,8 +177,8 @@ def render_simulator_view():
         with m2:
             st.metric(
                 label="Annual Cost Savings",
-                value=f"${diff_cost:,.0f} / yr",
-                delta=f"${diff_cost:,.0f} recovered",
+                value=f"₹{diff_cost:,.0f} / yr",
+                delta=f"₹{diff_cost:,.0f} recovered",
                 delta_color="normal"
             )
         with m3:
@@ -217,7 +217,7 @@ def render_simulator_view():
                     <div>
                         <strong style="font-size: 0.95rem;">New Net Carbon Status:</strong>
                         <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
-                            {'Surplus of ' + str(sim_res['credits_remaining']) + ' credits available to sell (+$' + f"{sim_res['est_revenue']:,.0f}" + ')' if not sim_res['is_deficit'] else 'Deficit reduced to ' + str(sim_res['credits_required']) + ' credits'}
+                            {'Surplus of ' + str(sim_res['credits_remaining']) + ' credits available to sell (+₹' + f"{sim_res['est_revenue']:,.0f}" + ')' if not sim_res['is_deficit'] else 'Deficit reduced to ' + str(sim_res['credits_required']) + ' credits'}
                         </div>
                     </div>
                     <span class="{'badge-low' if not sim_res['is_deficit'] else 'badge-critical'}">

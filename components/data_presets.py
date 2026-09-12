@@ -98,7 +98,7 @@ DEMO_BUSINESSES: Dict[str, Dict[str, Any]] = {
             "machine_hours": 900.0,
             # Government Carbon Credits
             "total_credits": 120.0,
-            "credit_price": 35.0,
+            "credit_price": 2905.0,
             "current_balance": 120.0
         }
     },
@@ -251,7 +251,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Retrofit all high-bay warehouse and office fixtures with smart dimmed LEDs and motion daylight harvest sensors.",
         "co2_saved_t": 18.5,
         "co2_saved_pct": 14.0,
-        "cost_estimate": "$2,800 – $4,500",
+        "cost_estimate": "₹232,400 – ₹373,500",
         "expected_roi": 145.0,
         "payback_time": "5 months",
         "difficulty": "Easy",
@@ -268,7 +268,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Deploy rooftop bifacial monocrystalline solar panels with smart inverter to power daytime peak loads directly.",
         "co2_saved_t": 68.0,
         "co2_saved_pct": 38.0,
-        "cost_estimate": "$42,000 – $75,000",
+        "cost_estimate": "₹3,486,000 – ₹6,225,000",
         "expected_roi": 28.0,
         "payback_time": "3.8 years",
         "difficulty": "Hard",
@@ -285,7 +285,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Wrap bare steam pipes, boiler manifold valves, and hot condensate lines with custom fiberglass removable blankets.",
         "co2_saved_t": 22.0,
         "co2_saved_pct": 16.0,
-        "cost_estimate": "$1,400 – $2,800",
+        "cost_estimate": "₹116,200 – ₹232,400",
         "expected_roi": 180.0,
         "payback_time": "4 months",
         "difficulty": "Easy",
@@ -302,13 +302,13 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Transition short-haul urban delivery vans to battery electric commercial vehicles with depot overnight Level 2 charging.",
         "co2_saved_t": 44.0,
         "co2_saved_pct": 48.0,
-        "cost_estimate": "$35,000 – $65,000 per van",
+        "cost_estimate": "₹2,905,000 – ₹5,395,000 per van",
         "expected_roi": 32.0,
         "payback_time": "3.2 years",
         "difficulty": "Medium",
         "impact_level": "Critical",
         "circular_benefit": "Eliminates diesel tailpipe particulate matter; battery recycling agreement included in lease.",
-        "govt_incentives": "Clean Commercial Vehicle Credit up to $7,500/vehicle + State EV charger installation subsidy.",
+        "govt_incentives": "Clean Commercial Vehicle Credit up to ₹622,500/vehicle + State EV charger installation subsidy.",
         "credits_saved": 44.0
     },
     {
@@ -319,7 +319,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Deploy dynamic GPS dispatch routing software with automated 3-minute idle engine cutoff and driving scorecards.",
         "co2_saved_t": 19.5,
         "co2_saved_pct": 18.0,
-        "cost_estimate": "$1,200 / yr subscription",
+        "cost_estimate": "₹99,600 / yr subscription",
         "expected_roi": 210.0,
         "payback_time": "2 months",
         "difficulty": "Easy",
@@ -336,13 +336,13 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Install on-site microfiltration and reverse osmosis skids to recycle cooling tower and equipment washdown water.",
         "co2_saved_t": 14.8,
         "co2_saved_pct": 35.0,
-        "cost_estimate": "$8,500 – $16,000",
+        "cost_estimate": "₹705,500 – ₹1,328,000",
         "expected_roi": 65.0,
         "payback_time": "14 months",
         "difficulty": "Medium",
         "impact_level": "High",
         "circular_benefit": "Achieves 65% water reuse, cutting sewer effluent surcharges and freshwater municipal consumption.",
-        "govt_incentives": "Regional Water District Conservation grant up to $5,000.",
+        "govt_incentives": "Regional Water District Conservation grant up to ₹415,000.",
         "credits_saved": 14.8
     },
     {
@@ -353,7 +353,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Capture 200°C+ thermal exhaust from ovens or boilers with a shell-and-tube heat exchanger to pre-heat boiler makeup water.",
         "co2_saved_t": 31.0,
         "co2_saved_pct": 24.0,
-        "cost_estimate": "$11,000 – $22,000",
+        "cost_estimate": "₹913,000 – ₹1,826,000",
         "expected_roi": 55.0,
         "payback_time": "18 months",
         "difficulty": "Medium",
@@ -370,7 +370,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Replace fossil heating oil burner with automated clean-burn compressed wood biomass pellet furnace.",
         "co2_saved_t": 28.5,
         "co2_saved_pct": 52.0,
-        "cost_estimate": "$15,000 – $28,000",
+        "cost_estimate": "₹1,245,000 – ₹2,324,000",
         "expected_roi": 42.0,
         "payback_time": "2.5 years",
         "difficulty": "Medium",
@@ -387,13 +387,13 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Add intelligent VFD controllers to large 15kW+ HVAC blowers, air compressors, and process conveyor motors.",
         "co2_saved_t": 24.0,
         "co2_saved_pct": 22.0,
-        "cost_estimate": "$4,500 – $9,000",
+        "cost_estimate": "₹373,500 – ₹747,000",
         "expected_roi": 85.0,
         "payback_time": "11 months",
         "difficulty": "Medium",
         "impact_level": "High",
         "circular_benefit": "Stops motor throttling mechanical strain, doubling equipment operational lifespan and reducing scrap.",
-        "govt_incentives": "Electric Utility Motor Efficiency Rebate up to $80 per installed horsepower.",
+        "govt_incentives": "Electric Utility Motor Efficiency Rebate up to ₹6,640 per installed horsepower.",
         "credits_saved": 24.0
     },
     {
@@ -404,7 +404,7 @@ AI_RECOMMENDATIONS: List[Dict[str, Any]] = [
         "description": "Mount ultrasound acoustic and vibration IoT monitors to detect compressed air leaks and bearing friction early.",
         "co2_saved_t": 16.5,
         "co2_saved_pct": 19.0,
-        "cost_estimate": "$2,200 – $4,200",
+        "cost_estimate": "₹182,600 – ₹348,600",
         "expected_roi": 190.0,
         "payback_time": "4 months",
         "difficulty": "Easy",
@@ -426,28 +426,28 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
             "title": "Returnable Closed-Loop Packaging Totes",
             "partner": "ReLoop Supply Logistics",
             "mechanism": "Replace single-use stretch film and corrugated boxes with collapsible heavy-duty PP returnable totes with RFID tracking.",
-            "cost_saving": "$3,200 / yr",
+            "cost_saving": "₹265,600 / yr",
             "carbon_saving": "12.5 tonnes CO2 / yr"
         },
         "recycle": {
             "title": "Certified PCR Regrind Partner",
             "partner": "EcoPolymer Recycling Inc.",
             "mechanism": "Sort clean HDPE and LDPE scrap on-site in dedicated balers; partner collects and returns as 30% recycled content resin.",
-            "cost_saving": "$2,400 / yr",
+            "cost_saving": "₹199,200 / yr",
             "carbon_saving": "18.2 tonnes CO2 / yr"
         },
         "recover": {
             "title": "Engineered Solid Refuse Fuel (SRF)",
             "partner": "Thermal Recovery Energy Hub",
             "mechanism": "Divert contaminated non-recyclable multi-layer films to authorized industrial cement kiln energy recovery.",
-            "cost_saving": "$950 / yr",
+            "cost_saving": "₹78,850 / yr",
             "carbon_saving": "7.8 tonnes CO2 / yr"
         },
         "replace": {
             "title": "Bio-Compostable Molded Mycelium / PLA",
             "partner": "GreenCell Materials Co.",
             "mechanism": "Substitute EPS styrofoam and bubble plastic cushions with bio-based mycelium fiber cushioning.",
-            "cost_saving": "$1,100 / yr",
+            "cost_saving": "₹91,300 / yr",
             "carbon_saving": "9.4 tonnes CO2 / yr"
         }
     },
@@ -460,28 +460,28 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
             "title": "Surplus Food Redistribution Network",
             "partner": "Regional Food Rescue Coalition",
             "mechanism": "Chill edible surplus inventory and food grade trim for daily charitable redistribution.",
-            "cost_saving": "$1,800 / yr tax deduction",
+            "cost_saving": "₹149,400 / yr tax deduction",
             "carbon_saving": "14.0 tonnes CO2 / yr"
         },
         "recycle": {
             "title": "Commercial Micro-Composting Partner",
             "partner": "SoilCare Organics Facility",
             "mechanism": "Segregate food prep waste into sealed green toters; converted into organic certified soil enhancer.",
-            "cost_saving": "$2,100 / yr in tipping fees",
+            "cost_saving": "₹174,300 / yr in tipping fees",
             "carbon_saving": "19.5 tonnes CO2 / yr"
         },
         "recover": {
             "title": "Anaerobic Digestion to Renewable RNG",
             "partner": "BioGas Energy Utilities",
             "mechanism": "Direct high-moisture organic sludge to municipal anaerobic digesters to produce renewable biomethane.",
-            "cost_saving": "$1,450 / yr",
+            "cost_saving": "₹120,350 / yr",
             "carbon_saving": "16.8 tonnes CO2 / yr"
         },
         "replace": {
             "title": "High-Yield Raw Ingredient Slicing",
             "partner": "FoodTech Precision Equipment",
             "mechanism": "Calibrate automated laser cutting equipment to reduce core and edge trim waste by 22%.",
-            "cost_saving": "$5,200 / yr raw food spend",
+            "cost_saving": "₹431,600 / yr raw food spend",
             "carbon_saving": "11.2 tonnes CO2 / yr"
         }
     },
@@ -494,28 +494,28 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
             "title": "Secondary Small-Component Stamping",
             "partner": "In-house Tooling Team",
             "mechanism": "Re-engineer tooling dies to utilize sheet metal skeletons for smaller brackets and washers.",
-            "cost_saving": "$4,600 / yr raw material",
+            "cost_saving": "₹381,800 / yr raw material",
             "carbon_saving": "8.5 tonnes CO2 / yr"
         },
         "recycle": {
             "title": "Closed-Loop High-Grade Scrap Buyback",
             "partner": "MetalsLoop Certified Foundry",
             "mechanism": "Keep aluminum and brass chips segregated by alloy grade; foundry pays premium spot price and remelts.",
-            "cost_saving": "$8,200 / yr cash back",
+            "cost_saving": "₹680,600 / yr cash back",
             "carbon_saving": "28.0 tonnes CO2 / yr"
         },
         "recover": {
             "title": "Centrifugal Cutting Fluid Recovery",
             "partner": "CleanLube Engineering",
             "mechanism": "Spin wet metal swarf through a chip wringer to reclaim 95% of synthetic cutting oil.",
-            "cost_saving": "$3,800 / yr coolant spend",
+            "cost_saving": "₹315,400 / yr coolant spend",
             "carbon_saving": "6.2 tonnes CO2 / yr"
         },
         "replace": {
             "title": "Near-Net-Shape Cold Forging",
             "partner": "Advanced Tooling Systems",
             "mechanism": "Adopt near-net-shape blanks to cut down subtractive machining material loss from 40% to 8%.",
-            "cost_saving": "$12,500 / yr",
+            "cost_saving": "₹1,037,500 / yr",
             "carbon_saving": "22.4 tonnes CO2 / yr"
         }
     },
@@ -528,28 +528,28 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
             "title": "Cooling Tower Bleed-Off Greywater",
             "partner": "Facility Facilities Engineering",
             "mechanism": "Reroute cooling blowdown water to facility grounds irrigation and exterior equipment wash bays.",
-            "cost_saving": "$1,900 / yr",
+            "cost_saving": "₹157,700 / yr",
             "carbon_saving": "4.8 tonnes CO2 / yr"
         },
         "recycle": {
             "title": "Membrane Bioreactor (MBR) Polishing",
             "partner": "AquaLoop Filtration Technologies",
             "mechanism": "Treat washdown effluent to non-potable CIP rinse standards, recycling 60% of water volume.",
-            "cost_saving": "$6,400 / yr",
+            "cost_saving": "₹531,200 / yr",
             "carbon_saving": "11.2 tonnes CO2 / yr"
         },
         "recover": {
             "title": "Effluent Waste Heat Exchanger",
             "partner": "ThermaFlow Recovery Skids",
             "mechanism": "Pass warm 45°C effluent through plate heat exchanger to pre-heat incoming clean process water.",
-            "cost_saving": "$2,800 / yr fuel spend",
+            "cost_saving": "₹232,400 / yr fuel spend",
             "carbon_saving": "9.5 tonnes CO2 / yr"
         },
         "replace": {
             "title": "Dry High-Pressure CO2 Cleaning",
             "partner": "ColdJet Dry Clean Systems",
             "mechanism": "Replace water and solvent hose cleaning with dry ice blast pellets, eliminating water usage entirely.",
-            "cost_saving": "$3,400 / yr",
+            "cost_saving": "₹282,200 / yr",
             "carbon_saving": "7.1 tonnes CO2 / yr"
         }
     }

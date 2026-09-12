@@ -45,7 +45,7 @@ def render_leak_detection_view():
                             #1 Primary Leak Hotspot: {worst_leak['source']}
                         </div>
                         <div style="font-size: 0.9rem; color: #7F1D1D; margin-top: 4px;">
-                            Accounts for <strong>{worst_leak['current_co2']:,.1f} tonnes CO₂e</strong> ({worst_leak['share_pct']}% of total footprint) and ~<strong>${worst_leak['cost_impact']:,.0f}/yr</strong> in utility/operational spend.
+                            Accounts for <strong>{worst_leak['current_co2']:,.1f} tonnes CO₂e</strong> ({worst_leak['share_pct']}% of total footprint) and ~<strong>₹{worst_leak['cost_impact']:,.0f}/yr</strong> in utility/operational spend.
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@ def render_leak_detection_view():
                         </div>
                         <div>
                             <span style="color: var(--text-muted);">Annual Financial Cost:</span><br/>
-                            <strong>${leak['cost_impact']:,.0f} / yr</strong>
+                            <strong>₹{leak['cost_impact']:,.0f} / yr</strong>
                         </div>
                         <div>
                             <span style="color: var(--text-muted);">Potential Carbon Cut:</span><br/>
@@ -108,7 +108,7 @@ def render_leak_detection_view():
                         </div>
                         <div>
                             <span style="color: var(--text-muted);">Est. Cost Recovery:</span><br/>
-                            <strong style="color: #059669;">${leak['potential_saving_cost']:,.0f} / yr</strong>
+                            <strong style="color: #059669;">₹{leak['potential_saving_cost']:,.0f} / yr</strong>
                         </div>
                         <div>
                             <span style="color: var(--text-muted);">Diagnostic Status:</span><br/>

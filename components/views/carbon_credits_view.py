@@ -54,7 +54,7 @@ def render_carbon_credits_view():
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 0.8rem; color: #047857; font-weight: 700; text-transform: uppercase;">Potential Trading Revenue</div>
-                    <div style="font-size: 1.8rem; font-weight: 800; color: #065F46;">+${res['est_revenue']:,.0f}</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #065F46;">+₹{res['est_revenue']:,.0f}</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -77,7 +77,7 @@ def render_carbon_credits_view():
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 0.8rem; color: #991B1B; font-weight: 700; text-transform: uppercase;">Estimated Buying Cost</div>
-                    <div style="font-size: 1.8rem; font-weight: 800; color: #DC2626;">-${res['est_purchase_cost']:,.0f}</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #DC2626;">-₹{res['est_purchase_cost']:,.0f}</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -122,7 +122,7 @@ def render_carbon_credits_view():
         st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">{feather_icon('dollar-sign', color=COLOR_NEUTRAL, size=14)} Market Price</div>
-                <div class="kpi-value">${res['credit_price']:.0f}</div>
+                <div class="kpi-value">₹{res['credit_price']:.0f}</div>
                 <div class="kpi-subtext">per tonne CO₂</div>
             </div>
         """, unsafe_allow_html=True)
@@ -130,7 +130,7 @@ def render_carbon_credits_view():
         st.markdown(f"""
             <div class="kpi-card {'deficit' if res['is_deficit'] else ''}">
                 <div class="kpi-title">{feather_icon('trending-down', color=COLOR_WARNING, size=14)} Est. Buying Cost</div>
-                <div class="kpi-value">${res['est_purchase_cost']:,.0f}</div>
+                <div class="kpi-value">₹{res['est_purchase_cost']:,.0f}</div>
                 <div class="kpi-subtext">compliance purchase</div>
             </div>
         """, unsafe_allow_html=True)
@@ -138,7 +138,7 @@ def render_carbon_credits_view():
         st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">{feather_icon('trending-up', color=COLOR_SUCCESS, size=14)} Selling Value</div>
-                <div class="kpi-value" style="color: #059669;">${res['est_revenue']:,.0f}</div>
+                <div class="kpi-value" style="color: #059669;">₹{res['est_revenue']:,.0f}</div>
                 <div class="kpi-subtext">if surplus sold</div>
             </div>
         """, unsafe_allow_html=True)
@@ -188,7 +188,7 @@ def render_carbon_credits_view():
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-weight: 800; font-size: 1.1rem; color: #10B981;">
-                                    ${proj['price']:.2f} <span style="font-size: 0.75rem; font-weight: 500; color: var(--text-muted);">/ credit</span>
+                                    ₹{proj['price']:.2f} <span style="font-size: 0.75rem; font-weight: 500; color: var(--text-muted);">/ credit</span>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,7 @@ def render_carbon_credits_view():
                         # Execute simulated purchase
                         qty = res['credits_required'] if res['is_deficit'] and res['credits_required'] > 0 else 25.0
                         record_market_transaction(user_email, "BUY", qty, proj['price'], f"Offset via {proj['name']}")
-                        st.success(f"Successfully purchased {qty:.1f} credits from {proj['name']} at ${proj['price']:.2f}/credit!")
+                        st.success(f"Successfully purchased {qty:.1f} credits from {proj['name']} at ₹{proj['price']:.2f}/credit!")
                         st.rerun()
 
     with col_trade2:
@@ -214,13 +214,13 @@ def render_carbon_credits_view():
             t_action = st.radio("Order Type", ["Buy Carbon Credits (Offset Deficit)", "Sell Surplus Credits"], horizontal=True)
             default_qty = float(res['credits_required']) if res['is_deficit'] else float(res['credits_remaining'])
             t_qty = st.number_input("Credits (Metric Tonnes CO₂)", min_value=1.0, value=max(1.0, default_qty), step=5.0)
-            t_price = st.number_input("Target Price ($ / tonne)", min_value=1.0, value=float(res['credit_price']), step=1.0)
+            t_price = st.number_input("Target Price (₹ / tonne)", min_value=1.0, value=float(res['credit_price']), step=1.0)
             
             total_est = t_qty * t_price
             st.markdown(f"""
                 <div style="background: var(--bg-subtle); padding: 12px; border-radius: 8px; margin: 12px 0; border: 1px solid var(--border-color);">
                     <div style="font-size: 0.8rem; color: var(--text-muted);">Total Estimated Settlement:</div>
-                    <div style="font-size: 1.4rem; font-weight: 800; color: #10B981;">${total_est:,.2f}</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #10B981;">₹{total_est:,.2f}</div>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -233,7 +233,7 @@ def render_carbon_credits_view():
             if submit_trade:
                 action_type = "BUY" if "Buy" in t_action else "SELL"
                 record_market_transaction(user_email, action_type, t_qty, t_price, "Manual Exchange Order")
-                st.success(f"Order filled! {action_type} {t_qty:,.0f} credits @ ${t_price:.2f}/credit (${total_est:,.2f}).")
+                st.success(f"Order filled! {action_type} {t_qty:,.0f} credits @ ₹{t_price:.2f}/credit (₹{total_est:,.2f}).")
                 st.rerun()
 
         # Recent Transactions
@@ -249,7 +249,7 @@ def render_carbon_credits_view():
                 st.markdown(f"""
                     <div style="font-size: 0.82rem; padding: 6px 0; border-bottom: 1px dotted var(--border-color);">
                         <span style="color: {t_color}; font-weight: 700;">[{t['tx_type']}]</span> 
-                        <strong>{t['credits']} credits</strong> @ ${t['price_per_credit']:.2f} (${t['total_amount']:,.2f}) &bull; {t['timestamp'].split()[0]}
+                        <strong>{t['credits']} credits</strong> @ ₹{t['price_per_credit']:.2f} (₹{t['total_amount']:,.2f}) &bull; {t['timestamp'].split()[0]}
                     </div>
                 """, unsafe_allow_html=True)
 

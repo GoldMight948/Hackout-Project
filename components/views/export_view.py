@@ -99,7 +99,7 @@ def render_export_view():
             f"• Baseline Footprint: {co2_t} tonnes CO₂e/yr\n"
             f"• Primary Leak Identified: #{results.get('top_leak', {}).get('rank', 1)} {top_cat}\n"
             f"• Projected Carbon Cut: -{co2_s} tonnes/yr ({sim_outcomes.get('co2_pct', 0)}% cut)\n"
-            f"• Projected Cost Recovery: ${cost_s:,.0f} saved annually\n"
+            f"• Projected Cost Recovery: ₹{cost_s:,.0f} saved annually\n"
             f"• Active Initiatives Planned: {len(fixes)} projects across Quick Wins, Mid-Term, and Long-Term."
         )
         st.code(brief_text, language="text")
@@ -127,9 +127,9 @@ def render_export_view():
                     <div style="margin-bottom: 10px;">
                         <strong>Key Diagnoses:</strong>
                         <ul style="margin: 4px 0 10px 18px; padding: 0;">
-                            <li>Total Baseline: <strong>""" + str(co2_t) + """ tonnes CO₂e</strong> ($""" + f"{results.get('total_cost', 0):,.0f}" + """/yr)</li>
+                            <li>Total Baseline: <strong>""" + str(co2_t) + """ tonnes CO₂e</strong> (₹""" + f"{results.get('total_cost', 0):,.0f}" + """/yr)</li>
                             <li>Primary Hotspot: <strong>""" + top_cat + """</strong> (""" + str(results.get('top_leak', {}).get('share_pct', 0)) + """% of footprint)</li>
-                            <li>Target Reduction: <strong>-""" + str(co2_s) + """ tonnes</strong> with estimated savings of <strong>$""" + f"{cost_s:,.0f}" + """/yr</strong></li>
+                            <li>Target Reduction: <strong>-""" + str(co2_s) + """ tonnes</strong> with estimated savings of <strong>₹""" + f"{cost_s:,.0f}" + """/yr</strong></li>
                         </ul>
                     </div>
                     <div>

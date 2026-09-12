@@ -106,7 +106,7 @@ def test_calculations():
     assert res_deficit["credits_required"] > 0
     assert res_deficit["compliance_cost"] > 0
     assert res_deficit["est_revenue"] == 0.0
-    print(f"  [PASS] Deficit Case: {res_deficit['total_co2']} t CO2 vs {res_deficit['govt_credits']} credits -> Deficit: {res_deficit['credits_required']} t, Cost: ${res_deficit['compliance_cost']:,.0f}")
+    print(f"  [PASS] Deficit Case: {res_deficit['total_co2']} t CO2 vs {res_deficit['govt_credits']} credits -> Deficit: {res_deficit['credits_required']} t, Cost: ₹{res_deficit['compliance_cost']:,.0f}")
 
     # Case 3: Defaulted Fields Transparency Verification (Task 4)
     sparse_input = {
@@ -393,7 +393,7 @@ def test_copilot_assistant():
 
     resp_deficit = generate_copilot_response("Do I have a carbon deficit?", "alex@greenbite.com", "GreenBite Packaging", sample_res)
     assert "Deficit Warning" in resp_deficit["text"]
-    assert "$5,328" in resp_deficit["text"] or "5,328" in resp_deficit["text"] or "5,327" in resp_deficit["text"]
+    assert "₹442,224" in resp_deficit["text"] or "5,328" in resp_deficit["text"] or "5,327" in resp_deficit["text"]
     assert resp_deficit["nav_target"] == "carbon_credits"
 
     resp_nav = generate_copilot_response("Please navigate to leaks", "alex@greenbite.com", "GreenBite Packaging", sample_res)
@@ -517,7 +517,7 @@ def test_dynamic_graphs_and_hotspot_recommendations():
     assert "#1 Hotspot Fix" in top_rec_fuel["hotspot_priority_tag"]
     assert top_rec_fuel["category"] == "Fuel"
     assert top_rec_fuel["co2_saved_t"] > 0
-    assert top_rec_fuel["annual_savings_usd"] > 0
+    assert top_rec_fuel["annual_savings_inr"] > 0
     assert "months" in top_rec_fuel["payback_time"] or "years" in top_rec_fuel["payback_time"]
     print(f"  [PASS] Fuel Hotspot Recommendations verified: Top Fix='{top_rec_fuel['title']}' (-{top_rec_fuel['co2_saved_t']} t CO2e).")
 

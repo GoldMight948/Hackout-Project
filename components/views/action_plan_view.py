@@ -60,7 +60,7 @@ def render_action_plan_view():
         st.markdown(f"""
             <div class="clean-card" style="padding: 16px;">
                 <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Annual Cost Recovery</div>
-                <div style="font-size: 1.6rem; font-weight: 800; color: #0F172A;">${cost_saved:,.0f} / yr</div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #0F172A;">₹{cost_saved:,.0f} / yr</div>
                 <div style="font-size: 0.8rem; color: #64748B;">Direct utility & fuel savings</div>
             </div>
         """, unsafe_allow_html=True)

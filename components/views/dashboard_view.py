@@ -250,8 +250,8 @@ def render_dashboard_view():
                     <div class="kpi-title">
                         {feather_icon("dollar-sign", color=COLOR_NEUTRAL, size=15, margin_right=5)} Compliance Liability
                     </div>
-                    <div class="kpi-value">${res['compliance_cost']:,.0f}</div>
-                    <div class="kpi-subtext">@ benchmark ${res['credit_price']:.0f}/tonne</div>
+                    <div class="kpi-value">₹{res['compliance_cost']:,.0f}</div>
+                    <div class="kpi-subtext">@ benchmark ₹{res['credit_price']:.0f}/tonne</div>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -631,7 +631,7 @@ def render_dashboard_view():
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                                     <span style="color: var(--text-muted);">Annual Savings:</span>
-                                    <strong style="color: #059669;">+${r['annual_savings_usd']:,.0f}/yr</strong>
+                                    <strong style="color: #059669;">+₹{r['annual_savings_inr']:,.0f}/yr</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                                     <span style="color: var(--text-muted);">CapEx Est:</span>
@@ -650,7 +650,7 @@ def render_dashboard_view():
         with c_rm1:
             st.markdown(f"""
                 <span style="font-size: 0.84rem; color: var(--text-muted);">
-                    💡 Each recommendation is calibrated to your measured emission volume and regulatory compliance quotas ($38/t).
+                    💡 Each recommendation is calibrated to your measured emission volume and regulatory compliance quotas (₹3,154/t).
                 </span>
             """, unsafe_allow_html=True)
         with c_rm2:

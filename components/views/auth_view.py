@@ -99,7 +99,7 @@ def render_auth_view():
                 "Other Commercial"
             ], key="reg_industry")
             p_employees = st.number_input("Number of Employees", min_value=1, max_value=50000, value=65, step=5, key="reg_employees")
-            p_revenue = st.number_input("Annual Revenue ($ USD, Optional)", min_value=0.0, max_value=1000000000.0, value=4500000.0, step=100000.0, key="reg_revenue")
+            p_revenue = st.number_input("Annual Revenue (₹ INR, Optional)", min_value=0.0, max_value=1000000000.0, value=4500000.0, step=100000.0, key="reg_revenue")
             
             # Dynamic Country & State dropdowns
             country_options = get_country_list()
@@ -132,7 +132,7 @@ def render_auth_view():
                             {quota_info['quota_credits']:,.0f}
                         </div>
                         <div style="font-size: 0.75rem; color: #065F46; font-weight: 600;">Government Carbon Credits</div>
-                        <div style="font-size: 0.74rem; color: var(--text-muted);">Benchmark Price: ${quota_info['benchmark_price']:.0f}/tonne</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted);">Benchmark Price: ₹{quota_info['benchmark_price']:.0f}/tonne</div>
                     </div>
                 </div>
             </div>
