@@ -3,6 +3,7 @@ import pandas as pd
 import io
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
+from components.auth import is_demo_session
 from database.db_manager import save_emissions_assessment, log_audit
 from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_INFO
 
@@ -10,6 +11,7 @@ def render_upload_view():
     """Renders Step 4 Upload & Data Editor screen."""
     user = st.session_state.get("current_user", {})
     user_email = user.get("email", "guest@enterprise.com")
+    is_demo = is_demo_session()
 
     st.markdown("""
         <div style="margin-bottom: 8px;">
@@ -242,13 +244,19 @@ def render_upload_view():
 
             st.session_state["form_inputs"] = new_inputs
             st.session_state["emissions_results"] = calculate_detailed_emissions(new_inputs)
-            save_emissions_assessment(user_email, new_inputs)
-            st.success("✅ Changes saved and recalculations completed!")
+            save_emissions_assessment(user_email, new_inputs, is_demo=1 if is_demo else 0)
+            st.success("✅ Changes saved to database and recalculations completed!")
             st.rerun()
 
     with c_dash:
-        if st.button("Proceed to Dashboard →", use_container_width=True):
-            st.session_state["current_step"] = 5
-            st.rerun()
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("📅 Daily & Weekly Logs →", use_container_width=True):
+                st.session_state["nav_section"] = "activity_logs"
+                st.rerun()
+        with col_btn2:
+            if st.button("Proceed to Dashboard →", type="primary", use_container_width=True):
+                st.session_state["current_step"] = 5
+                st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)

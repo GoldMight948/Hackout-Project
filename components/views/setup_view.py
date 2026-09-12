@@ -8,6 +8,7 @@ import streamlit as st
 from database.db_manager import save_emissions_assessment
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
+from components.auth import is_demo_session
 from components.icons import feather_icon, render_icon_heading, COLOR_SECONDARY, COLOR_NEUTRAL, COLOR_SUCCESS, COLOR_WARNING, COLOR_INFO
 
 def render_setup_view():
@@ -15,6 +16,7 @@ def render_setup_view():
     user = st.session_state.get("current_user", {})
     user_email = user.get("email", "guest@enterprise.com")
     comp_name = user.get("company_name", "Enterprise Facility")
+    is_demo = is_demo_session()
 
     st.markdown("""
         <div style="margin-bottom: 8px;">
@@ -84,8 +86,15 @@ def render_setup_view():
     def_prod_qty = float(inputs.get("production_units", 150000.0))
     def_mach_hours = float(inputs.get("machine_hours", inputs.get("machine_running_hours", 3200.0)))
 
-    def_credits = float(inputs.get("total_credits", inputs.get("total_carbon_credits", 350.0)))
-    def_price = float(inputs.get("credit_price", 38.0))
+    user = st.session_state.get("current_user", {})
+    from components.calculations import get_statutory_carbon_quota
+    quota_calc = get_statutory_carbon_quota(
+        industry=user.get("industry", inputs.get("industry", "Manufacturing Plant")),
+        company_type=user.get("company_type", "SME / Mid-Sized Business"),
+        employees=user.get("employees", 50)
+    )
+    def_credits = float(inputs.get("total_credits") or inputs.get("total_carbon_credits") or quota_calc["quota_credits"])
+    def_price = float(inputs.get("credit_price") or quota_calc["benchmark_price"])
     def_bal = float(inputs.get("current_balance", def_credits))
 
     with st.form("setup_emission_form"):
@@ -196,8 +205,8 @@ def render_setup_view():
             st.session_state["form_inputs"] = updated_data
             st.session_state["emissions_results"] = results
 
-            # Persist to SQLite
-            save_emissions_assessment(user_email, updated_data)
+            # Persist to SQLite with demo isolation tag
+            save_emissions_assessment(user_email, updated_data, is_demo=1 if is_demo else 0)
 
             st.success("Operational footprint saved & calculated! Redirecting to Dashboard...")
             st.session_state["current_step"] = 5

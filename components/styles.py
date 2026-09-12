@@ -131,16 +131,17 @@ def inject_custom_css():
         color: var(--text-muted) !important;
     }}
 
-    /* High-Contrast Modern SaaS Cards */
+    /* High-Contrast Modern SaaS Cards - Equalized Spacing & Elevation */
     .saas-card {{
         background: var(--bg-card) !important;
         border: 1px solid var(--border-color) !important;
         border-radius: 16px !important;
-        padding: 22px !important;
+        padding: 20px !important;
         margin-bottom: 18px !important;
         box-shadow: var(--shadow-card) !important;
         color: var(--text-primary) !important;
         transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        box-sizing: border-box;
     }}
 
     .saas-card:hover {{
@@ -152,33 +153,48 @@ def inject_custom_css():
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
+        min-height: 28px;
     }}
 
     .saas-card-title {{
-        font-size: 1.05rem !important;
+        font-size: 1.0rem !important;
         font-weight: 700 !important;
         color: var(--text-primary) !important;
         margin: 0 !important;
+        letter-spacing: -0.01em;
     }}
 
     .saas-card-subtitle {{
-        font-size: 0.84rem !important;
+        font-size: 0.82rem !important;
         color: var(--text-muted) !important;
-        margin-top: 4px !important;
-        line-height: 1.45 !important;
+        margin-top: 3px !important;
+        line-height: 1.4 !important;
     }}
 
-    /* KPI Banner Cards */
+    /* KPI Banner Cards - STRICT UNIFORM SIZING & FLEXBOX ALIGNMENT */
     .kpi-card {{
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 14px;
-        padding: 18px 20px;
+        padding: 16px 18px;
         box-shadow: var(--shadow-card);
         position: relative;
         overflow: hidden;
         color: var(--text-primary) !important;
+        min-height: 130px;
+        height: 130px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }}
+
+    .kpi-card:hover {{
+        border-color: var(--border-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
     }}
 
     .kpi-card::before {{
@@ -204,26 +220,34 @@ def inject_custom_css():
     }}
 
     .kpi-title {{
-        font-size: 0.78rem !important;
+        font-size: 0.76rem !important;
         text-transform: uppercase !important;
         letter-spacing: 0.08em !important;
         font-weight: 700 !important;
         color: var(--text-muted) !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 4px !important;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }}
 
     .kpi-value {{
-        font-size: 1.85rem !important;
+        font-size: 1.75rem !important;
         font-weight: 800 !important;
         color: var(--text-primary) !important;
-        line-height: 1.15 !important;
+        line-height: 1.1 !important;
         letter-spacing: -0.02em !important;
+        margin: 4px 0;
     }}
 
     .kpi-subtext {{
-        font-size: 0.8rem !important;
+        font-size: 0.78rem !important;
         color: var(--text-muted) !important;
-        margin-top: 6px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }}
 
     /* Headline Hero Card */
@@ -310,10 +334,85 @@ def inject_custom_css():
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
     }}
 
-    /* Form Inputs Visibility Override */
+    /* Form Inputs High-Visibility & Crisp Contrast Override */
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="base-input"] {{
+        background-color: var(--bg-card) !important;
+        border: 1.5px solid var(--border-hover) !important;
+        border-radius: 10px !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within {{
+        border-color: #10B981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+    }}
+
     input, textarea, select {{
         color: var(--text-primary) !important;
-        background-color: {input_bg} !important;
+        background-color: transparent !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+    }}
+
+    /* Widget Labels Visibility */
+    div[data-testid="stWidgetLabel"] label p, label[data-testid="stWidgetLabel"] p {{
+        font-weight: 700 !important;
+        font-size: 0.88rem !important;
+        color: var(--text-primary) !important;
+        margin-bottom: 4px !important;
+        letter-spacing: -0.01em;
+    }}
+
+    /* Form Input Section Containers */
+    .input-section-card {{
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-card);
+    }}
+
+    .input-section-header {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+    }}
+
+    /* Chatbot Copilot Styling */
+    .copilot-container {{
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: var(--shadow-card);
+        padding: 16px;
+        margin-bottom: 20px;
+    }}
+
+    .chat-bubble-user {{
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        color: #FFFFFF !important;
+        border-radius: 14px 14px 2px 14px;
+        padding: 10px 14px;
+        margin: 8px 0 8px auto;
+        max-width: 85%;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+    }}
+
+    .chat-bubble-bot {{
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary) !important;
+        border-radius: 14px 14px 14px 2px;
+        padding: 12px 16px;
+        margin: 8px auto 8px 0;
+        max-width: 92%;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }}
 
     /* Sidebar Styling */

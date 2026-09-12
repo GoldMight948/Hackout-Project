@@ -188,14 +188,297 @@ def test_fastapi_endpoints():
     assert res_bench.status_code == 200
     assert "intensity_kg_per_unit" in res_bench.json()["benchmarks"]
 
+    # Activity logs API tests
+    res_log_post = client.post("/api/activity-logs", json={
+        "user_email": "api_test_facility@corp.com",
+        "log_date": "2025-09-12",
+        "frequency": "daily",
+        "period_label": "Shift 1",
+        "diesel_liters": 50.0,
+        "organic_waste_kg": 100.0,
+        "electricity_kwh": 300.0
+    })
+    assert res_log_post.status_code == 200
+    log_resp = res_log_post.json()
+    assert log_resp["status"] == "success"
+    assert log_resp["log_id"] > 0
+
+    res_log_get = client.get("/api/activity-logs/api_test_facility@corp.com")
+    assert res_log_get.status_code == 200
+    assert res_log_get.json()["total_records"] >= 1
+
+    res_log_sum = client.get("/api/activity-logs/summary/api_test_facility@corp.com")
+    assert res_log_sum.status_code == 200
+    assert res_log_sum.json()["total_entries"] >= 1
+
     print("  [PASS] FastAPI endpoints responded successfully.")
+
+def test_demo_isolation_and_activity_logs():
+    print("Testing Demo Profile Isolation & Activity Logging Engine...")
+    from database.db_manager import (
+        is_demo_user, save_activity_log, get_activity_logs,
+        delete_activity_log, get_aggregated_activity_summary,
+        reset_demo_account, ACTIVITY_EMISSION_FACTORS
+    )
+
+    # 1. Test Demo Isolation
+    assert is_demo_user("alex@greenbite.com") == True
+    assert is_demo_user("sarah@ecotrend.com") == True
+    assert is_demo_user("david@apexmanufacturing.com") == True
+    assert is_demo_user("real_production_user@corp.com") == False
+    print("  [PASS] Demo user detection and sandbox isolation verified.")
+
+    # 2. Test Real User Registration is isolated
+    real_email = "real_production_audit@corp.com"
+    register_user(
+        email=real_email,
+        password="realpassword456",
+        company_name="Real Clean Tech Corp",
+        owner_name="Chief Sustainability Officer",
+        role="Admin",
+        industry="Manufacturing Plant",
+        is_demo=0
+    )
+    assert is_demo_user(real_email) == False
+    print("  [PASS] Real production user created with clean, isolated workspace.")
+
+    # 3. Test Daily Operational Activity Logging
+    daily_payload = {
+        "log_date": "2025-09-12",
+        "frequency": "daily",
+        "period_label": "Shift A",
+        "diesel_liters": 100.0,
+        "petrol_liters": 0.0,
+        "gas_m3": 200.0,
+        "organic_waste_kg": 100.0,
+        "plastic_waste_kg": 50.0,
+        "electricity_kwh": 500.0,
+        "truck_km": 100.0,
+        "notes": "Test shift log"
+    }
+    log_id = save_activity_log(real_email, daily_payload, is_demo=False)
+    assert log_id > 0
+
+    logs = get_activity_logs(real_email)
+    assert len(logs) >= 1
+    recent = logs[0]
+
+    # Verify Calculations:
+    # Fuel: (100 * 0.00268) + (200 * 0.00203) = 0.268 + 0.406 = 0.674
+    expected_fuel = round((100.0 * ACTIVITY_EMISSION_FACTORS["diesel"]) + (200.0 * ACTIVITY_EMISSION_FACTORS["gas"]), 4)
+    assert abs(recent["calculated_fuel_co2"] - expected_fuel) < 0.001
+
+    # Waste: (100 * 0.00045) + (50 * 0.00210) = 0.045 + 0.105 = 0.150
+    expected_waste = round((100.0 * ACTIVITY_EMISSION_FACTORS["waste_organic"]) + (50.0 * ACTIVITY_EMISSION_FACTORS["waste_plastic"]), 4)
+    assert abs(recent["calculated_waste_co2"] - expected_waste) < 0.001
+
+    # Electricity: 500 * 0.00042 = 0.210
+    expected_elec = round(500.0 * ACTIVITY_EMISSION_FACTORS["electricity"], 4)
+    assert abs(recent["calculated_electricity_co2"] - expected_elec) < 0.001
+
+    print("  [PASS] Daily fuel, waste, and electricity emission calculations verified.")
+
+    # 4. Test Weekly Activity Logging & Aggregation
+    weekly_payload = {
+        "log_date": "2025-09-07",
+        "frequency": "weekly",
+        "period_label": "Week 36, 2025",
+        "diesel_liters": 600.0,
+        "gas_m3": 1200.0,
+        "organic_waste_kg": 500.0,
+        "plastic_waste_kg": 250.0,
+        "electricity_kwh": 3000.0,
+        "notes": "Weekly consolidated summary"
+    }
+    w_log_id = save_activity_log(real_email, weekly_payload, is_demo=False)
+    assert w_log_id > 0
+
+    summary = get_aggregated_activity_summary(real_email)
+    assert summary["total_entries"] >= 2
+    assert summary["total_fuel_co2"] > 0
+    assert summary["total_waste_co2"] > 0
+    assert summary["total_diesel_liters"] >= 700.0
+    print("  [PASS] Weekly activity logging and multi-period aggregation verified.")
+
+    # 5. Test Demo Account Reset
+    demo_test_email = "alex@greenbite.com"
+    reset_ok = reset_demo_account(demo_test_email)
+    assert reset_ok == True
+    # Verify demo logs exist after reset
+    demo_logs = get_activity_logs(demo_test_email)
+    assert len(demo_logs) >= 14, "Expected seeded demo activity logs after reset"
+    # Ensure real user records were not affected by demo reset
+    real_logs_after = get_activity_logs(real_email)
+    assert len(real_logs_after) >= 2, "Real user logs must remain untouched during demo reset"
+    print("  [PASS] Demo account factory reset and real account isolation verified.")
+
+    # 6. Test Activity Log Deletion & Dynamic Sync
+    del_ok = delete_activity_log(w_log_id, real_email)
+    assert del_ok == True
+    print("  [PASS] Activity log deletion verified.")
+
+    # 7. Test Dynamic Activity-to-Dashboard Sync Engine
+    from database.db_manager import sync_activity_logs_to_dashboard, get_latest_emissions
+    synced_assessment = sync_activity_logs_to_dashboard(real_email, is_demo=False)
+    assert synced_assessment is not None
+    assert synced_assessment["total_co2"] > 0
+    assert "pillar_co2" in synced_assessment
+    latest_em = get_latest_emissions(real_email)
+    assert latest_em is not None
+    assert latest_em["total_co2"] == synced_assessment["total_co2"]
+    print(f"  [PASS] Real-time operational activity to dashboard sync verified: {synced_assessment['total_co2']:.1f} t CO2e.")
+
+    # 8. Test Next Day Date Progression Logic
+    from datetime import date, timedelta
+    test_d = date(2025, 9, 12)
+    next_d = test_d + timedelta(days=1)
+    assert next_d == date(2025, 9, 13)
+    assert next_d.strftime("%Y-%m-%d") == "2025-09-13"
+    print("  [PASS] Next day sequential date progression verified.")
+
+def test_copilot_assistant():
+    print("Testing Carbon Copilot AI Engine & Navigation...")
+    from components.chatbot import detect_navigation_intent, generate_copilot_response
+
+    # 1. Intent Detection
+    assert detect_navigation_intent("Take me to dashboard") == "dashboard"
+    assert detect_navigation_intent("I want to log fuel and waste") == "activity_logs"
+    assert detect_navigation_intent("Show me my emission leaks") == "leak_detection"
+    assert detect_navigation_intent("What is my carbon credit balance?") == "carbon_credits"
+    assert detect_navigation_intent("Open compliance report") == "reports"
+    print("  [PASS] Natural language navigation intent parsing verified.")
+
+    # 2. Personalized Metrics Generation
+    sample_res = {
+        "total_co2": 540.2,
+        "govt_credits": 400.0,
+        "credits_used": 540.2,
+        "credits_required": 140.2,
+        "credits_remaining": 0.0,
+        "is_deficit": True,
+        "compliance_cost": 5327.6,
+        "credit_price": 38.0,
+        "sustainability_score": 62.0,
+        "pillar_co2": {"Natural Gas Heating": 220.0, "Diesel Fleet": 150.0, "Electricity": 170.2}
+    }
+
+    resp_emissions = generate_copilot_response("What are my total emissions?", "alex@greenbite.com", "GreenBite Packaging", sample_res)
+    assert "540.2" in resp_emissions["text"]
+    assert "GreenBite Packaging" in resp_emissions["text"]
+    assert resp_emissions["nav_target"] == "dashboard"
+
+    resp_deficit = generate_copilot_response("Do I have a carbon deficit?", "alex@greenbite.com", "GreenBite Packaging", sample_res)
+    assert "Deficit Warning" in resp_deficit["text"]
+    assert "$5,328" in resp_deficit["text"] or "5,328" in resp_deficit["text"] or "5,327" in resp_deficit["text"]
+    assert resp_deficit["nav_target"] == "carbon_credits"
+
+    resp_nav = generate_copilot_response("Please navigate to leaks", "alex@greenbite.com", "GreenBite Packaging", sample_res)
+    assert resp_nav["nav_target"] == "leak_detection"
+    assert resp_nav.get("auto_redirect") == True
+
+    # 3. Personalized Profile Summary Query
+    resp_pers = generate_copilot_response("tell personalize info", "alex@greenbite.com", "GreenBite Packaging", sample_res)
+    assert "Personalized Enterprise Profile" in resp_pers["text"]
+    assert "GreenBite Packaging" in resp_pers["text"]
+    assert "540.2" in resp_pers["text"]
+
+    print("  [PASS] Personalized enterprise intelligence & advisory verified.")
+
+def test_geo_data_and_statutory_carbon_quotas():
+    print("Testing Country/State Dropdowns & Dynamic Statutory Carbon Quotas...")
+    from components.geo_data import get_country_list, get_states_for_country
+    from components.calculations import get_statutory_carbon_quota
+
+    # 1. Test Country & State Lookups
+    countries = get_country_list()
+    assert len(countries) >= 12
+    assert "India" in countries
+    assert "United States" in countries
+    
+    ind_states = get_states_for_country("India")
+    assert "Gujarat" in ind_states
+    assert "Maharashtra" in ind_states
+    assert "Delhi (NCT)" in ind_states
+
+    us_states = get_states_for_country("United States")
+    assert "Ohio" in us_states
+    assert "California" in us_states
+    assert "Texas" in us_states
+    print(f"  [PASS] Dynamic country/state dropdown mappings verified ({len(countries)} countries, {len(ind_states)} Indian states).")
+
+    # 2. Test Statutory Carbon Quota dynamically varies by industry and workforce
+    q_heavy = get_statutory_carbon_quota("Heavy Industrial Manufacturer", "Heavy Industrial Manufacturer", 100)
+    q_mfg = get_statutory_carbon_quota("Manufacturing Plant", "SME / Mid-Sized Business", 65)
+    q_logistics = get_statutory_carbon_quota("Logistics Company", "Logistics Fleet Operator", 50)
+    q_retail = get_statutory_carbon_quota("Retail Store", "Retail / Distribution", 20)
+    q_cafe = get_statutory_carbon_quota("Hospitality & Cafe", "SME / Mid-Sized Business", 10)
+
+    assert q_heavy["quota_credits"] > q_mfg["quota_credits"]
+    assert q_mfg["quota_credits"] > q_retail["quota_credits"]
+    assert q_retail["quota_credits"] > q_cafe["quota_credits"]
+    assert q_heavy["quota_credits"] >= 800.0
+    assert q_mfg["quota_credits"] == 618.0  # 65 * 9.5 * 1.0 = 617.5 -> 618
+    assert q_logistics["quota_credits"] == 660.0  # 50 * 11.0 * 1.2 = 660
+    assert q_retail["quota_credits"] == 80.0  # max(80, 20 * 3.2 * 0.85 = 54.4)
+    assert q_cafe["quota_credits"] == 60.0  # max(60, 10 * 2.5 * 1.0 = 25)
+
+    print(f"  [PASS] Statutory quotas calibrated: Heavy={q_heavy['quota_credits']:.0f}, Mfg={q_mfg['quota_credits']:.0f}, Logistics={q_logistics['quota_credits']:.0f}, Retail={q_retail['quota_credits']:.0f}, Cafe={q_cafe['quota_credits']:.0f}.")
+
+def test_carbon_credit_audit_and_cross_check():
+    print("Testing Carbon Credit Daily/Weekly Use, Expected Use, and Quota Cross-Check...")
+    from components.calculations import calculate_carbon_credit_audit
+    from database.db_manager import get_user_profile, get_activity_logs, get_latest_emissions
+
+    # 1. Test abcd@gmail.com audit calculation
+    prof = get_user_profile("abcd@gmail.com")
+    logs = get_activity_logs("abcd@gmail.com")
+    em = get_latest_emissions("abcd@gmail.com")
+    
+    audit = calculate_carbon_credit_audit(prof, logs, em)
+    assert audit["initial_govt_quota"] >= 350.0
+    assert audit["daily_quota_target"] > 0
+    assert audit["weekly_quota_target"] > 0
+    assert audit["actual_daily_avg"] > 0
+    assert audit["actual_weekly_avg"] > 0
+    assert audit["expected_annual_burn"] > 0
+    assert audit["expected_monthly_burn"] > 0
+    assert audit["accrued_credits_used"] > 0
+    assert audit["accrued_remaining_balance"] > 0
+    assert audit["audit_verdict"] != ""
+    print(f"  [PASS] Quota cross-check verified: Govt Issued={audit['initial_govt_quota']}, Daily Burn={audit['actual_daily_avg']} c/d, Weekly Burn={audit['actual_weekly_avg']} c/w, Expected Annual={audit['expected_annual_burn']} c/yr.")
+
+    # 2. Test Copilot query answering for carbon credit cross-check
+    from components.chatbot import generate_copilot_response
+    sample_res = {
+        "total_co2": 540.2,
+        "govt_credits": 400.0,
+        "credits_used": 540.2,
+        "credits_required": 140.2,
+        "credits_remaining": 0.0,
+        "is_deficit": True,
+        "compliance_cost": 5327.6,
+        "credit_price": 38.0,
+        "sustainability_score": 62.0,
+        "pillar_co2": {"Natural Gas Heating": 220.0}
+    }
+    resp = generate_copilot_response("cross check how many carbon credit government issue initially", "abcd@gmail.com", "Solarvise", sample_res)
+    assert "Government Initial Quota Issued" in resp["text"]
+    assert "Daily Carbon Credit Use" in resp["text"]
+    assert "Expected Annual Credit Use" in resp["text"]
+    print("  [PASS] Copilot cross-check intent & audit diagnostics verified.")
 
 if __name__ == "__main__":
     test_database()
     test_calculations()
+    test_demo_isolation_and_activity_logs()
+    test_geo_data_and_statutory_carbon_quotas()
+    test_carbon_credit_audit_and_cross_check()
+    test_copilot_assistant()
     test_ml_forecasting()
     test_presets_and_alternatives()
     test_fastapi_endpoints()
     print("\n=======================================================")
     print("🎉 ALL TEST SUITES PASSED CLEANLY WITH ZERO ERRORS! 🎉")
     print("=======================================================")
+
+

@@ -5,10 +5,12 @@ multi-user role assignment (Admin/Employee), and 1-click verified enterprise dem
 """
 
 import streamlit as st
-from database.db_manager import authenticate_user, register_user
+from database.db_manager import authenticate_user, register_user, save_emissions_assessment
 from components.auth import login_user_session, quick_demo_login
 from components.data_presets import DEMO_USERS, DEMO_BUSINESSES
 from components.icons import feather_icon, render_icon_heading, COLOR_PRIMARY, COLOR_NEUTRAL, COLOR_SUCCESS, COLOR_WARNING
+from components.geo_data import get_country_list, get_states_for_country
+from components.calculations import get_statutory_carbon_quota, calculate_detailed_emissions
 
 def render_auth_view():
     """Renders Login & Create Business Profile screen."""
@@ -63,73 +65,161 @@ def render_auth_view():
     with tab_register:
         st.markdown(f"""
             <div class="saas-card">
-                <div class="saas-card-title" style="margin-bottom: 6px;">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Register Facility & Business Profile</div>
+                <div class="saas-card-title" style="margin-bottom: 6px;">{feather_icon('user', color=COLOR_NEUTRAL, size=18)} Register Facility & Production Workspace</div>
                 <div class="saas-card-subtitle" style="margin-bottom: 16px;">
-                    Stored securely in the local SQLite persistence layer. This information calibrates your emissions baseline.
+                    Stored securely in your local SQLite database. <strong>Production workspaces are completely isolated from demo sandbox data.</strong>
                 </div>
         """, unsafe_allow_html=True)
 
-        with st.form("create_profile_form"):
-            col_p1, col_p2 = st.columns(2, gap="medium")
+        col_p1, col_p2 = st.columns(2, gap="medium")
+        
+        with col_p1:
+            p_comp_name = st.text_input("Company / Business Name *", placeholder="e.g. Apex Precision Metalworks", key="reg_comp_name")
+            p_owner_name = st.text_input("Primary Contact / Lead Name *", placeholder="e.g. David Kovac", key="reg_owner_name")
+            p_email = st.text_input("Corporate Email Address *", placeholder="e.g. d.kovac@apexmetal.com", key="reg_email")
+            p_password = st.text_input("Password *", type="password", placeholder="Create secure password", key="reg_password")
+            p_role = st.selectbox("Your Role in Organization", ["Admin (Full Access & Settings)", "Sustainability Lead", "Facility Engineer", "Employee (Read & Submit)"], key="reg_role")
+            p_comp_type = st.selectbox("Company Type", [
+                "SME / Mid-Sized Business",
+                "Heavy Industrial Manufacturer",
+                "Retail / Distribution",
+                "Logistics Fleet Operator",
+                "Enterprise / Corporation"
+            ], key="reg_comp_type")
+
+        with col_p2:
+            p_industry = st.selectbox("Primary Sector / Industry *", [
+                "Manufacturing Plant",
+                "Heavy Industrial Manufacturer",
+                "Chemicals & Plastics",
+                "Food Processing",
+                "Logistics Company",
+                "Retail Store",
+                "Hospitality & Cafe",
+                "Other Commercial"
+            ], key="reg_industry")
+            p_employees = st.number_input("Number of Employees", min_value=1, max_value=50000, value=65, step=5, key="reg_employees")
+            p_revenue = st.number_input("Annual Revenue ($ USD, Optional)", min_value=0.0, max_value=1000000000.0, value=4500000.0, step=100000.0, key="reg_revenue")
             
-            with col_p1:
-                p_comp_name = st.text_input("Company / Business Name *", placeholder="e.g. Apex Precision Metalworks")
-                p_owner_name = st.text_input("Primary Contact / Lead Name *", placeholder="e.g. David Kovac")
-                p_email = st.text_input("Corporate Email Address *", placeholder="e.g. d.kovac@apexmetal.com")
-                p_password = st.text_input("Password *", type="password", placeholder="Create secure password")
-                p_role = st.selectbox("Your Role in Organization", ["Admin (Full Access & Settings)", "Sustainability Lead", "Facility Engineer", "Employee (Read & Submit)"])
-                p_comp_type = st.selectbox("Company Type", ["SME / Mid-Sized Business", "Heavy Industrial Manufacturer", "Retail / Distribution", "Logistics Fleet Operator", "Enterprise / Corporation"])
+            # Dynamic Country & State dropdowns
+            country_options = get_country_list()
+            default_country_idx = country_options.index("India") if "India" in country_options else 0
+            p_country = st.selectbox("Country *", country_options, index=default_country_idx, key="reg_country_select")
+            
+            state_options = get_states_for_country(p_country)
+            p_state = st.selectbox("State / Province / Region *", state_options, key=f"reg_state_select_{p_country}")
+            
+            p_location = st.text_input("Factory / Facility Location", placeholder="e.g. Plant #3 - Industrial Zone", key="reg_location")
 
-            with col_p2:
-                p_industry = st.selectbox("Primary Sector / Industry *", ["Manufacturing Plant", "Food Processing", "Logistics Company", "Retail Store", "Hospitality & Cafe", "Chemicals & Plastics", "Other Commercial"])
-                p_employees = st.number_input("Number of Employees", min_value=1, max_value=50000, value=65, step=5)
-                p_revenue = st.number_input("Annual Revenue ($ USD, Optional)", min_value=0.0, max_value=1000000000.0, value=4500000.0, step=100000.0)
-                p_country = st.text_input("Country", value="United States")
-                p_state = st.text_input("State / Region", value="Ohio")
-                p_location = st.text_input("Factory / Facility Location", placeholder="e.g. Plant #3 - Cleveland West Park")
+        # Dynamic Research-Backed Statutory Carbon Quota Live Indicator
+        quota_info = get_statutory_carbon_quota(p_industry, p_comp_type, int(p_employees))
+        st.markdown(f"""
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 10px; padding: 14px 18px; margin: 18px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #065F46; display: flex; align-items: center;">
+                            {feather_icon('award', color='#10B981', size=16, margin_right=6)} Statutory Carbon Credit Quota (EPA / CARB / CCTS Calibrated)
+                        </div>
+                        <div style="font-size: 0.83rem; color: #047857; margin-top: 3px;">
+                            Regulatory Regime: <strong>{quota_info['regulatory_regime']}</strong>
+                        </div>
+                        <div style="font-size: 0.80rem; color: var(--text-muted); margin-top: 2px;">
+                            {quota_info['description']} • Base {quota_info['annual_per_employee_co2']} t/emp × {quota_info['type_multiplier']}x type multiplier
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.65rem; font-weight: 800; color: #10B981; line-height: 1.1;">
+                            {quota_info['quota_credits']:,.0f}
+                        </div>
+                        <div style="font-size: 0.75rem; color: #065F46; font-weight: 600;">Government Carbon Credits</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted);">Benchmark Price: ${quota_info['benchmark_price']:.0f}/tonne</div>
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
 
-            submit_reg = st.form_submit_button("Create Business Profile & Enter Setup", type="primary", use_container_width=True)
+        submit_reg = st.button("Create Business Profile & Enter Workspace", type="primary", use_container_width=True, key="btn_create_profile_submit")
 
-            if submit_reg:
-                if not p_comp_name.strip() or not p_owner_name.strip() or not p_email.strip() or not p_password.strip():
-                    st.error("Please fill in all required fields (marked with *).")
+        if submit_reg:
+            if not p_comp_name.strip() or not p_owner_name.strip() or not p_email.strip() or not p_password.strip():
+                st.error("Please fill in all required fields (marked with *).")
+            else:
+                success = register_user(
+                    email=p_email,
+                    password=p_password,
+                    company_name=p_comp_name,
+                    owner_name=p_owner_name,
+                    role="Admin" if "Admin" in p_role else "Employee",
+                    company_type=p_comp_type,
+                    industry=p_industry,
+                    employees=int(p_employees),
+                    annual_revenue=float(p_revenue),
+                    country=p_country,
+                    state=p_state,
+                    location=p_location,
+                    is_demo=0
+                )
+                if success:
+                    # Save initial baseline assessment with calibrated statutory carbon credits
+                    init_inputs = {
+                        "business_name": p_comp_name,
+                        "industry": p_industry,
+                        "company_type": p_comp_type,
+                        "employees": int(p_employees),
+                        "annual_revenue": float(p_revenue),
+                        "country": p_country,
+                        "state": p_state,
+                        "location": p_location,
+                        "total_credits": quota_info["quota_credits"],
+                        "credit_price": quota_info["benchmark_price"],
+                        "electricity_kwh": 0.0,
+                        "renewable_pct": 0.0,
+                        "diesel_liters": 0.0,
+                        "petrol_liters": 0.0,
+                        "gas_m3": 0.0,
+                        "truck_km": 0.0,
+                        "car_km": 0.0,
+                        "commute_km": 0.0,
+                        "delivery_vehicles": 0,
+                        "organic_waste_kg": 0.0,
+                        "plastic_waste_kg": 0.0,
+                        "metal_waste_kg": 0.0,
+                        "paper_waste_kg": 0.0,
+                        "hazardous_waste_kg": 0.0,
+                        "water_m3": 0.0,
+                        "wastewater_m3": 0.0,
+                        "raw_material_tonnes": 0.0,
+                        "production_units": 0.0,
+                        "machine_hours": 0.0,
+                    }
+                    res_init = calculate_detailed_emissions(init_inputs)
+                    init_inputs["total_co2"] = res_init["total_co2"]
+                    init_inputs["total_cost"] = res_init["total_cost"]
+                    init_inputs["sustainability_score"] = res_init["sustainability_score"]
+                    save_emissions_assessment(p_email, init_inputs, is_demo=0)
+
+                    st.success("Business profile created successfully! Initializing production workspace...")
+                    user = authenticate_user(p_email, p_password)
+                    if user:
+                        login_user_session(user)
                 else:
-                    success = register_user(
-                        email=p_email,
-                        password=p_password,
-                        company_name=p_comp_name,
-                        owner_name=p_owner_name,
-                        role="Admin" if "Admin" in p_role else "Employee",
-                        company_type=p_comp_type,
-                        industry=p_industry,
-                        employees=int(p_employees),
-                        annual_revenue=float(p_revenue),
-                        country=p_country,
-                        state=p_state,
-                        location=p_location
-                    )
-                    if success:
-                        st.success("Business profile created successfully! Initializing workspace...")
-                        user = authenticate_user(p_email, p_password)
-                        if user:
-                            login_user_session(user)
-                    else:
-                        st.error("An account with this email address already exists. Please sign in instead.")
+                    st.error("An account with this email address already exists. Please sign in instead.")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # 3. Quick Demo Login Tab
+
+    # 3. Quick Demo Login Tab (Isolated Sandbox)
     with tab_demo:
         st.markdown(f"""
             <div class="saas-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <div>
-                        <div class="saas-card-title">{feather_icon('zap', color=COLOR_WARNING, size=18)} Instant 1-Click Verified Demo Accounts</div>
+                        <div class="saas-card-title">{feather_icon('zap', color=COLOR_WARNING, size=18)} Isolated Demo Sandbox Profiles</div>
                         <div class="saas-card-subtitle">
-                            Instantly test the full platform with realistic operational data across 4 core industries:
+                            Instantly test the full platform with realistic operational data across 4 core industries. Demo data is sandboxed and can be reset at any time:
                         </div>
                     </div>
-                    <span class="badge-low">NO SETUP REQUIRED</span>
+                    <span class="badge-medium">SANDBOX MODE</span>
                 </div>
         """, unsafe_allow_html=True)
 

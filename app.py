@@ -15,16 +15,17 @@ st.set_page_config(
 )
 
 from components.styles import inject_custom_css
-from components.auth import init_auth_state, logout_user, quick_demo_login
+from components.auth import init_auth_state, logout_user, quick_demo_login, is_demo_session, reset_current_demo_profile
 from components.data_presets import DEMO_BUSINESSES
 from components.calculations import calculate_detailed_emissions
 from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL, COLOR_SECONDARY
 
-# Import all 12 views
+# Import views
 from components.views.landing_view import render_landing_view
 from components.views.auth_view import render_auth_view
 from components.views.setup_view import render_setup_view
 from components.views.upload_view import render_upload_view
+from components.views.activity_log_view import render_activity_log_view
 from components.views.dashboard_view import render_dashboard_view
 from components.views.analytics_view import render_analytics_view
 from components.views.leak_detection_view import render_leak_detection_view
@@ -34,22 +35,7 @@ from components.views.simulator_view import render_simulator_view
 from components.views.circular_view import render_circular_view
 from components.views.reports_view import render_reports_view
 from components.views.settings_view import render_settings_view
-
-# 12-Step Guided Stages with Mapped Feather Icons
-STEPS = [
-    {"num": 1, "id": "landing", "name": "Landing", "feather_icon": "home"},
-    {"num": 2, "id": "auth", "name": "Auth", "feather_icon": "user"},
-    {"num": 3, "id": "setup", "name": "Setup", "feather_icon": "settings"},
-    {"num": 4, "id": "upload", "name": "Upload", "feather_icon": "upload"},
-    {"num": 5, "id": "dashboard", "name": "Dashboard", "feather_icon": "pie-chart"},
-    {"num": 6, "id": "leak_detection", "name": "Leaks", "feather_icon": "alert-triangle"},
-    {"num": 7, "id": "carbon_credits", "name": "Credits", "feather_icon": "dollar-sign"},
-    {"num": 8, "id": "recommendations", "name": "AI Fixes", "feather_icon": "lightbulb"},
-    {"num": 9, "id": "simulator", "name": "Simulator", "feather_icon": "sliders"},
-    {"num": 10, "id": "circular", "name": "Circular", "feather_icon": "refresh-cw"},
-    {"num": 11, "id": "reports", "name": "Reports", "feather_icon": "download"},
-    {"num": 12, "id": "settings", "name": "Settings", "feather_icon": "settings"},
-]
+from components.chatbot import render_copilot_chat
 
 def init_app_state():
     """Initializes global session state keys."""
@@ -65,42 +51,6 @@ def init_app_state():
     if "theme_mode" not in st.session_state:
         st.session_state["theme_mode"] = "light"
 
-def render_top_stepper():
-    """Renders sleek top breadcrumbs progress bar with Feather vector icons."""
-    cur = st.session_state.get("current_step", 1)
-    
-    pills_html = ""
-    for s in STEPS:
-        num = s["num"]
-        f_icon = s["feather_icon"]
-        name = s["name"]
-        if num == cur:
-            css_class = "step-pill active"
-            icon_color = "#FFFFFF"
-        elif num < cur:
-            css_class = "step-pill completed"
-            icon_color = "#10B981"
-        else:
-            css_class = "step-pill upcoming"
-            icon_color = "#94A3B8"
-        
-        icon_svg = feather_icon(f_icon, color=icon_color, size=14, margin_right=6)
-        pills_html += f'<span class="{css_class}">{icon_svg} {num}. {name}</span>'
-
-    top_icon = feather_icon("leaf", color="#10B981", size=22, margin_right=8)
-    st.markdown(f"""
-        <div class="step-indicator-wrapper">
-            <div style="display: flex; align-items: center;">
-                {top_icon}
-                <span style="font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em;">Industrial Emission Leak Detector</span>
-                <span class="step-badge" style="margin-left: 12px;">Stage {cur} of {len(STEPS)}: {STEPS[cur-1]['name']}</span>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                {pills_html}
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
 def render_sidebar():
     """Renders modern SaaS sidebar with navigation icons, notifications, and presets."""
     user = st.session_state.get("current_user", {})
@@ -110,10 +60,17 @@ def render_sidebar():
     user_avatar = user.get("avatar", "🏭")
     
     with st.sidebar:
-        # Organization Card with Feather Icon
-        org_icon = feather_icon("box", color="#10B981", size=24, margin_right=10)
+        # Organization Card with Feather Icon and Demo / Production Mode Indicator
+        is_demo = is_demo_session()
+        org_icon = feather_icon("box", color="#F59E0B" if is_demo else "#10B981", size=24, margin_right=10)
+        mode_badge = '<span style="background: rgba(245,158,11,0.2); color: #B45309; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #FCD34D;">DEMO SANDBOX</span>' if is_demo else '<span style="background: rgba(16,185,129,0.2); color: #047857; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #6EE7B7;">VERIFIED ORG</span>'
+        
         st.markdown(f"""
             <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: var(--shadow-card);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">WORKSPACE</span>
+                    {mode_badge}
+                </div>
                 <div style="display: flex; align-items: center;">
                     {org_icon}
                     <div>
@@ -124,32 +81,69 @@ def render_sidebar():
             </div>
         """, unsafe_allow_html=True)
 
-        # Main Navigation List with Feather Icon Header
-        nav_header = feather_icon("columns", color="#95A5A6", size=18, margin_right=6)
+        if is_demo:
+            if st.button("🔄 Reset Demo Data", key="sidebar_reset_demo_btn", use_container_width=True):
+                reset_current_demo_profile()
+                st.success("Demo profile restored!")
+                st.rerun()
+
+        # Main Navigation Grouped by Function
+        cur_nav = st.session_state.get("nav_section", "dashboard")
+
+        # Group 1: Operations
         st.markdown(f"""
-            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                {nav_header}
-                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">Platform Navigation</span>
+            <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 12px 0 6px 4px;">
+                ⚡ Operations
             </div>
         """, unsafe_allow_html=True)
 
-        nav_items = [
-            ("Dashboard", "dashboard", 5),
-            ("Company Profile", "setup", 3),
-            ("Upload Data", "upload", 4),
-            ("Analytics Matrix", "analytics", 5),
-            ("Carbon Credits", "carbon_credits", 7),
-            ("Leak Detection", "leak_detection", 6),
-            ("Recommendations", "recommendations", 8),
-            ("Simulator", "simulator", 9),
-            ("Circular Economy", "circular", 10),
-            ("Reports & Export", "reports", 11),
-            ("Settings", "settings", 12),
+        op_items = [
+            ("📊 Executive Dashboard", "dashboard", 5),
+            ("📅 Daily & Weekly Logs", "activity_logs", 4),
+            ("🤖 Carbon Copilot AI", "copilot", 99),
         ]
+        for label, section_key, step_target in op_items:
+            is_active = (cur_nav == section_key)
+            btn_type = "primary" if is_active else "secondary"
+            if st.button(label, key=f"nav_btn_{section_key}", type=btn_type, use_container_width=True):
+                st.session_state["nav_section"] = section_key
+                st.session_state["current_step"] = step_target
+                st.rerun()
 
-        cur_nav = st.session_state.get("nav_section", "dashboard")
+        # Group 2: Carbon Intelligence & Diagnostics
+        st.markdown(f"""
+            <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 16px 0 6px 4px;">
+                🔥 Intelligence & Diagnostics
+            </div>
+        """, unsafe_allow_html=True)
 
-        for label, section_key, step_target in nav_items:
+        diag_items = [
+            ("🔍 Emission Leak Hotspots", "leak_detection", 6),
+            ("💰 Carbon Credits & Market", "carbon_credits", 7),
+            ("♻️ Circular Economy (4R)", "circular", 10),
+        ]
+        for label, section_key, step_target in diag_items:
+            is_active = (cur_nav == section_key)
+            btn_type = "primary" if is_active else "secondary"
+            if st.button(label, key=f"nav_btn_{section_key}", type=btn_type, use_container_width=True):
+                st.session_state["nav_section"] = section_key
+                st.session_state["current_step"] = step_target
+                st.rerun()
+
+        # Group 3: Data & Administration
+        st.markdown(f"""
+            <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 16px 0 6px 4px;">
+                📁 Data & Administration
+            </div>
+        """, unsafe_allow_html=True)
+
+        admin_items = [
+            ("⚙️ Business Profile & Setup", "setup", 3),
+            ("📥 Upload Historical Data", "upload", 4),
+            ("📑 Compliance Reports & ESG", "reports", 11),
+            ("🛠️ Platform Settings", "settings", 12),
+        ]
+        for label, section_key, step_target in admin_items:
             is_active = (cur_nav == section_key)
             btn_type = "primary" if is_active else "secondary"
             if st.button(label, key=f"nav_btn_{section_key}", type=btn_type, use_container_width=True):
@@ -161,7 +155,7 @@ def render_sidebar():
 
         # Quick Theme Mode Toggle
         curr_th = st.session_state.get("theme_mode", "light")
-        th_label = "Switch to Dark Mode" if curr_th == "light" else "Switch to Light Mode"
+        th_label = "🌙 Switch to Dark Mode" if curr_th == "light" else "☀️ Switch to Light Mode"
         if st.button(th_label, key="quick_theme_toggle", use_container_width=True):
             st.session_state["theme_mode"] = "dark" if curr_th == "light" else "light"
             st.rerun()
@@ -186,7 +180,7 @@ def render_sidebar():
         """, unsafe_allow_html=True)
 
         # Logout button
-        if st.button("Sign Out", key="sidebar_logout_btn", use_container_width=True):
+        if st.button("🚪 Sign Out", key="sidebar_logout_btn", use_container_width=True):
             logout_user()
 
 def main():
@@ -203,24 +197,24 @@ def main():
             render_auth_view()
         return
 
-    # Authenticated Frame
+    # Authenticated Frame (Top Stepper Bar is completely removed for clean SaaS layout)
     render_sidebar()
-    render_top_stepper()
 
     # Route based on navigation section & step
     nav_sec = st.session_state.get("nav_section", "dashboard")
     step = st.session_state.get("current_step", 5)
 
-    if nav_sec == "analytics":
-        render_analytics_view()
+    if nav_sec == "copilot":
+        from components.chatbot import render_copilot_view
+        render_copilot_view()
+    elif nav_sec == "activity_logs":
+        render_activity_log_view()
     elif nav_sec == "circular" or step == 10:
         render_circular_view()
     elif nav_sec == "leak_detection" or step == 6:
         render_leak_detection_view()
     elif nav_sec == "carbon_credits" or step == 7:
         render_carbon_credits_view()
-    elif nav_sec == "recommendations" or step == 8:
-        render_recommendations_view()
     elif nav_sec == "simulator" or step == 9:
         render_simulator_view()
     elif nav_sec == "reports" or step == 11:
