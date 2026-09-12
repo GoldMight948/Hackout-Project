@@ -61,7 +61,7 @@ def render_sidebar():
   with st.sidebar:
     # Organization Card with Feather Icon and Demo / Production Mode Indicator
     is_demo = is_demo_session()
-    org_icon = feather_icon("box", color="#F59E0B" if is_demo else "#10B981", size=24, margin_right=10)
+    org_icon = feather_icon("box", color="#F59E0B" if is_demo else "#CBDED3", size=24, margin_right=10)
     mode_badge = '<span style="background: rgba(245,158,11,0.2); color: #B45309; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #FCD34D;">DEMO SANDBOX</span>' if is_demo else '<span style="background: rgba(16,185,129,0.2); color: #047857; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #6EE7B7;">VERIFIED ORG</span>'
     
     st.markdown(f"""
@@ -74,7 +74,7 @@ def render_sidebar():
           {org_icon}
           <div>
             <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);">{user_company}</div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">{user_name} &bull; <span style="color: #10B981; font-weight: 700;">{user_role}</span></div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">{user_name} &bull; <span style="color: #CBDED3; font-weight: 700;">{user_role}</span></div>
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ def render_sidebar():
     <div style="color: var(--text-muted); margin-top: 2px;">Statutory carbon audit filing due in 45 days.</div>
       </div>
       <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 8px;">
-    <div style="font-weight: 700; color: #10B981; display: flex; align-items: center;">{check_icon} Q3 Solar Credit Verified</div>
+    <div style="font-weight: 700; color: #CBDED3; display: flex; align-items: center;">{check_icon} Q3 Solar Credit Verified</div>
     <div style="color: var(--text-muted); margin-top: 2px;">18.5 tonnes carbon offset recognized by registry.</div>
       </div>
     """, unsafe_allow_html=True)

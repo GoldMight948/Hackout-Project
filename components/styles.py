@@ -37,9 +37,9 @@ def inject_custom_css():
     --text-muted: {text_muted};
     --border-color: {border_color};
     --border-hover: {border_hover};
-    --primary-green: #10B981;
+    --primary-green: #CBDED3;
     --primary-dark-green: #065F46;
-    --accent-emerald: #059669;
+    --accent-emerald: #6d837a;
     --shadow-card: {shadow_card};
   }}
 
@@ -97,7 +97,7 @@ def inject_custom_css():
   }}
 
   .step-pill.active {{
-    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    background: linear-gradient(135deg, #CBDED3 0%, #6d837a 100%);
     color: #FFFFFF !important;
     font-weight: 700;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
@@ -187,7 +187,7 @@ def inject_custom_css():
     left: 0;
     right: 0;
     height: 4px;
-    background: #10B981;
+    background: #CBDED3;
   }}
 
   .kpi-card.deficit::before {{
@@ -307,9 +307,31 @@ def inject_custom_css():
   .stButton > button {{
     border-radius: 10px !important;
     font-weight: 600 !important;
-    padding: 0.5rem 1.25rem !important;
+    padding: 0.65rem 1.25rem !important;
     transition: all 0.2s ease !important;
     border: 1px solid var(--border-color) !important;
+  }}
+  
+  .stButton > button p {{
+    font-size: 1.05rem !important;
+  }}
+  
+  .stButton > button[kind="primary"] {{
+    color: #0F172A !important;
+    font-weight: 700 !important;
+  }}
+  
+  .stButton > button[kind="primary"] p {{
+    color: #0F172A !important;
+    font-weight: 700 !important;
+  }}
+  
+  .stButton > button[kind="primary"] div[data-testid="stMarkdownContainer"] {{
+    color: #0F172A !important;
+  }}
+  
+  .stButton > button[kind="primary"] span {{
+    color: #0F172A !important;
   }}
 
   .stButton > button:hover {{
@@ -326,7 +348,7 @@ def inject_custom_css():
   }}
 
   div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within {{
-    border-color: #10B981 !important;
+    border-color: #CBDED3 !important;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
   }}
 
@@ -376,7 +398,7 @@ def inject_custom_css():
   }}
 
   .chat-bubble-user {{
-    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    background: linear-gradient(135deg, #CBDED3 0%, #6d837a 100%);
     color: #FFFFFF !important;
     border-radius: 14px 14px 2px 14px;
     padding: 10px 14px;

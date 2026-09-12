@@ -33,7 +33,7 @@ def render_recommendations_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Step 8 — AI Recommendation Engine
       </span>
     </div>
@@ -50,7 +50,7 @@ def render_recommendations_view():
   st.markdown(f"""
     <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
       <div style="display: flex; align-items: center;">
-        {feather_icon('target', color='#10B981', size=22, margin_right=10)}
+        {feather_icon('target', color='#CBDED3', size=22, margin_right=10)}
         <div>
           <div style="font-size: 0.95rem; font-weight: 800; color: #065F46;">
             🎯 Hotspot-Driven Recommendations Active: Prioritizing Solutions for #{top_leak['rank'] if top_leak else 1} {highest_source}
@@ -106,19 +106,19 @@ def render_recommendations_view():
     is_selected = rec["id"] in st.session_state["selected_action_recs"]
     diff_badge = "badge-low" if rec["difficulty"] == "Easy" else ("badge-medium" if rec["difficulty"] == "Medium" else "badge-critical")
     rec_f_icon = cat_icon_map.get(rec["category"].lower(), "lightbulb")
-    card_icon = feather_icon(rec_f_icon, color="#10B981", size=16, margin_right=5)
+    card_icon = feather_icon(rec_f_icon, color="#CBDED3", size=16, margin_right=5)
     
     hotspot_badge = f"<span style='font-size: 0.76rem; background: rgba(16,185,129,0.15); color: #047857; padding: 3px 8px; border-radius: 6px; font-weight: 800; margin-right: 8px;'>{rec.get('hotspot_priority_tag', '')}</span>" if rec.get("hotspot_priority_tag") else ""
     hotspot_sub = f"<div style='font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;'>{rec.get('targeted_hotspot_label', '')} ({rec.get('targeted_hotspot_co2', 0):,.1f} t CO₂e)</div>" if rec.get("targeted_hotspot_label") else ""
     
     with st.container():
       st.markdown(f"""
-        <div class="saas-card" style="margin-bottom: 14px; border-left: 5px solid {'#10B981' if rec.get('targeted_hotspot_rank', 99) == 1 else ('#F59E0B' if rec.get('targeted_hotspot_rank', 99) == 2 else ('#3B82F6' if rec.get('targeted_hotspot_rank', 99) == 3 else '#64748B'))};">
+        <div class="saas-card" style="margin-bottom: 14px; border-left: 5px solid {'#CBDED3' if rec.get('targeted_hotspot_rank', 99) == 1 else ('#F59E0B' if rec.get('targeted_hotspot_rank', 99) == 2 else ('#3B82F6' if rec.get('targeted_hotspot_rank', 99) == 3 else '#64748B'))};">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
             <div>
               <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
                 {hotspot_badge}
-                <span style="font-size: 0.78rem; font-weight: 700; color: #10B981; text-transform: uppercase; display: flex; align-items: center;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: #CBDED3; text-transform: uppercase; display: flex; align-items: center;">
                   {card_icon} {rec['category']} &bull; Impact: {rec['impact_level']}
                 </span>
               </div>
@@ -137,11 +137,11 @@ def render_recommendations_view():
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; padding: 12px; background: var(--bg-subtle); border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.85rem;">
             <div>
               <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('leaf', color=COLOR_SUCCESS, size=13, margin_right=4)} CO₂ Saved:</span>
-              <strong style="color: #10B981; font-size: 0.95rem;">-{rec['co2_saved_t']} t/yr ({rec['co2_saved_pct']}%)</strong>
+              <strong style="color: #CBDED3; font-size: 0.95rem;">-{rec['co2_saved_t']} t/yr ({rec['co2_saved_pct']}%)</strong>
             </div>
             <div>
               <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('dollar-sign', color=COLOR_SUCCESS, size=13, margin_right=4)} Annual Savings:</span>
-              <strong style="color: #059669; font-size: 0.95rem;">+₹{rec.get('annual_savings_inr', 0):,.0f}/yr</strong>
+              <strong style="color: #B0C5BA; font-size: 0.95rem;">+₹{rec.get('annual_savings_inr', 0):,.0f}/yr</strong>
             </div>
             <div>
               <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('briefcase', color=COLOR_NEUTRAL, size=13, margin_right=4)} Est. Investment:</span>
@@ -153,7 +153,7 @@ def render_recommendations_view():
             </div>
             <div>
               <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('calendar', color=COLOR_SECONDARY, size=13, margin_right=4)} Payback Period:</span>
-              <strong style="color: #059669;">{rec['payback_time']}</strong>
+              <strong style="color: #B0C5BA;">{rec['payback_time']}</strong>
             </div>
             <div>
               <span style="color: var(--text-muted); display: flex; align-items: center;">{feather_icon('shield', color=COLOR_INFO, size=13, margin_right=4)} Credits Saved:</span>

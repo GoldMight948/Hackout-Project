@@ -19,7 +19,7 @@ def render_leak_detection_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Step 6 — Automated Operational Leak Detection
       </span>
     </div>
@@ -104,11 +104,11 @@ def render_leak_detection_view():
             </div>
             <div>
               <span style="color: var(--text-muted);">Potential Carbon Cut:</span><br/>
-              <strong style="color: #10B981; font-size: 0.95rem;">-{leak['potential_saving_co2']:,.1f} t ({leak['potential_saving_pct']}%)</strong>
+              <strong style="color: #CBDED3; font-size: 0.95rem;">-{leak['potential_saving_co2']:,.1f} t ({leak['potential_saving_pct']}%)</strong>
             </div>
             <div>
               <span style="color: var(--text-muted);">Est. Cost Recovery:</span><br/>
-              <strong style="color: #059669;">₹{leak['potential_saving_cost']:,.0f} / yr</strong>
+              <strong style="color: #B0C5BA;">₹{leak['potential_saving_cost']:,.0f} / yr</strong>
             </div>
             <div>
               <span style="color: var(--text-muted);">Diagnostic Status:</span><br/>

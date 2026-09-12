@@ -21,7 +21,7 @@ def render_export_view():
 
   st.markdown(f"""
     <div style="margin-bottom: 20px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #059669; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #B0C5BA; font-weight: 700;">
         Export & Share
       </span>
       <h2 style="font-size: 1.8rem; font-weight: 800; color: #0F172A; margin: 4px 0 6px 0;">
@@ -120,7 +120,7 @@ def render_export_view():
           Use your browser's Print command (<strong>Ctrl+P</strong> or <strong>Cmd+P</strong>) to save as a clean PDF.
         </p>
         <div style="border: 1px solid #CBD5E1; border-radius: 8px; padding: 18px; background: #FFFFFF; font-size: 0.88rem;">
-          <div style="border-bottom: 2px solid #10B981; padding-bottom: 8px; margin-bottom: 12px;">
+          <div style="border-bottom: 2px solid #CBDED3; padding-bottom: 8px; margin-bottom: 12px;">
             <h4 style="margin: 0; color: #065F46; font-size: 1.1rem;">EMISSION LEAK DETECTOR & GREEN ACTION PLAN</h4>
             <div style="color: #64748B; font-size: 0.8rem;">Prepared for: <strong>""" + business_name + """</strong> &bull; Lead: """ + user.get("name", "Management") + """</div>
           </div>

@@ -30,7 +30,7 @@ def render_action_plan_view():
 
   st.markdown(f"""
     <div style="margin-bottom: 20px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #059669; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #B0C5BA; font-weight: 700;">
         Implementation Roadmap
       </span>
       <h2 style="font-size: 1.8rem; font-weight: 800; color: #0F172A; margin: 4px 0 6px 0;">
@@ -52,7 +52,7 @@ def render_action_plan_view():
     st.markdown(f"""
       <div class="clean-card" style="padding: 16px;">
         <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Total Carbon Cut Target</div>
-        <div style="font-size: 1.6rem; font-weight: 800; color: #059669;">-{co2_saved} tonnes / yr</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #B0C5BA;">-{co2_saved} tonnes / yr</div>
         <div style="font-size: 0.8rem; color: #047857;">{co2_pct}% overall reduction</div>
       </div>
     """, unsafe_allow_html=True)
@@ -138,7 +138,7 @@ def render_action_plan_view():
                 </div>
               </div>
               <div style="text-align: right; min-width: 140px;">
-                <div style="font-size: 0.88rem; font-weight: 700; color: #059669;">
+                <div style="font-size: 0.88rem; font-weight: 700; color: #B0C5BA;">
                   ~{fix['co2_saved_pct']}% CO₂ Cut
                 </div>
                 <div style="font-size: 0.8rem; color: #64748B;">

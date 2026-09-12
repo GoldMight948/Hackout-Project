@@ -21,7 +21,7 @@ def render_carbon_credits_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Step 7 — Carbon Credit Reconciliation & Compliance Ledger
       </span>
     </div>
@@ -104,7 +104,7 @@ def render_carbon_credits_view():
     st.markdown(f"""
       <div class="kpi-card">
         <div class="kpi-title">{feather_icon('leaf', color=COLOR_SUCCESS, size=14)} Credits Remaining</div>
-        <div class="kpi-value" style="color: #10B981;">{res['credits_remaining']:,.1f}</div>
+        <div class="kpi-value" style="color: #CBDED3;">{res['credits_remaining']:,.1f}</div>
         <div class="kpi-subtext">surplus balance</div>
       </div>
     """, unsafe_allow_html=True)
@@ -112,7 +112,7 @@ def render_carbon_credits_view():
     st.markdown(f"""
       <div class="kpi-card {'deficit' if res['is_deficit'] else ''}">
         <div class="kpi-title">{feather_icon('alert-triangle', color=COLOR_WARNING, size=14)} Credits Required</div>
-        <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#10B981'};">
+        <div class="kpi-value" style="color: {'#EF4444' if res['is_deficit'] else '#CBDED3'};">
           {res['credits_required']:,.1f}
         </div>
         <div class="kpi-subtext">shortfall to cover</div>
@@ -138,7 +138,7 @@ def render_carbon_credits_view():
     st.markdown(f"""
       <div class="kpi-card">
         <div class="kpi-title">{feather_icon('trending-up', color=COLOR_SUCCESS, size=14)} Selling Value</div>
-        <div class="kpi-value" style="color: #059669;">₹{res['est_revenue']:,.0f}</div>
+        <div class="kpi-value" style="color: #B0C5BA;">₹{res['est_revenue']:,.0f}</div>
         <div class="kpi-subtext">if surplus sold</div>
       </div>
     """, unsafe_allow_html=True)
@@ -187,7 +187,7 @@ def render_carbon_credits_view():
                 </div>
               </div>
               <div style="text-align: right;">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #10B981;">
+                <div style="font-weight: 800; font-size: 1.1rem; color: #CBDED3;">
                   ₹{proj['price']:.2f} <span style="font-size: 0.75rem; font-weight: 500; color: var(--text-muted);">/ credit</span>
                 </div>
               </div>
@@ -220,7 +220,7 @@ def render_carbon_credits_view():
       st.markdown(f"""
         <div style="background: var(--bg-subtle); padding: 12px; border-radius: 8px; margin: 12px 0; border: 1px solid var(--border-color);">
           <div style="font-size: 0.8rem; color: var(--text-muted);">Total Estimated Settlement:</div>
-          <div style="font-size: 1.4rem; font-weight: 800; color: #10B981;">₹{total_est:,.2f}</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: #CBDED3;">₹{total_est:,.2f}</div>
         </div>
       """, unsafe_allow_html=True)
 
@@ -245,7 +245,7 @@ def render_carbon_credits_view():
         </div>
       """, unsafe_allow_html=True)
       for t in txs[:3]:
-        t_color = "#10B981" if t["tx_type"] == "SELL" else "#3B82F6"
+        t_color = "#CBDED3" if t["tx_type"] == "SELL" else "#3B82F6"
         st.markdown(f"""
           <div style="font-size: 0.82rem; padding: 6px 0; border-bottom: 1px dotted var(--border-color);">
             <span style="color: {t_color}; font-weight: 700;">[{t['tx_type']}]</span> 

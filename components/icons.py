@@ -8,7 +8,7 @@ Complies with Feather Icons design language (stroke-width 2, round linecaps/join
 from typing import Optional, Dict
 
 # Standard Contextual Color Palette
-COLOR_PRIMARY = "#059669"   # Emerald green / Main brand actions / Primary
+COLOR_PRIMARY = "#B0C5BA"   # Emerald green / Main brand actions / Primary
 COLOR_CRITICAL = "#EF4444"  # Red / Urgent Leaks / Critical alerts
 COLOR_WARNING = "#FF6B6B"   # Red / Urgent Leaks / Critical alerts
 COLOR_SUCCESS = "#2ECC71"   # Green / Eco actions / CO2 reduction / Cost savings

@@ -30,13 +30,13 @@ def render_activity_log_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         High-Frequency Operational Monitoring
       </span>
     </div>
   """, unsafe_allow_html=True)
 
-  header_icon = feather_icon("calendar", color="#10B981", size=30, margin_right=10)
+  header_icon = feather_icon("calendar", color="#CBDED3", size=30, margin_right=10)
   st.markdown(f"""
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
       <div>
@@ -121,7 +121,7 @@ def render_activity_log_view():
         <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid #6EE7B7; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;">
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center;">
-              {feather_icon('check-circle', color='#059669', size=20, margin_right=8)}
+              {feather_icon('check-circle', color='#B0C5BA', size=20, margin_right=8)}
               <div>
                 <span style="font-weight: 800; color: #065F46; font-size: 0.95rem;">
                   Record #{just_logged['id']} Logged for {just_logged['date']} ({just_logged['co2']:,.2f} t CO₂e)
@@ -374,7 +374,7 @@ def render_activity_log_view():
         with c_stat:
           st.markdown(f"""
             <div style="font-size: 0.82rem; color: var(--text-muted);">
-              Fuel: <strong>{l['calculated_fuel_co2']:.2f}t</strong> | Waste: <strong>{l['calculated_waste_co2']:.2f}t</strong> | Total: <strong style="color: #10B981;">{l['calculated_total_co2']:.2f}t CO₂e</strong>
+              Fuel: <strong>{l['calculated_fuel_co2']:.2f}t</strong> | Waste: <strong>{l['calculated_waste_co2']:.2f}t</strong> | Total: <strong style="color: #CBDED3;">{l['calculated_total_co2']:.2f}t CO₂e</strong>
             </div>
           """, unsafe_allow_html=True)
         with c_del:

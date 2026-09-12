@@ -23,7 +23,7 @@ def render_simulator_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Step 9 — Interactive What-If Scenario Simulator
       </span>
     </div>
@@ -195,7 +195,7 @@ def render_simulator_view():
 
     fig_sim = go.Figure(data=[
       go.Bar(name='Current Baseline', x=categories, y=baseline_values, marker_color='#EF4444'),
-      go.Bar(name='Projected with Fixes', x=categories, y=simulated_values, marker_color='#10B981')
+      go.Bar(name='Projected with Fixes', x=categories, y=simulated_values, marker_color='#CBDED3')
     ])
     fig_sim.update_layout(
       barmode='group',

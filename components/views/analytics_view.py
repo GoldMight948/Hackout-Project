@@ -31,7 +31,7 @@ def render_analytics_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Advanced Analytics & Systems Modeling
       </span>
     </div>
@@ -88,7 +88,7 @@ def render_analytics_view():
       thickness=22,
       line=dict(color="var(--border-color)", width=1),
       label=sankey_node_labels,
-      color=["#059669", "#10B981", "#EF4444", "#10B981", "#3B82F6", "#DC2626", "#047857"]
+      color=["#B0C5BA", "#CBDED3", "#EF4444", "#CBDED3", "#3B82F6", "#DC2626", "#047857"]
     ),
     link=dict(
       source=sankey_sources,
@@ -248,7 +248,7 @@ def render_analytics_view():
       y=forecast_df["Decarbonization_Pathway"],
       mode='lines+markers',
       name='Decarbonization Target (-30%)',
-      line=dict(color='#10B981', width=3)
+      line=dict(color='#CBDED3', width=3)
     ))
 
     fig_forecast.update_layout(

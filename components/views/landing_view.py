@@ -30,19 +30,14 @@ def render_landing_view():
   """, unsafe_allow_html=True)
 
   # Hero Action Buttons
-  c_btn1, c_btn2, c_btn3 = st.columns([1, 1, 1], gap="medium")
+  c_btn1, c_btn2 = st.columns([1, 1], gap="medium")
   with c_btn1:
-    if st.button("Get Started (Free Assessment)", type="primary", key="landing_get_started", use_container_width=True):
-      st.session_state["auth_tab"] = "register"
-      st.session_state["current_step"] = 2
-      st.rerun()
-  with c_btn2:
-    if st.button("Sign In to Existing Account", key="landing_login", use_container_width=True):
+    if st.button("Sign In to Existing Account", key="landing_login", type="primary", use_container_width=True):
       st.session_state["auth_tab"] = "login"
       st.session_state["current_step"] = 2
       st.rerun()
-  with c_btn3:
-    if st.button("Create Business Profile", key="landing_profile", use_container_width=True):
+  with c_btn2:
+    if st.button("Create Business Profile", key="landing_profile", type="primary", use_container_width=True):
       st.session_state["auth_tab"] = "register"
       st.session_state["current_step"] = 2
       st.rerun()
@@ -52,7 +47,7 @@ def render_landing_view():
   # Key Features Section
   st.markdown("""
     <div style="text-align: center; margin-bottom: 24px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #10B981; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #CBDED3; font-weight: 700;">
         Platform Capabilities
       </span>
       <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px;">
