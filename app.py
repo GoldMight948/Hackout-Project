@@ -33,7 +33,6 @@ from components.views.carbon_credits_view import render_carbon_credits_view
 from components.views.recommendations_view import render_recommendations_view
 from components.views.simulator_view import render_simulator_view
 from components.views.circular_view import render_circular_view
-from components.views.reports_view import render_reports_view
 from components.views.settings_view import render_settings_view
 from components.chatbot import render_copilot_chat
 
@@ -143,7 +142,6 @@ def render_sidebar():
             ("⚙️ Business Profile & Setup", "setup", 3),
             ("📝 Activity Data Entry", "data_entry", 3),
             ("📥 Upload Historical Data", "upload", 4),
-            ("📑 Compliance Reports & ESG", "reports", 11),
             ("🛠️ Platform Settings", "settings", 12),
         ]
         for label, section_key, step_target in admin_items:
@@ -222,8 +220,6 @@ def main():
         render_carbon_credits_view()
     elif nav_sec == "simulator" or step == 9:
         render_simulator_view()
-    elif nav_sec == "reports" or step == 11:
-        render_reports_view()
     elif nav_sec == "settings" or step == 12:
         render_settings_view()
     elif nav_sec == "setup" or (step == 3 and nav_sec != "data_entry"):

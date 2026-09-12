@@ -137,7 +137,7 @@ def render_circular_view():
             st.session_state["nav_section"] = "simulator"
             st.rerun()
     with c_b2:
-        if st.button("Proceed to Reports & ESG Compliance →", type="primary", key="circ_next_rep", use_container_width=True):
-            st.session_state["current_step"] = 11
-            st.session_state["nav_section"] = "reports"
+        if st.button("Proceed to Platform Settings →", type="primary", key="circ_next_rep", use_container_width=True):
+            st.session_state["current_step"] = 12
+            st.session_state["nav_section"] = "settings"
             st.rerun()
