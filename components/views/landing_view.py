@@ -122,7 +122,7 @@ def render_landing_view():
                 <ul style="margin: 0 0 0 20px; padding: 0; line-height: 1.8; font-size: 0.92rem;">
                     <li><strong>Cut Utility Overhead:</strong> Identify 15%–35% direct electricity and gas savings in under 6 months.</li>
                     <li><strong>Eliminate Compliance Penalties:</strong> Proactively balance carbon caps to avoid penalty taxes and surcharges.</li>
-                    <li><strong>Boost Customer Trust:</strong> Deliver certified ESG compliance summaries for corporate supply chains and auditors.</li>
+                    <li><strong>Boost Customer Trust:</strong> Deliver certified environmental impact summaries for corporate supply chains and auditors.</li>
                     <li><strong>Unlock Subsidies:</strong> Connect directly with clean energy rebates, IRA incentives, and state grants.</li>
                 </ul>
             </div>
