@@ -5,6 +5,28 @@ carbon credit balance/deficit accounting, and multi-factor sustainability scorin
 """
 
 from typing import Dict, List, Any, Optional
+import math
+
+def safe_float(val: Any, default: float = 0.0) -> float:
+  """Safely converts a value to float, handling commas, currency symbols, percentages, NaNs, and whitespace."""
+  if val is None:
+    return float(default)
+  if isinstance(val, (int, float)):
+    return float(default) if math.isnan(val) else float(val)
+  try:
+    s = str(val).strip()
+    if not s or s.lower() in ["nan", "none", "null", "-", "n/a", "na", "--", "nil"]:
+      return float(default)
+    # Strip common formatting symbols: commas, currency symbols, percent signs, and spaces
+    for ch in [",", "₹", "$", "€", "£", "%", " "]:
+      s = s.replace(ch, "")
+    if not s:
+      return float(default)
+    f = float(s)
+    return float(default) if math.isnan(f) else f
+  except (ValueError, TypeError):
+    return float(default)
+
 
 # Standard GHG Protocol Emission Factors (metric tonnes of CO2e per input unit)
 EMISSION_FACTORS = {
@@ -213,17 +235,36 @@ def calculate_carbon_credit_audit(
   # Categorize logs by frequency
   daily_logs = [l for l in activity_logs if l.get("frequency") == "daily"]
   weekly_logs = [l for l in activity_logs if l.get("frequency") == "weekly"]
+  monthly_logs = [l for l in activity_logs if l.get("frequency") == "monthly"]
+
+  # Actual monthly usage
+  monthly_credits_sum = sum(l.get("calculated_total_co2", 0.0) for l in monthly_logs)
+  actual_monthly_avg = round(monthly_credits_sum / len(monthly_logs), 2) if monthly_logs else 0.0
   
   # Actual daily usage
   daily_credits_sum = sum(l.get("calculated_total_co2", 0.0) for l in daily_logs)
-  actual_daily_avg = round(daily_credits_sum / len(daily_logs), 3) if daily_logs else 0.0
-  actual_daily_latest = round(daily_logs[0].get("calculated_total_co2", 0.0), 3) if daily_logs else 0.0
+  if daily_logs:
+    actual_daily_avg = round(daily_credits_sum / len(daily_logs), 3)
+    actual_daily_latest = round(daily_logs[0].get("calculated_total_co2", 0.0), 3)
+  elif monthly_logs:
+    actual_daily_avg = round(actual_monthly_avg / 30.4, 3)
+    actual_daily_latest = round(monthly_logs[0].get("calculated_total_co2", 0.0) / 30.4, 3)
+  else:
+    actual_daily_avg = 0.0
+    actual_daily_latest = 0.0
   daily_pct_of_allowance = round((actual_daily_avg / daily_quota_target) * 100, 1) if daily_quota_target > 0 else 0.0
   
   # Actual weekly usage
   weekly_credits_sum = sum(l.get("calculated_total_co2", 0.0) for l in weekly_logs)
-  actual_weekly_avg = round(weekly_credits_sum / len(weekly_logs), 2) if weekly_logs else 0.0
-  actual_weekly_latest = round(weekly_logs[0].get("calculated_total_co2", 0.0), 2) if weekly_logs else 0.0
+  if weekly_logs:
+    actual_weekly_avg = round(weekly_credits_sum / len(weekly_logs), 2)
+    actual_weekly_latest = round(weekly_logs[0].get("calculated_total_co2", 0.0), 2)
+  elif monthly_logs:
+    actual_weekly_avg = round(actual_monthly_avg / 4.33, 2)
+    actual_weekly_latest = round(monthly_logs[0].get("calculated_total_co2", 0.0) / 4.33, 2)
+  else:
+    actual_weekly_avg = 0.0
+    actual_weekly_latest = 0.0
   weekly_pct_of_allowance = round((actual_weekly_avg / weekly_quota_target) * 100, 1) if weekly_quota_target > 0 else 0.0
   
   # Accrued credits used to date

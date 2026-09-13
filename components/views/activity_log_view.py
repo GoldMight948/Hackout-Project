@@ -16,7 +16,9 @@ from database.db_manager import (
 )
 from components.auth import is_demo_session
 from components.calculations import calculate_detailed_emissions
+from components.csv_importer import import_past_data_from_csv
 from components.icons import (
+
   feather_icon, render_icon_heading, COLOR_WARNING, COLOR_SUCCESS,
   COLOR_NEUTRAL, COLOR_INFO, COLOR_PRIMARY
 )
@@ -536,21 +538,21 @@ def render_activity_log_view():
         use_container_width=True
       )
 
-      uploaded_batch = st.file_uploader("Upload Completed Activity CSV", type=["csv"])
+      uploaded_batch = st.file_uploader("Upload Completed Activity CSV", type=["csv", "xlsx", "xls"], key="activity_batch_file_uploader")
       if uploaded_batch is not None:
-        try:
-          df_up = pd.read_csv(uploaded_batch)
-          imported_cnt = 0
-          for _, row in df_up.iterrows():
-            row_dict = row.to_dict()
-            save_activity_log(user_email, row_dict, is_demo=is_demo)
-            imported_cnt += 1
-          st.success(f"🎉 Successfully imported {imported_cnt} activity records!")
-          st.rerun()
-        except Exception as e:
-          st.error(f"Error importing batch file: {e}")
+        last_file = st.session_state.get("activity_last_uploaded_file")
+        if last_file != uploaded_batch.name:
+          with st.spinner("Processing batch activity spreadsheet..."):
+            import_res = import_past_data_from_csv(uploaded_batch, user_email, is_demo=is_demo)
+            st.session_state["activity_last_uploaded_file"] = uploaded_batch.name
+            if import_res.get("success"):
+              st.success(f"🎉 {import_res.get('message', 'Successfully imported activity records!')}")
+              st.rerun()
+            else:
+              st.error(import_res.get("error", "Error importing batch file."))
 
       st.markdown("</div>", unsafe_allow_html=True)
+
 
   # Navigation
   st.markdown("<hr style='margin: 24px 0 16px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)

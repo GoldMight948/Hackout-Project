@@ -17,17 +17,24 @@ import pandas as pd
 from datetime import date, datetime, timedelta
 from components.calculations import (
   calculate_detailed_emissions, calculate_carbon_credit_audit,
-  get_statutory_carbon_quota, generate_hotspot_recommendations
+  get_statutory_carbon_quota, generate_hotspot_recommendations,
+  safe_float
 )
 from components.ml_forecast import generate_monthly_timeseries
 from components.auth import is_demo_session, reset_current_demo_profile
 from database.db_manager import (
   get_activity_logs, get_aggregated_activity_summary,
-  sync_activity_logs_to_dashboard
+  sync_activity_logs_to_dashboard, get_latest_emissions
 )
+
 from components.icons import (
   feather_icon, COLOR_WARNING, COLOR_SUCCESS, COLOR_NEUTRAL,
   COLOR_SECONDARY, COLOR_INFO, COLOR_AMBER
+)
+import io
+from components.csv_importer import (
+  import_past_data_from_csv, generate_sample_past_data_csv,
+  generate_blank_activity_csv_template
 )
 
 def render_dashboard_view():
@@ -69,6 +76,14 @@ def render_dashboard_view():
     st.session_state["dash_synced_entries"] = total_logs_count
     st.session_state["dash_data_signature"] = current_data_sig
     st.session_state["manual_setup_override"] = False
+  elif total_logs_count == 0 and res_co2 == 0.0:
+    db_emissions = get_latest_emissions(user_email)
+    if db_emissions and (db_emissions.get("total_co2", 0.0) > 0.0 or any(safe_float(db_emissions.get(k, 0)) > 0 for k in ["electricity_kwh", "diesel_liters", "gas_m3", "truck_km"])):
+      res_calc = calculate_detailed_emissions(db_emissions)
+      st.session_state["emissions_results"] = res_calc
+      st.session_state["form_inputs"] = db_emissions
+      st.session_state["dash_synced_email"] = user_email
+
 
   res = st.session_state["emissions_results"]
   user_logs = get_activity_logs(user_email, limit=500)
@@ -149,24 +164,137 @@ def render_dashboard_view():
     """, unsafe_allow_html=True)
 
   with col_head_right:
-    if res["is_deficit"]:
+    c_hdr_badge, c_hdr_btn = st.columns([1.3, 1.1], gap="small")
+    with c_hdr_badge:
+      if res["is_deficit"]:
+        st.markdown(f"""
+          <div style="display: flex; justify-content: flex-end; align-items: flex-start; padding-top: 6px;">
+            <span style="background: rgba(239, 68, 68, 0.12); color: #DC2626; border: 1.5px solid #F87171; border-radius: 8px; padding: 7px 12px; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 1px 3px rgba(239, 68, 68, 0.08);">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #DC2626;"></span>
+              DEFICIT
+            </span>
+          </div>
+        """, unsafe_allow_html=True)
+      else:
+        st.markdown(f"""
+          <div style="display: flex; justify-content: flex-end; align-items: flex-start; padding-top: 6px;">
+            <span style="background: rgba(16, 185, 129, 0.12); color: #047857; border: 1.5px solid #34D399; border-radius: 8px; padding: 7px 12px; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 1px 3px rgba(16, 185, 129, 0.08);">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #10B981;"></span>
+              SURPLUS
+            </span>
+          </div>
+        """, unsafe_allow_html=True)
+    with c_hdr_btn:
+      import_active = st.session_state.get("show_dash_csv_import", False)
+      btn_label = "✖ Close" if import_active else "📥 Import CSV"
+      if st.button(btn_label, key="dash_toggle_import_csv", use_container_width=True):
+        st.session_state["show_dash_csv_import"] = not import_active
+        st.rerun()
+
+  # =========================================================================
+  # 2.5 NEW USER ONBOARDING & CSV PAST DATA INGESTION MODULE
+  # =========================================================================
+  is_new_user = (not is_demo) and (total_logs_count == 0 and res.get("total_co2", 0.0) <= 0.0)
+  show_csv_module = is_new_user or st.session_state.get("show_dash_csv_import", False)
+
+  if show_csv_module:
+    card_border = "#10B981" if is_new_user else "var(--border-color)"
+    card_bg = "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)" if is_new_user else "var(--bg-card)"
+    card_tag = "NEW WORKSPACE • READY FOR DATA" if is_new_user else "HISTORICAL DATA BATCH INGESTION"
+    card_tag_class = "badge-low" if is_new_user else "badge-medium"
+    card_heading = "Import Past Data from CSV to Power Your Dashboard Analysis" if is_new_user else "Import Additional Past Data from CSV"
+    card_sub = (
+      "Welcome to your production facility workspace! To unlock personalized leak diagnostics, "
+      "statutory PAT compliance audits, and full 12-month projections, import your past operational logs or utility bills below."
+      if is_new_user else
+      "Upload additional historical utility spreadsheets or operational logs to update your SQLite records and live emissions analysis."
+    )
+    cloud_icon = feather_icon('upload-cloud', color='#059669', size=20, margin_right=8)
+
+    st.markdown(f"""
+      <div class="saas-card" style="border: 1.5px solid {card_border}; background: {card_bg}; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <span class="{card_tag_class}" style="font-size: 0.75rem; letter-spacing: 0.08em;">{card_tag}</span>
+            <h2 style="font-size: 1.35rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--text-primary); display: flex; align-items: center;">
+              {cloud_icon} {card_heading}
+            </h2>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; max-width: 780px;">
+              {card_sub}
+            </p>
+          </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    col_csv1, col_csv2 = st.columns([1.25, 0.95], gap="large")
+    with col_csv1:
+      dash_uploaded_csv = st.file_uploader(
+        "Upload Past Utility or Operational Spreadsheet",
+        type=["csv", "xlsx", "xls"],
+        key="dash_past_data_csv_uploader",
+        help="Upload CSV or Excel file containing past operational records (dates, electricity, fuels, freight, waste)."
+      )
+      if dash_uploaded_csv is not None:
+        last_dash_file = st.session_state.get("dash_last_processed_file")
+        trigger_ingest = False
+        if last_dash_file != dash_uploaded_csv.name:
+          trigger_ingest = True
+        elif st.button("🚀 Ingest CSV & Update Dashboard Analysis", type="primary", use_container_width=True, key="dash_btn_process_csv"):
+          trigger_ingest = True
+
+        if trigger_ingest:
+          with st.spinner("Processing spreadsheet and computing emissions analytics..."):
+            import_res = import_past_data_from_csv(dash_uploaded_csv, user_email, is_demo=is_demo)
+            st.session_state["dash_last_processed_file"] = dash_uploaded_csv.name
+            if import_res.get("success"):
+              st.session_state["show_dash_csv_import"] = False
+              st.success(import_res.get("message", "Import successful!"))
+              st.rerun()
+            else:
+              st.error(import_res.get("error", "Error parsing file."))
+
+
+    with col_csv2:
       st.markdown(f"""
-        <div style="display: flex; justify-content: flex-end; align-items: flex-start; padding-top: 6px;">
-          <span style="background: rgba(239, 68, 68, 0.12); color: #DC2626; border: 1.5px solid #F87171; border-radius: 8px; padding: 7px 16px; font-weight: 800; font-size: 0.82rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: 0 1px 3px rgba(239, 68, 68, 0.08);">
-            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #DC2626;"></span>
-            CARBON CREDIT DEFICIT
-          </span>
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          {feather_icon('zap', color=COLOR_WARNING, size=15, margin_right=5)} Fast Ingestion Options:
         </div>
       """, unsafe_allow_html=True)
-    else:
-      st.markdown(f"""
-        <div style="display: flex; justify-content: flex-end; align-items: flex-start; padding-top: 6px;">
-          <span style="background: rgba(16, 185, 129, 0.12); color: #047857; border: 1.5px solid #34D399; border-radius: 8px; padding: 7px 16px; font-weight: 800; font-size: 0.82rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: 0 1px 3px rgba(16, 185, 129, 0.08);">
-            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #10B981;"></span>
-            SURPLUS RESERVE
-          </span>
-        </div>
-      """, unsafe_allow_html=True)
+
+      user_ind = user.get("industry", "Manufacturing Plant")
+      if st.button("⚡ Pre-populate with Sample 1-Year Past Activity (CSV)", use_container_width=True, key="dash_btn_sample_csv"):
+        with st.spinner("Loading 12 months of historical operational activity..."):
+          sample_csv_text = generate_sample_past_data_csv(user_ind)
+          import_res = import_past_data_from_csv(io.StringIO(sample_csv_text), user_email, is_demo=is_demo)
+          if import_res.get("success"):
+            st.session_state["show_dash_csv_import"] = False
+            st.success("✅ Imported 12 months of historical operational activity! Synchronizing dashboard...")
+            st.rerun()
+          else:
+            st.error("Failed to generate sample data.")
+
+      st.download_button(
+        label="📄 Download Blank CSV Template",
+        data=generate_blank_activity_csv_template(),
+        file_name="operational_activity_template.csv",
+        mime="text/csv",
+        use_container_width=True,
+        key="dash_download_activity_csv_tmpl"
+      )
+
+      c_opt1, c_opt2 = st.columns(2)
+      with c_opt1:
+        if st.button("⚙️ Setup Baseline", key="dash_new_user_go_setup", use_container_width=True):
+          st.session_state["nav_section"] = "setup"
+          st.session_state["current_step"] = 3
+          st.rerun()
+      with c_opt2:
+        if st.button("📅 Shift Logger", key="dash_new_user_go_logs", use_container_width=True):
+          st.session_state["nav_section"] = "activity_logs"
+          st.session_state["current_step"] = 4
+          st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
   # =========================================================================
   # 3. EXECUTIVE KPI SUMMARY: Single 5-Card Row (Real Data Only)
@@ -312,32 +440,43 @@ def render_dashboard_view():
         <div class="saas-card-subtitle">Highest volume operational sources ranked by emissions:</div>
     """, unsafe_allow_html=True)
 
-    sorted_cats = sorted(res["pillar_co2"].items(), key=lambda x: x[1], reverse=True)
-    cat_names = [k for k, v in sorted_cats]
-    cat_vals = [v for k, v in sorted_cats]
+    if res["total_co2"] <= 0.0:
+      st.markdown("""
+        <div style="background: var(--bg-subtle); border: 1px dashed var(--border-color); border-radius: 10px; padding: 48px 20px; text-align: center; margin-top: 10px;">
+          <div style="font-size: 2.2rem; margin-bottom: 8px;">🌱</div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">Zero Active Emission Hotspots</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); max-width: 320px; margin: 0 auto;">
+            Your facility emissions are at 0.0 t CO₂e. Import your past CSV data above or log daily operational shifts to rank emission sources.
+          </div>
+        </div>
+      """, unsafe_allow_html=True)
+    else:
+      sorted_cats = sorted(res["pillar_co2"].items(), key=lambda x: x[1], reverse=True)
+      cat_names = [k for k, v in sorted_cats]
+      cat_vals = [v for k, v in sorted_cats]
 
-    fig_bar = go.Figure(data=[go.Bar(
-      x=cat_vals,
-      y=cat_names,
-      orientation='h',
-      marker=dict(
-        color=cat_vals,
-        colorscale=[[0, '#10B981'], [0.5, '#F59E0B'], [1.0, '#DC2626']],
-        line=dict(width=0)
-      ),
-      text=[f"{v:,.1f} t" for v in cat_vals],
-      textposition='auto',
-      hovertemplate='<b>%{y}</b>: %{x:,.1f} tonnes CO₂e<extra></extra>'
-    )])
-    fig_bar.update_layout(
-      height=290,
-      margin=dict(l=10, r=15, t=10, b=20),
-      paper_bgcolor='rgba(0,0,0,0)',
-      plot_bgcolor='rgba(0,0,0,0)',
-      xaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.12)', tickfont=dict(size=11, color=chart_text_color)),
-      yaxis=dict(autorange="reversed", tickfont=dict(size=11, color=chart_text_color))
-    )
-    st.plotly_chart(fig_bar, use_container_width=True)
+      fig_bar = go.Figure(data=[go.Bar(
+        x=cat_vals,
+        y=cat_names,
+        orientation='h',
+        marker=dict(
+          color=cat_vals,
+          colorscale=[[0, '#10B981'], [0.5, '#F59E0B'], [1.0, '#DC2626']],
+          line=dict(width=0)
+        ),
+        text=[f"{v:,.1f} t" for v in cat_vals],
+        textposition='auto',
+        hovertemplate='<b>%{y}</b>: %{x:,.1f} tonnes CO₂e<extra></extra>'
+      )])
+      fig_bar.update_layout(
+        height=290,
+        margin=dict(l=10, r=15, t=10, b=20),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.12)', tickfont=dict(size=11, color=chart_text_color)),
+        yaxis=dict(autorange="reversed", tickfont=dict(size=11, color=chart_text_color))
+      )
+      st.plotly_chart(fig_bar, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
   with col_stacked:
@@ -350,41 +489,52 @@ def render_dashboard_view():
         <div class="saas-card-subtitle">Monthly profile across pillars with annual quota benchmark line:</div>
     """, unsafe_allow_html=True)
 
-    monthly_df = generate_monthly_timeseries(res["pillar_co2"])
-    pillars = [c for c in monthly_df.columns if c not in ["Month", "Month_Num", "Total_Monthly_CO2"]]
-    palette = ["#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6", "#06B6D4"]
+    if res["total_co2"] <= 0.0:
+      st.markdown("""
+        <div style="background: var(--bg-subtle); border: 1px dashed var(--border-color); border-radius: 10px; padding: 48px 20px; text-align: center; margin-top: 10px;">
+          <div style="font-size: 2.2rem; margin-bottom: 8px;">📈</div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">12-Month Trajectory Awaiting Data</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); max-width: 340px; margin: 0 auto;">
+            Monthly operational breakdown and statutory quota benchmarks will dynamically project once historical CSV logs or utility data are imported.
+          </div>
+        </div>
+      """, unsafe_allow_html=True)
+    else:
+      monthly_df = generate_monthly_timeseries(res["pillar_co2"])
+      pillars = [c for c in monthly_df.columns if c not in ["Month", "Month_Num", "Total_Monthly_CO2"]]
+      palette = ["#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6", "#06B6D4"]
 
-    fig_stacked = go.Figure()
-    for idx, pillar in enumerate(pillars):
-      fig_stacked.add_trace(go.Bar(
-        name=pillar,
+      fig_stacked = go.Figure()
+      for idx, pillar in enumerate(pillars):
+        fig_stacked.add_trace(go.Bar(
+          name=pillar,
+          x=monthly_df["Month"],
+          y=monthly_df[pillar],
+          marker_color=palette[idx % len(palette)],
+          hovertemplate=f'<b>{pillar}</b>: %{{y:,.1f}} t<extra></extra>'
+        ))
+
+      monthly_quota = res['govt_credits'] / 12.0
+      fig_stacked.add_trace(go.Scatter(
+        name=f"Monthly Quota Target ({monthly_quota:,.1f} t)",
         x=monthly_df["Month"],
-        y=monthly_df[pillar],
-        marker_color=palette[idx % len(palette)],
-        hovertemplate=f'<b>{pillar}</b>: %{{y:,.1f}} t<extra></extra>'
+        y=[monthly_quota] * len(monthly_df),
+        mode='lines',
+        line=dict(color='#059669', dash='dash', width=2),
+        hovertemplate="Monthly Quota: %{y:,.1f} t<extra></extra>"
       ))
 
-    monthly_quota = res['govt_credits'] / 12.0
-    fig_stacked.add_trace(go.Scatter(
-      name=f"Monthly Quota Target ({monthly_quota:,.1f} t)",
-      x=monthly_df["Month"],
-      y=[monthly_quota] * len(monthly_df),
-      mode='lines',
-      line=dict(color='#059669', dash='dash', width=2),
-      hovertemplate="Monthly Quota: %{y:,.1f} t<extra></extra>"
-    ))
-
-    fig_stacked.update_layout(
-      barmode='stack',
-      height=290,
-      margin=dict(l=10, r=10, t=10, b=20),
-      legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
-      paper_bgcolor='rgba(0,0,0,0)',
-      plot_bgcolor='rgba(0,0,0,0)',
-      xaxis=dict(tickfont=dict(size=10, color=chart_text_color)),
-      yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.12)', tickfont=dict(size=10, color=chart_text_color))
-    )
-    st.plotly_chart(fig_stacked, use_container_width=True)
+      fig_stacked.update_layout(
+        barmode='stack',
+        height=290,
+        margin=dict(l=10, r=10, t=10, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10, color=chart_text_color)),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(tickfont=dict(size=10, color=chart_text_color)),
+        yaxis=dict(showgrid=True, gridcolor='rgba(128,128,128,0.12)', tickfont=dict(size=10, color=chart_text_color))
+      )
+      st.plotly_chart(fig_stacked, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
   st.markdown("<div style='margin-bottom: 18px;'></div>", unsafe_allow_html=True)
@@ -551,30 +701,41 @@ def render_dashboard_view():
         <div class="saas-card-subtitle">Operational stream proportion:</div>
     """, unsafe_allow_html=True)
 
-    pie_labels = list(res["pillar_co2"].keys())
-    pie_values = list(res["pillar_co2"].values())
-    pillar_palette = ["#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6", "#06B6D4"]
+    if res["total_co2"] <= 0.0:
+      st.markdown("""
+        <div style="background: var(--bg-subtle); border: 1px dashed var(--border-color); border-radius: 10px; padding: 48px 16px; text-align: center; margin-top: 10px;">
+          <div style="font-size: 2.2rem; margin-bottom: 8px;">🍩</div>
+          <div style="font-weight: 700; font-size: 0.90rem; color: var(--text-primary); margin-bottom: 4px;">No Stream Distribution</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            Emissions are at 0.0 t CO₂ across all 5 operational pillars.
+          </div>
+        </div>
+      """, unsafe_allow_html=True)
+    else:
+      pie_labels = list(res["pillar_co2"].keys())
+      pie_values = list(res["pillar_co2"].values())
+      pillar_palette = ["#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6", "#06B6D4"]
 
-    fig_donut = go.Figure(data=[go.Pie(
-      labels=pie_labels,
-      values=pie_values,
-      hole=0.60,
-      marker=dict(colors=pillar_palette, line=dict(color='var(--bg-card)', width=2)),
-      textinfo='percent',
-      hovertemplate='<b>%{label}</b><br>%{value:,.1f} t CO₂ (%{percent})<extra></extra>'
-    )])
-    fig_donut.update_layout(
-      height=270,
-      margin=dict(l=10, r=10, t=10, b=10),
-      legend=dict(orientation="h", yanchor="top", y=-0.05, xanchor="center", x=0.5, font=dict(size=10, color=chart_text_color)),
-      paper_bgcolor='rgba(0,0,0,0)',
-      plot_bgcolor='rgba(0,0,0,0)',
-      annotations=[dict(
-        text=f"<b>{res['total_co2']:,.0f} t</b><br><span style='font-size:10px;color:#64748B'>Total CO₂</span>",
-        x=0.5, y=0.5, font_size=13, showarrow=False, font_color=chart_text_color
-      )]
-    )
-    st.plotly_chart(fig_donut, use_container_width=True)
+      fig_donut = go.Figure(data=[go.Pie(
+        labels=pie_labels,
+        values=pie_values,
+        hole=0.60,
+        marker=dict(colors=pillar_palette, line=dict(color='var(--bg-card)', width=2)),
+        textinfo='percent',
+        hovertemplate='<b>%{label}</b><br>%{value:,.1f} t CO₂ (%{percent})<extra></extra>'
+      )])
+      fig_donut.update_layout(
+        height=270,
+        margin=dict(l=10, r=10, t=10, b=10),
+        legend=dict(orientation="h", yanchor="top", y=-0.05, xanchor="center", x=0.5, font=dict(size=10, color=chart_text_color)),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        annotations=[dict(
+          text=f"<b>{res['total_co2']:,.0f} t</b><br><span style='font-size:10px;color:#64748B'>Total CO₂</span>",
+          x=0.5, y=0.5, font_size=13, showarrow=False, font_color=chart_text_color
+        )]
+      )
+      st.plotly_chart(fig_donut, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
   with col_recs:

@@ -9,6 +9,7 @@ import os
 import json
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from components.calculations import safe_float
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "emissions_app.db")
 
@@ -475,21 +476,22 @@ def save_activity_log(user_email: str, log_data: Dict[str, Any], is_demo: Option
     frequency = str(log_data.get("frequency", "daily")).lower()
     period_label = str(log_data.get("period_label", log_date))
 
-    diesel_l = max(0.0, float(log_data.get("diesel_liters", 0.0)))
-    petrol_l = max(0.0, float(log_data.get("petrol_liters", 0.0)))
-    gas_m3 = max(0.0, float(log_data.get("gas_m3", 0.0)))
-    elec_kwh = max(0.0, float(log_data.get("electricity_kwh", 0.0)))
+    diesel_l = max(0.0, safe_float(log_data.get("diesel_liters", log_data.get("diesel", 0.0))))
+    petrol_l = max(0.0, safe_float(log_data.get("petrol_liters", log_data.get("petrol", 0.0))))
+    gas_m3 = max(0.0, safe_float(log_data.get("gas_m3", log_data.get("gas", log_data.get("natural_gas", 0.0)))))
+    elec_kwh = max(0.0, safe_float(log_data.get("electricity_kwh", log_data.get("electricity", log_data.get("kwh", 0.0)))))
 
-    org_waste = max(0.0, float(log_data.get("organic_waste_kg", 0.0)))
-    plas_waste = max(0.0, float(log_data.get("plastic_waste_kg", 0.0)))
-    met_waste = max(0.0, float(log_data.get("metal_waste_kg", 0.0)))
-    pap_waste = max(0.0, float(log_data.get("paper_waste_kg", 0.0)))
-    haz_waste = max(0.0, float(log_data.get("hazardous_waste_kg", 0.0)))
+    org_waste = max(0.0, safe_float(log_data.get("organic_waste_kg", log_data.get("organic_waste", 0.0))))
+    plas_waste = max(0.0, safe_float(log_data.get("plastic_waste_kg", log_data.get("plastic_waste", 0.0))))
+    met_waste = max(0.0, safe_float(log_data.get("metal_waste_kg", log_data.get("metal_waste", 0.0))))
+    pap_waste = max(0.0, safe_float(log_data.get("paper_waste_kg", log_data.get("paper_waste", 0.0))))
+    haz_waste = max(0.0, safe_float(log_data.get("hazardous_waste_kg", log_data.get("hazardous_waste", 0.0))))
 
-    truck_km = max(0.0, float(log_data.get("truck_km", 0.0)))
-    water_m3 = max(0.0, float(log_data.get("water_m3", 0.0)))
-    prod_units = max(0.0, float(log_data.get("production_units", 0.0)))
+    truck_km = max(0.0, safe_float(log_data.get("truck_km", log_data.get("truck", log_data.get("freight_km", 0.0)))))
+    water_m3 = max(0.0, safe_float(log_data.get("water_m3", log_data.get("water", 0.0))))
+    prod_units = max(0.0, safe_float(log_data.get("production_units", log_data.get("units", 0.0))))
     notes = str(log_data.get("notes", ""))
+
 
     # Calculate Emission Components (t CO2e)
     fuel_co2 = round(
@@ -589,18 +591,19 @@ def update_activity_log(log_id: int, user_email: str, updated_data: Dict[str, An
     if is_demo is None:
         is_demo = is_demo_user(email_clean)
 
-    diesel_l = max(0.0, float(updated_data.get("diesel_liters", 0.0)))
-    petrol_l = max(0.0, float(updated_data.get("petrol_liters", 0.0)))
-    gas_m3 = max(0.0, float(updated_data.get("gas_m3", 0.0)))
-    elec_kwh = max(0.0, float(updated_data.get("electricity_kwh", 0.0)))
-    waste_org = max(0.0, float(updated_data.get("organic_waste_kg", 0.0)))
-    waste_plas = max(0.0, float(updated_data.get("plastic_waste_kg", 0.0)))
-    waste_met = max(0.0, float(updated_data.get("metal_waste_kg", 0.0)))
-    waste_pap = max(0.0, float(updated_data.get("paper_waste_kg", 0.0)))
-    waste_haz = max(0.0, float(updated_data.get("hazardous_waste_kg", 0.0)))
-    truck_km = max(0.0, float(updated_data.get("truck_km", 0.0)))
-    water_m3 = max(0.0, float(updated_data.get("water_m3", 0.0)))
-    prod_units = max(0.0, float(updated_data.get("production_units", 0.0)))
+    diesel_l = max(0.0, safe_float(updated_data.get("diesel_liters", updated_data.get("diesel", 0.0))))
+    petrol_l = max(0.0, safe_float(updated_data.get("petrol_liters", updated_data.get("petrol", 0.0))))
+    gas_m3 = max(0.0, safe_float(updated_data.get("gas_m3", updated_data.get("gas", updated_data.get("natural_gas", 0.0)))))
+    elec_kwh = max(0.0, safe_float(updated_data.get("electricity_kwh", updated_data.get("electricity", updated_data.get("kwh", 0.0)))))
+    waste_org = max(0.0, safe_float(updated_data.get("organic_waste_kg", updated_data.get("organic_waste", 0.0))))
+    waste_plas = max(0.0, safe_float(updated_data.get("plastic_waste_kg", updated_data.get("plastic_waste", 0.0))))
+    waste_met = max(0.0, safe_float(updated_data.get("metal_waste_kg", updated_data.get("metal_waste", 0.0))))
+    waste_pap = max(0.0, safe_float(updated_data.get("paper_waste_kg", updated_data.get("paper_waste", 0.0))))
+    waste_haz = max(0.0, safe_float(updated_data.get("hazardous_waste_kg", updated_data.get("hazardous_waste", 0.0))))
+    truck_km = max(0.0, safe_float(updated_data.get("truck_km", updated_data.get("truck", updated_data.get("freight_km", 0.0)))))
+    water_m3 = max(0.0, safe_float(updated_data.get("water_m3", updated_data.get("water", 0.0))))
+    prod_units = max(0.0, safe_float(updated_data.get("production_units", updated_data.get("units", 0.0))))
+
 
     fuel_co2 = round((diesel_l * ACTIVITY_EMISSION_FACTORS["diesel"]) + (petrol_l * ACTIVITY_EMISSION_FACTORS["petrol"]) + (gas_m3 * ACTIVITY_EMISSION_FACTORS["gas"]), 4)
     waste_co2 = round((waste_org * ACTIVITY_EMISSION_FACTORS["waste_organic"]) + (waste_plas * ACTIVITY_EMISSION_FACTORS["waste_plastic"]) + (waste_met * ACTIVITY_EMISSION_FACTORS["waste_metal"]) + (waste_pap * ACTIVITY_EMISSION_FACTORS["waste_paper"]) + (waste_haz * ACTIVITY_EMISSION_FACTORS["waste_hazardous"]), 4)
@@ -657,6 +660,7 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
     logs = get_activity_logs(email_clean, limit=500)
     daily_logs = [l for l in logs if l.get("frequency") == "daily"]
     weekly_logs = [l for l in logs if l.get("frequency") == "weekly"]
+    monthly_logs = [l for l in logs if l.get("frequency") == "monthly"]
 
     latest = get_latest_emissions(email_clean) or {}
     user_prof = get_user_profile(email_clean) or {}
@@ -677,7 +681,7 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
         total_credits = curr_credits
         credit_price = float(latest.get("credit_price", quota_info["benchmark_price"]))
 
-    if not daily_logs and not weekly_logs:
+    if not daily_logs and not weekly_logs and not monthly_logs:
         if not latest:
             return None
         updated_inputs = dict(latest)
@@ -695,8 +699,10 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
 
     d_count = len(daily_logs)
     w_count = len(weekly_logs)
+    m_count = len(monthly_logs)
     d_mult = (365.0 / d_count) if d_count > 0 else 0.0
     w_mult = (52.0 / w_count) if w_count > 0 else 0.0
+    m_mult = (12.0 / m_count) if m_count > 0 else 0.0
 
     LOGGED_CORE_FIELDS = {
         "diesel_liters", "petrol_liters", "gas_m3", "electricity_kwh",
@@ -707,7 +713,8 @@ def sync_activity_logs_to_dashboard(user_email: str, is_demo: Optional[bool] = N
     def annualize_field(field: str, fallback_val: float = 0.0) -> float:
         d_val = sum(float(l.get(field, 0.0) or 0.0) for l in daily_logs) * d_mult
         w_val = sum(float(l.get(field, 0.0) or 0.0) for l in weekly_logs) * w_mult
-        tot = d_val + w_val
+        m_val = sum(float(l.get(field, 0.0) or 0.0) for l in monthly_logs) * m_mult
+        tot = d_val + w_val + m_val
         # If user actively logs operational shifts, their fuel/power/waste logs are the dynamic ground truth!
         if field in LOGGED_CORE_FIELDS:
             return round(tot, 1)

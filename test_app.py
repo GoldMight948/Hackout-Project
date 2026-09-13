@@ -588,6 +588,139 @@ def test_dynamic_graphs_and_hotspot_recommendations():
   assert copilot_rec_resp["nav_target"] == "recommendations"
   print(" [PASS] Copilot Hotspot-Targeted Recommendation generation verified.")
 
+def test_new_user_past_data_csv_import():
+  print("Testing New User Past Data CSV Import & Dashboard Analysis...")
+  import io
+  from database.db_manager import (
+    register_user, get_activity_logs, delete_activity_log,
+    get_latest_emissions, sync_activity_logs_to_dashboard,
+    get_aggregated_activity_summary
+  )
+  from components.csv_importer import (
+    import_past_data_from_csv,
+    generate_sample_past_data_csv,
+    generate_blank_activity_csv_template
+  )
+  from components.calculations import calculate_carbon_credit_audit
+
+  test_email = "newuser_csv_import@cleanenergy.com"
+  register_user(
+    email=test_email,
+    password="Password123!",
+    company_name="GreenVolt Manufacturing",
+    owner_name="Elena Vance",
+    role="Admin",
+    company_type="Heavy Industrial Manufacturer",
+    industry="Manufacturing Plant",
+    employees=120,
+    annual_revenue=15000000.0,
+    country="India",
+    state="Gujarat",
+    location="Sanand Plant #2",
+    is_demo=0
+  )
+
+  # Clean any residual test data
+  for l in get_activity_logs(test_email):
+    delete_activity_log(l["id"], test_email)
+
+  # 1. Verify New User initial zero state
+  agg_init = get_aggregated_activity_summary(test_email)
+  assert agg_init["total_entries"] == 0
+  assert agg_init["total_co2"] == 0.0
+
+  # 2. Test Multi-Row Historical Activity CSV Import
+  csv_content = """date,frequency,electricity_kwh,diesel_liters,petrol_liters,gas_m3,truck_km,organic_waste_kg,plastic_waste_kg,notes
+2025-01-15,monthly,32000,1100,300,2800,4500,1800,1200,Jan 2025 Shift Ledger
+2025-02-15,monthly,29500,1050,280,2600,4100,1650,1100,Feb 2025 Shift Ledger
+2025-03-15,monthly,31000,1120,310,2750,4400,1750,1150,Mar 2025 Shift Ledger
+2025-04-15,monthly,33500,1200,320,2900,4800,1900,1250,Apr 2025 Shift Ledger
+2025-05-15,monthly,35000,1250,330,3100,5000,2000,1300,May 2025 Shift Ledger
+2025-06-15,monthly,34000,1180,315,3000,4700,1850,1220,Jun 2025 Shift Ledger
+"""
+  res_import = import_past_data_from_csv(io.StringIO(csv_content), test_email, is_demo=False)
+  assert res_import["success"] is True
+  assert res_import["type"] == "activity_logs"
+  assert res_import["rows_imported"] == 6
+  assert res_import["total_co2"] > 0.0
+  print(f" [PASS] Multi-row historical CSV imported successfully ({res_import['rows_imported']} records, {res_import['total_co2']:.1f} t CO2e/yr).")
+
+  # 3. Verify SQLite persistence and dynamic synchronization
+  user_logs = get_activity_logs(test_email)
+  assert len(user_logs) == 6
+  agg_after = get_aggregated_activity_summary(test_email)
+  assert agg_after["total_entries"] == 6
+  assert agg_after["total_co2"] > 0.0
+  print(f" [PASS] SQLite operational ledger synchronized: {agg_after['total_entries']} entries, {agg_after['total_co2']:.2f} t CO2.")
+
+  # 4. Verify Executive Dashboard analysis metrics
+  dash_res = sync_activity_logs_to_dashboard(test_email, is_demo=False)
+  assert dash_res is not None
+  assert dash_res["total_co2"] > 0.0
+  assert len(dash_res["pillar_co2"]) >= 5
+  assert dash_res["govt_credits"] > 0
+  assert "top_leak" in dash_res
+
+  audit = calculate_carbon_credit_audit({"email": test_email, "industry": "Manufacturing Plant", "company_type": "Heavy Industrial Manufacturer", "employees": 120}, user_logs, dash_res)
+  assert audit["actual_daily_avg"] > 0.0
+  assert audit["actual_weekly_avg"] > 0.0
+  print(f" [PASS] Dashboard analysis metrics calculated: Total={dash_res['total_co2']:.1f} t, Quota={dash_res['govt_credits']:.0f} credits, Audit={audit['audit_verdict']}.")
+
+  # 5. Test Spreadsheets with Unit Headers & Formatted Numbers (commas, spaces, units)
+  formatted_csv = """Date (YYYY-MM-DD),Electricity (kWh),Diesel Fuel (Liters),Natural Gas (m³),Truck Freight (km),Organic Waste (kg),Notes / Remarks
+2025-07-15,"32,500","1,250.0","2,850.5","4,600","1,950","July Operation with Units & Commas"
+2025-08-15,"34,000","1,300.0","2,900.0","4,800","2,000","August Operation with Units & Commas"
+"""
+  res_formatted = import_past_data_from_csv(io.StringIO(formatted_csv), test_email, is_demo=False)
+  assert res_formatted["success"] is True
+  assert res_formatted["rows_imported"] == 2
+  assert res_formatted["total_co2"] > 0.0
+
+  # Verify that the parsed values in DB are non-zero numbers
+  latest_logs = get_activity_logs(test_email, limit=2)
+  assert latest_logs[0]["electricity_kwh"] in [32500.0, 34000.0]
+  assert latest_logs[0]["diesel_liters"] in [1250.0, 1300.0]
+  assert latest_logs[0]["gas_m3"] in [2850.5, 2900.0]
+  assert latest_logs[0]["truck_km"] in [4600.0, 4800.0]
+  print(f" [PASS] Spreadsheets with unit headers & comma numbers parsed accurately: {latest_logs[0]['electricity_kwh']} kWh, {latest_logs[0]['diesel_liters']} L.")
+
+  # 6. Test Single-Row Facility Baseline CSV Import with Human Headers
+  baseline_csv = """Electricity Consumption (kWh),Diesel (Liters),Natural Gas (m3),Truck Freight Distance (km),Allocated Carbon Credits,Notes
+"360,000","14,500","35,000","60,000","400","Annual Baseline 2025"
+"""
+  res_baseline = import_past_data_from_csv(io.StringIO(baseline_csv), test_email, is_demo=False)
+  assert res_baseline["success"] is True
+  assert res_baseline["type"] == "baseline"
+  assert res_baseline["total_co2"] > 0.0
+  saved_base = get_latest_emissions(test_email)
+  assert saved_base["electricity_kwh"] == 360000.0
+  assert saved_base["diesel_liters"] == 14500.0
+  assert saved_base["gas_m3"] == 35000.0
+  assert saved_base["truck_km"] == 60000.0
+  print(f" [PASS] Single-row baseline CSV import verified: Total={res_baseline['total_co2']:.1f} t CO2.")
+
+  # 7. Test Transaction Ledger CSV Import (e.g. data/greenpack_emissions.csv)
+  if os.path.exists("data/greenpack_emissions.csv"):
+    res_ledger = import_past_data_from_csv("data/greenpack_emissions.csv", test_email, is_demo=False)
+    assert res_ledger["success"] is True
+    assert res_ledger["type"] == "activity_logs"
+    assert res_ledger["rows_imported"] >= 12
+    assert res_ledger["total_co2"] > 0.0
+    print(f" [PASS] Line-item transaction ledger (greenpack_emissions.csv) imported & aggregated: {res_ledger['rows_imported']} monthly logs, {res_ledger['total_co2']:.1f} t CO2.")
+
+  # 8. Test 1-Click Sample CSV Generation
+  sample_csv = generate_sample_past_data_csv("Manufacturing Plant")
+  assert "electricity_kwh" in sample_csv
+  assert "diesel_liters" in sample_csv
+  assert len(sample_csv.strip().split("\n")) == 13  # Header + 12 monthly rows
+
+  # 9. Test Blank Template Generator
+  tmpl_csv = generate_blank_activity_csv_template()
+  assert "date,frequency" in tmpl_csv
+  print(" [PASS] 1-Click sample generator and blank template verification complete.")
+
+
+
 if __name__ == "__main__":
   test_database()
   test_calculations()
@@ -598,6 +731,7 @@ if __name__ == "__main__":
   test_copilot_assistant()
   test_ml_forecasting()
   test_presets_and_alternatives()
+  test_new_user_past_data_csv_import()
   test_fastapi_endpoints()
   print("\n=======================================================")
   print("🎉 ALL TEST SUITES PASSED CLEANLY WITH ZERO ERRORS! 🎉")
