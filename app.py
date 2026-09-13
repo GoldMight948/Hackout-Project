@@ -8,7 +8,7 @@ import streamlit as st
 
 # Streamlit Page Configuration must be the first command
 st.set_page_config(
-  page_title="Industrial Emission Leak-Point Detector & Circular OS",
+  page_title="DCARB",
   page_icon="🌍",
   layout="wide",
   initial_sidebar_state="expanded"

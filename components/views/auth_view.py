@@ -23,7 +23,7 @@ def render_auth_view():
         </div>
       </div>
       <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px; margin-bottom: 6px;">
-        Enterprise Sustainability Portal
+        DCARB Portal
       </h2>
       <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 600px; margin: 0 auto;">
         Securely log in to manage your facility's emissions or register your business to start tracking carbon leaks and government credits.

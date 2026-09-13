@@ -101,7 +101,7 @@ def render_dashboard_view():
     st.markdown(f"""
       <div id="dash-top-bar-marker" style="display:none;"></div>
       <div style="display: flex; align-items: center; gap: 8px; height: 38px; min-width: 0; overflow: hidden; white-space: nowrap;">
-        <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; flex-shrink: 0; white-space: nowrap;">Enterprise Audit</span>
+        <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; flex-shrink: 0; white-space: nowrap;">DCARB</span>
         <span style="color: var(--border-color); font-weight: 300; flex-shrink: 0;">/</span>
         <span style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{comp_name}">{comp_name}</span>
       </div>

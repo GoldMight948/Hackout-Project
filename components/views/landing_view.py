@@ -13,13 +13,9 @@ def render_landing_view():
   # Hero Section
   st.markdown(f"""
     <div class="headline-hero" style="text-align: center; padding: 48px 36px; margin-top: 10px;">
-      <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 24px; padding: 6px 18px; margin-bottom: 18px;">
-        {feather_icon('globe', color='#FFFFFF', size=16, margin_right=4)}
-        <span style="font-weight: 700; font-size: 0.88rem; letter-spacing: 0.04em;">ENTERPRISE DECARBONIZATION & CIRCULAR OS</span>
-      </div>
-      <h1 style="font-size: 2.8rem; font-weight: 800; line-height: 1.15; margin-bottom: 14px; letter-spacing: -0.02em;">
-        Industrial Emission Leak-Point Detector<br/>
-        <span style="color: #A7F3D0;">& Circular Alternative Recommender</span>
+      <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 14px; letter-spacing: -0.02em;">
+        DCARB<br/>
+        <span style="font-size: 2.2rem; color: #A7F3D0;">Industrial Emission Leak-Point Detector</span>
       </h1>
       <p style="font-size: 1.15rem; max-width: 820px; margin: 0 auto 28px auto; line-height: 1.6; opacity: 0.95;">
         Pinpoint operational carbon leak points across energy, transport, waste, and water.
