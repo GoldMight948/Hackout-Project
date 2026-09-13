@@ -132,9 +132,9 @@ def render_circular_view():
   st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
   c_b1, c_b2 = st.columns([1, 1])
   with c_b1:
-    if st.button("← Back to Simulator", key="circ_back_sim"):
-      st.session_state["current_step"] = 9
-      st.session_state["nav_section"] = "simulator"
+    if st.button("← Back to Dashboard", key="circ_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
       st.rerun()
   with c_b2:
     if st.button("Proceed to Platform Settings →", type="primary", key="circ_next_rep", use_container_width=True):

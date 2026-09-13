@@ -19,6 +19,13 @@ def render_carbon_credits_view():
   user = st.session_state.get("current_user", {})
   user_email = user.get("email", "guest@enterprise.com")
 
+  c_top_back, c_top_space = st.columns([1.5, 4.5])
+  with c_top_back:
+    if st.button("← Back to Dashboard", key="credits_top_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
+      st.rerun()
+
   st.markdown("""
     <div style="margin-bottom: 8px;">
       <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
@@ -259,9 +266,9 @@ def render_carbon_credits_view():
   st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
   c_b1, c_b2 = st.columns([1, 1])
   with c_b1:
-    if st.button("← Back to Leak Detection", key="credits_back_leak"):
-      st.session_state["current_step"] = 6
-      st.session_state["nav_section"] = "leak_detection"
+    if st.button("← Back to Dashboard", key="credits_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
       st.rerun()
   with c_b2:
     if st.button("Proceed to AI Decarbonization Recommendations →", type="primary", key="credits_next_recom", use_container_width=True):

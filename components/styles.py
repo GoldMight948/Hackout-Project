@@ -49,9 +49,9 @@ def inject_custom_css():
     color: var(--text-primary) !important;
   }}
 
-  /* Container Spacing */
+  /* Container Spacing - 4.5rem top padding ensures full visibility below Streamlit fixed header */
   .block-container {{
-    padding-top: 1.5rem !important;
+    padding-top: 4.5rem !important;
     padding-bottom: 3.5rem !important;
     max-width: 100% !important;
     padding-left: 2.5rem !important;
@@ -464,6 +464,299 @@ def inject_custom_css():
     align-items: center;
     gap: 8px;
     font-weight: 700;
+  }}
+
+  /* Executive Dashboard Styling */
+  .header-pill {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    line-height: 36px !important;
+    box-sizing: border-box !important;
+    padding: 0 10px !important;
+    font-size: 0.80rem !important;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    width: 100% !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  }}
+
+  .status-synced {{
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    color: #065F46;
+    font-weight: 700;
+  }}
+
+  .pulse-dot {{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10B981;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  }}
+
+  /* Static Workspace Profile Card */
+  .workspace-card {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 8px;
+  }}
+
+  /* Top Bar Utility Row: Guaranteed Single Line & Identical Component Dimensions */
+  div[data-testid="stHorizontalBlock"]:has(#dash-top-bar-marker) {{
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-bottom: 4px !important;
+  }}
+
+  div[data-testid="stHorizontalBlock"]:has(#dash-top-bar-marker) > div[data-testid="column"] {{
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 38px !important;
+  }}
+
+  div[data-testid="stHorizontalBlock"]:has(#dash-top-bar-marker) > div[data-testid="column"] div[data-testid="stVerticalBlock"],
+  div[data-testid="stHorizontalBlock"]:has(#dash-top-bar-marker) > div[data-testid="column"] div[data-testid="stElementContainer"],
+  div[data-testid="stHorizontalBlock"]:has(#dash-top-bar-marker) > div[data-testid="column"] div[data-testid="stMarkdownContainer"] {{
+    gap: 0 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }}
+
+  /* Executive KPI Cards - Uniform Fixed Sizing */
+  .kpi-card-v2 {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 130px !important;
+    min-height: 130px !important;
+    max-height: 130px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+  }}
+
+  .kpi-card-v2:hover {{
+    border-color: var(--border-hover);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  }}
+
+  .kpi-top-row {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }}
+
+  .kpi-icon-pill {{
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }}
+
+  .kpi-label {{
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }}
+
+  .kpi-main-number {{
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }}
+
+  .kpi-unit {{
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-left: 3px;
+  }}
+
+  .kpi-bottom-row {{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+    border-top: 1px solid rgba(226, 232, 240, 0.6) !important;
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.2 !important;
+  }}
+
+  .kpi-bottom-row span {{
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: inline-block !important;
+    max-width: 100% !important;
+  }}
+
+  .compliance-table {{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }}
+
+  .compliance-table th {{
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }}
+
+  .compliance-table td {{
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }}
+
+  .compliance-table tr:last-child td {{
+    border-bottom: none;
+  }}
+
+  .compliance-table tr:hover td {{
+    background-color: var(--bg-card-hover);
+  }}
+
+  .status-pill {{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }}
+
+  .status-pill-green {{
+    background: rgba(16, 185, 129, 0.12);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }}
+
+  .status-pill-red {{
+    background: rgba(239, 68, 68, 0.12);
+    color: #B91C1C;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }}
+
+  .status-pill-amber {{
+    background: rgba(245, 158, 11, 0.12);
+    color: #B45309;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }}
+
+  .status-pill-blue {{
+    background: rgba(59, 130, 246, 0.12);
+    color: #1D4ED8;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }}
+
+  .activity-timeline {{
+    position: relative;
+    padding-left: 20px;
+    margin-top: 6px;
+  }}
+
+  .activity-timeline::before {{
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--border-color);
+  }}
+
+  .timeline-item {{
+    position: relative;
+    margin-bottom: 14px;
+  }}
+
+  .timeline-item:last-child {{
+    margin-bottom: 0;
+  }}
+
+  .timeline-dot {{
+    position: absolute;
+    left: -20px;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--border-color);
+  }}
+
+  .timeline-title {{
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }}
+
+  .timeline-time {{
+    font-size: 0.70rem;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }}
+
+  .timeline-detail {{
+    font-size: 0.76rem;
+    color: var(--text-secondary);
   }}
   </style>
   """

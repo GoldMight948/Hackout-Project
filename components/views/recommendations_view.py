@@ -31,6 +31,13 @@ def render_recommendations_view():
   if "selected_action_recs" not in st.session_state:
     st.session_state["selected_action_recs"] = {r["id"] for r in master_recs[:3]}
 
+  c_top_back, c_top_space = st.columns([1.5, 4.5])
+  with c_top_back:
+    if st.button("← Back to Dashboard", key="recom_top_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
+      st.rerun()
+
   st.markdown("""
     <div style="margin-bottom: 8px;">
       <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
@@ -188,9 +195,9 @@ def render_recommendations_view():
   st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
   c_b1, c_b2 = st.columns([1, 1])
   with c_b1:
-    if st.button("← Back to Carbon Credits", key="recom_back_credits"):
-      st.session_state["current_step"] = 7
-      st.session_state["nav_section"] = "carbon_credits"
+    if st.button("← Back to Dashboard", key="recom_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
       st.rerun()
   with c_b2:
     if st.button("Test These Changes in Before vs After Simulator →", type="primary", key="recom_next_sim", use_container_width=True):

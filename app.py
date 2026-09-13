@@ -65,7 +65,7 @@ def render_sidebar():
     mode_badge = '<span style="background: rgba(245,158,11,0.2); color: #B45309; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #FCD34D;">DEMO SANDBOX</span>' if is_demo else '<span style="background: rgba(16,185,129,0.2); color: #047857; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; border: 1px solid #6EE7B7;">VERIFIED ORG</span>'
     
     st.markdown(f"""
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: var(--shadow-card);">
+      <div class="workspace-card" style="margin-bottom: 8px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
           <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">WORKSPACE</span>
           {mode_badge}
@@ -180,6 +180,24 @@ def main():
   # Inject high-contrast custom CSS & initialize state
   inject_custom_css()
   init_app_state()
+
+  # Handle direct URL query navigation (e.g. from top utility bar)
+  if hasattr(st, "query_params"):
+    nav_param = st.query_params.get("nav")
+    if nav_param == "copilot":
+      st.session_state["nav_section"] = "copilot"
+      st.session_state["current_step"] = 99
+      try:
+        del st.query_params["nav"]
+      except Exception:
+        pass
+    elif nav_param == "settings":
+      st.session_state["nav_section"] = "settings"
+      st.session_state["current_step"] = 12
+      try:
+        del st.query_params["nav"]
+      except Exception:
+        pass
 
   # If unauthenticated, show Step 1 (Landing) or Step 2 (Auth)
   if not st.session_state.get("authenticated", False):

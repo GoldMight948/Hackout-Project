@@ -17,6 +17,13 @@ def render_leak_detection_view():
 
   top_10 = res.get("top_10_leaks", [])
 
+  c_top_back, c_top_space = st.columns([1.5, 4.5])
+  with c_top_back:
+    if st.button("← Back to Dashboard", key="leak_top_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
+      st.rerun()
+
   st.markdown("""
     <div style="margin-bottom: 8px;">
       <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">

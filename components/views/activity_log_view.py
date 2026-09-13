@@ -28,6 +28,13 @@ def render_activity_log_view():
   comp_name = user.get("company_name", "Enterprise Facility")
   is_demo = is_demo_session()
 
+  c_top_back, c_top_space = st.columns([1.5, 4.5])
+  with c_top_back:
+    if st.button("← Back to Dashboard", key="act_top_back_dash"):
+      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "dashboard"
+      st.rerun()
+
   st.markdown("""
     <div style="margin-bottom: 8px;">
       <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
@@ -544,3 +551,10 @@ def render_activity_log_view():
           st.error(f"Error importing batch file: {e}")
 
       st.markdown("</div>", unsafe_allow_html=True)
+
+  # Navigation
+  st.markdown("<hr style='margin: 24px 0 16px 0; border: none; border-top: 1px solid var(--border-color);'/>", unsafe_allow_html=True)
+  if st.button("← Back to Dashboard", key="act_bottom_back_dash"):
+    st.session_state["current_step"] = 5
+    st.session_state["nav_section"] = "dashboard"
+    st.rerun()
