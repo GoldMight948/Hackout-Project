@@ -120,7 +120,7 @@ def render_export_view():
           Use your browser's Print command (<strong>Ctrl+P</strong> or <strong>Cmd+P</strong>) to save as a clean PDF.
         </p>
         <div style="border: 1px solid #CBD5E1; border-radius: 8px; padding: 18px; background: #FFFFFF; font-size: 0.88rem;">
-          <div style="border-bottom: 2px solid #8BA49A; padding-bottom: 8px; margin-bottom: 12px;">
+          <div style="border-bottom: 2px solid #5A8766; padding-bottom: 8px; margin-bottom: 12px;">
             <h4 style="margin: 0; color: #065F46; font-size: 1.1rem;">EMISSION LEAK DETECTOR & GREEN ACTION PLAN</h4>
             <div style="color: #64748B; font-size: 0.8rem;">Prepared for: <strong>""" + business_name + """</strong> &bull; Lead: """ + user.get("name", "Management") + """</div>
           </div>

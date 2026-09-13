@@ -37,13 +37,13 @@ def render_activity_log_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5A8766; font-weight: 700;">
         High-Frequency Operational Monitoring
       </span>
     </div>
   """, unsafe_allow_html=True)
 
-  header_icon = feather_icon("calendar", color="#8BA49A", size=30, margin_right=10)
+  header_icon = feather_icon("calendar", color="#5A8766", size=30, margin_right=10)
   st.markdown(f"""
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
       <div>
@@ -381,7 +381,7 @@ def render_activity_log_view():
         with c_stat:
           st.markdown(f"""
             <div style="font-size: 0.82rem; color: var(--text-muted);">
-              Fuel: <strong>{l['calculated_fuel_co2']:.2f}t</strong> | Waste: <strong>{l['calculated_waste_co2']:.2f}t</strong> | Total: <strong style="color: #8BA49A;">{l['calculated_total_co2']:.2f}t CO₂e</strong>
+              Fuel: <strong>{l['calculated_fuel_co2']:.2f}t</strong> | Waste: <strong>{l['calculated_waste_co2']:.2f}t</strong> | Total: <strong style="color: #5A8766;">{l['calculated_total_co2']:.2f}t CO₂e</strong>
             </div>
           """, unsafe_allow_html=True)
         with c_del:

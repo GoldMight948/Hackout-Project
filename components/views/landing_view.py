@@ -47,7 +47,7 @@ def render_landing_view():
   # Key Features Section
   st.markdown("""
     <div style="text-align: center; margin-bottom: 24px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5A8766; font-weight: 700;">
         Platform Capabilities
       </span>
       <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 4px;">

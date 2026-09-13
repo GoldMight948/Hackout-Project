@@ -122,7 +122,7 @@ def render_auth_view():
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
             <div>
               <div style="font-weight: 700; font-size: 0.95rem; color: #065F46; display: flex; align-items: center;">
-                {feather_icon('award', color='#8BA49A', size=16, margin_right=6)} Statutory Carbon Credit Quota (EPA / CARB / CCTS Calibrated)
+                {feather_icon('award', color='#5A8766', size=16, margin_right=6)} Statutory Carbon Credit Quota (EPA / CARB / CCTS Calibrated)
               </div>
               <div style="font-size: 0.83rem; color: #047857; margin-top: 3px;">
                 Regulatory Regime: <strong>{quota_info['regulatory_regime']}</strong>
@@ -132,7 +132,7 @@ def render_auth_view():
               </div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: 1.65rem; font-weight: 800; color: #8BA49A; line-height: 1.1;">
+              <div style="font-size: 1.65rem; font-weight: 800; color: #5A8766; line-height: 1.1;">
                 {quota_info['quota_credits']:,.0f}
               </div>
               <div style="font-size: 0.75rem; color: #065F46; font-weight: 600;">Government Carbon Credits</div>
@@ -237,7 +237,7 @@ def render_auth_view():
               <div style="margin-bottom: 8px;">{feather_icon('user', color=COLOR_PRIMARY, size=24, margin_right=0)}</div>
               <div style="font-weight: 700; font-size: 0.95rem;">{user['name']}</div>
               <div style="font-size: 0.78rem; color: var(--text-muted);">{user['company']}</div>
-              <div style="font-size: 0.74rem; color: #8BA49A; font-weight: 600; margin-top: 4px;">{preset['type_label']}</div>
+              <div style="font-size: 0.74rem; color: #5A8766; font-weight: 600; margin-top: 4px;">{preset['type_label']}</div>
             </div>
           </div>
         """, unsafe_allow_html=True)

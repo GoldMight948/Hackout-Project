@@ -15,7 +15,7 @@ def render_upload_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5A8766; font-weight: 700;">
         Step 4 — Data Ingestion & Live Table Editor
       </span>
     </div>
@@ -24,7 +24,7 @@ def render_upload_view():
     "upload",
     "Upload Operational Spreadsheet or Use Demo Datasets",
     level="h2",
-    color="#8BA49A",
+    color="#5A8766",
     subtitle="Import existing utility records via CSV or Excel (.xlsx). You can also edit and fine-tune figures directly in the interactive grid below."
   ), unsafe_allow_html=True)
 

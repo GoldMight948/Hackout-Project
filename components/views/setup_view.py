@@ -20,7 +20,7 @@ def render_setup_view():
 
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5A8766; font-weight: 700;">
         Step 3 — Operational Activity Entry
       </span>
     </div>

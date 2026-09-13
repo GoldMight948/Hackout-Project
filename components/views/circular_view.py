@@ -13,7 +13,7 @@ def render_circular_view():
   """Renders Step 10 Circular Alternatives Matrix."""
   st.markdown("""
     <div style="margin-bottom: 8px;">
-      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8BA49A; font-weight: 700;">
+      <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5A8766; font-weight: 700;">
         Step 10 — Circular Economy Transformation
       </span>
     </div>
@@ -54,7 +54,7 @@ def render_circular_view():
       r_cols = st.columns(4, gap="medium")
       four_rs = [
         ("1. REUSE", stream["reuse"], "#6B8E7D", "repeat"),
-        ("2. RECYCLE", stream["recycle"], "#8BA49A", "refresh-cw"),
+        ("2. RECYCLE", stream["recycle"], "#5A8766", "refresh-cw"),
         ("3. RECOVER", stream["recover"], "#F59E0B", "zap"),
         ("4. REPLACE", stream["replace"], "#6366F1", "leaf")
       ]
@@ -72,8 +72,8 @@ def render_circular_view():
                 <div style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
                   {r_data['title']}
                 </div>
-                <div style="font-size: 0.8rem; color: #8BA49A; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center;">
-                  {feather_icon('user-check', color='#8BA49A', size=14)} <span>Partner: {r_data['partner']}</span>
+                <div style="font-size: 0.8rem; color: #5A8766; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center;">
+                  {feather_icon('user-check', color='#5A8766', size=14)} <span>Partner: {r_data['partner']}</span>
                 </div>
                 <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 12px;">
                   {r_data['mechanism']}
@@ -86,7 +86,7 @@ def render_circular_view():
                 </div>
                 <div style="margin-top: 2px;">
                   <span style="color: var(--text-muted);">Carbon Abatement:</span> 
-                  <strong style="color: #8BA49A;">{r_data['carbon_saving']}</strong>
+                  <strong style="color: #5A8766;">{r_data['carbon_saving']}</strong>
                 </div>
               </div>
             </div>
@@ -120,9 +120,9 @@ def render_circular_view():
         </div>
         <div style="font-size: 1.4rem; color: var(--text-muted);">{feather_icon('arrow-right', color='var(--text-muted)', size=20, margin_right=0)}</div>
         <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 12px; min-width: 160px;">
-          <div style="margin-bottom: 6px;">{feather_icon('leaf', color='#8BA49A', size=28, margin_right=0)}</div>
+          <div style="margin-bottom: 6px;">{feather_icon('leaf', color='#5A8766', size=28, margin_right=0)}</div>
           <strong style="font-size: 0.95rem;">Carbon Abated</strong>
-          <div style="font-size: 0.8rem; color: #8BA49A; margin-top: 2px;">Permanent Footprint Cut</div>
+          <div style="font-size: 0.8rem; color: #5A8766; margin-top: 2px;">Permanent Footprint Cut</div>
         </div>
       </div>
     </div>
