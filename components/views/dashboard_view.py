@@ -475,7 +475,7 @@ def render_dashboard_view():
       <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
     """
     st.markdown(tbl_html, unsafe_allow_html=True)
-    if st.button("Reconcile in Carbon Market →", key="dash_btn_reconcile_market"):
+    if st.button("Reconcile in Carbon Market →", type="primary", key="dash_btn_reconcile_market", use_container_width=True):
       st.session_state["current_step"] = 7
       st.session_state["nav_section"] = "carbon_credits"
       st.rerun()
@@ -680,7 +680,7 @@ def render_dashboard_view():
     st.markdown(card_html, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-    if st.button("View Activity Logs Ledger →", key="dash_view_logs_btn", use_container_width=True):
+    if st.button("View Activity Logs Ledger →", type="primary", key="dash_view_logs_btn", use_container_width=True):
       st.session_state["nav_section"] = "activity_logs"
       st.session_state["current_step"] = 4
       st.rerun()
@@ -696,17 +696,17 @@ def render_dashboard_view():
       st.session_state["nav_section"] = "leak_detection"
       st.rerun()
   with c_act2:
-    if st.button("Reconcile Carbon Credits →", use_container_width=True, key="dash_btm_credits"):
+    if st.button("Reconcile Carbon Credits →", type="primary", use_container_width=True, key="dash_btm_credits"):
       st.session_state["current_step"] = 7
       st.session_state["nav_section"] = "carbon_credits"
       st.rerun()
   with c_act3:
-    if st.button("Open Activity Logs →", use_container_width=True, key="dash_btm_logs"):
+    if st.button("Open Activity Logs →", type="primary", use_container_width=True, key="dash_btm_logs"):
       st.session_state["nav_section"] = "activity_logs"
       st.session_state["current_step"] = 4
       st.rerun()
   with c_act4:
-    if st.button("Launch Decarbonization Simulator →", use_container_width=True, key="dash_btm_sim"):
+    if st.button("Launch Decarbonization Simulator →", type="primary", use_container_width=True, key="dash_btm_sim"):
       st.session_state["current_step"] = 9
       st.session_state["nav_section"] = "simulator"
       st.rerun()
