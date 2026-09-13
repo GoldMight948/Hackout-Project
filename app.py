@@ -14,6 +14,8 @@ st.set_page_config(
   initial_sidebar_state="expanded"
 )
 
+st.logo("logo.svg")
+
 from components.styles import inject_custom_css
 from components.auth import init_auth_state, logout_user, quick_demo_login, is_demo_session, reset_current_demo_profile
 from components.data_presets import DEMO_BUSINESSES
