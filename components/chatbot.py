@@ -5,6 +5,7 @@ decarbonization intelligence, and 1-click action triggers.
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 import re
 from datetime import datetime
 from database.db_manager import get_aggregated_activity_summary, get_activity_logs, get_user_profile
@@ -397,9 +398,11 @@ def render_copilot_chat(key_prefix: str = "copilot"):
   st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
 
   # Chat history container with fixed scroll height
-  chat_container = st.container(height=300)
+  chat_container = st.container(height=420)
   with chat_container:
+    total_messages = len(st.session_state["copilot_history"])
     for idx, msg in enumerate(st.session_state["copilot_history"]):
+      is_latest = (idx == total_messages - 1)
       if msg["sender"] == "user":
         st.markdown(f"""
           <div class="chat-bubble-user">
@@ -407,8 +410,10 @@ def render_copilot_chat(key_prefix: str = "copilot"):
           </div>
         """, unsafe_allow_html=True)
       else:
+        latest_class = " latest-bot-answer" if is_latest else ""
+        latest_id = " id='copilot-latest-answer'" if is_latest else ""
         st.markdown(f"""
-          <div class="chat-bubble-bot">
+          <div class="chat-bubble-bot{latest_class}"{latest_id}>
             <div style="display: flex; align-items: center; margin-bottom: 4px; font-weight: 700; color: #8BA49A; font-size: 0.8rem;">
               {feather_icon('cpu', color=COLOR_SUCCESS, size=14, margin_right=5)} Carbon Copilot
             </div>
@@ -430,6 +435,9 @@ def render_copilot_chat(key_prefix: str = "copilot"):
               st.session_state["nav_section"] = target_info["section"]
               st.session_state["current_step"] = target_info["step"]
               st.rerun()
+
+    # Anchor at the bottom of the chat message list
+    st.markdown("<div id='copilot-chat-bottom-anchor' style='height: 1px; width: 100%; margin: 0; padding: 0;'></div>", unsafe_allow_html=True)
 
   # Quick Suggestion Chips with guaranteed unique keys
   last_msg = st.session_state["copilot_history"][-1]
@@ -456,6 +464,9 @@ def render_copilot_chat(key_prefix: str = "copilot"):
           st.session_state["nav_section"] = dest["section"]
           st.session_state["current_step"] = dest["step"]
         st.rerun()
+
+  # Anchor for input area positioning
+  st.markdown("<div id='copilot-input-area-anchor' style='height: 1px; width: 100%; margin: 0; padding: 0;'></div>", unsafe_allow_html=True)
 
   # User Input Field in Form with guaranteed unique keys
   with st.form(f"{key_prefix}_chat_form", clear_on_submit=True):
@@ -486,6 +497,155 @@ def render_copilot_chat(key_prefix: str = "copilot"):
         st.session_state["nav_section"] = dest["section"]
         st.session_state["current_step"] = dest["step"]
       st.rerun()
+
+  # Inject auto-scroll & live input scrolling controller
+  components.html("""
+    <script>
+    (function() {
+      function getDoc() {
+        try {
+          if (window.parent && window.parent.document) {
+            return window.parent.document;
+          }
+        } catch(e) {}
+        return document;
+      }
+
+      function getWin() {
+        try {
+          if (window.parent && window.parent.window) {
+            return window.parent;
+          }
+        } catch(e) {}
+        return window;
+      }
+
+      function autoScrollNewAnswer(smooth) {
+        const doc = getDoc();
+        const win = getWin();
+        if (!doc) return;
+
+        // 1. Locate the latest bot answer or bottom anchor
+        const latestAnswer = doc.getElementById('copilot-latest-answer') || doc.querySelector('.chat-bubble-bot:last-of-type');
+        const anchor = doc.getElementById('copilot-chat-bottom-anchor');
+        const target = latestAnswer || anchor;
+        if (!target) return;
+
+        // 2. Scroll inner chat container completely so full answer is revealed inside the container
+        let curr = target.parentElement;
+        while (curr && curr !== doc.body) {
+          try {
+            const style = win.getComputedStyle(curr);
+            if ((style.overflowY === 'auto' || style.overflowY === 'scroll') && curr.scrollHeight > curr.clientHeight) {
+              curr.scrollTo({
+                top: curr.scrollHeight,
+                behavior: smooth ? 'smooth' : 'auto'
+              });
+            }
+          } catch(e) {}
+          curr = curr.parentElement;
+        }
+
+        // 3. Auto-scroll outer browser window / viewport if the new answer is outside the window
+        try {
+          const rect = target.getBoundingClientRect();
+          const windowHeight = win.innerHeight || doc.documentElement.clientHeight;
+
+          // If the answer is below the bottom of the window or above the top
+          const isOutsideWindow = (rect.bottom > windowHeight - 20) || (rect.top < 70);
+
+          if (isOutsideWindow) {
+            // Scroll into view smoothly. If answer is very tall, align to start so user reads from top, else align to bottom
+            const blockAlign = rect.height > (windowHeight * 0.65) ? 'start' : 'end';
+            target.scrollIntoView({
+              behavior: smooth ? 'smooth' : 'auto',
+              block: blockAlign,
+              inline: 'nearest'
+            });
+
+            // Also ensure parent main container (e.g. Streamlit's section.main or [data-testid="stMain"]) scrolls
+            const mainContainer = doc.querySelector('[data-testid="stMain"]') || doc.querySelector('.main');
+            if (mainContainer && mainContainer.scrollHeight > mainContainer.clientHeight) {
+              const mRect = mainContainer.getBoundingClientRect();
+              if (rect.bottom > mRect.bottom || rect.top < mRect.top) {
+                mainContainer.scrollTo({
+                  top: mainContainer.scrollTop + (rect.bottom - mRect.bottom) + 40,
+                  behavior: smooth ? 'smooth' : 'auto'
+                });
+              }
+            }
+          }
+        } catch(e) {}
+      }
+
+      function scrollInputIntoView() {
+        const doc = getDoc();
+        if (!doc) return;
+        const inputArea = doc.getElementById('copilot-input-area-anchor') || doc.querySelector('[data-testid="stTextInput"]');
+        if (inputArea) {
+          inputArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      function attachScrollListeners() {
+        const doc = getDoc();
+        if (!doc) return;
+
+        const inputs = doc.querySelectorAll('input[type="text"], [data-testid="stTextInput"] input');
+        inputs.forEach(function(inp) {
+          const isChatInput = (
+            (inp.placeholder && inp.placeholder.toLowerCase().includes('copilot')) ||
+            inp.getAttribute('aria-label') === 'Ask Copilot' ||
+            (inp.closest('form') && inp.closest('form').innerHTML.includes('Send 💬'))
+          );
+
+          if (isChatInput && !inp.dataset.copilotScrollAttached) {
+            inp.dataset.copilotScrollAttached = "true";
+
+            // When user focuses textbox to type
+            inp.addEventListener('focus', function() {
+              autoScrollNewAnswer(true);
+              setTimeout(scrollInputIntoView, 60);
+            });
+
+            // While user is typing / inputting prompts in textbox:
+            inp.addEventListener('input', function() {
+              autoScrollNewAnswer(false);
+            });
+
+            inp.addEventListener('keydown', function() {
+              autoScrollNewAnswer(false);
+            });
+          }
+        });
+      }
+
+      // Execute across multiple rendering frames for Streamlit virtual DOM mounting
+      autoScrollNewAnswer(true);
+      attachScrollListeners();
+
+      [40, 120, 260, 550, 900].forEach(function(delay) {
+        setTimeout(function() {
+          autoScrollNewAnswer(true);
+          attachScrollListeners();
+        }, delay);
+      });
+
+      // Mutation observer to automatically trigger when a new answer arrives in the DOM
+      try {
+        const doc = getDoc();
+        const observer = new MutationObserver(function(mutations) {
+          attachScrollListeners();
+          autoScrollNewAnswer(true);
+        });
+        const target = doc.querySelector('.main') || doc.body;
+        if (target) {
+          observer.observe(target, { childList: true, subtree: true });
+        }
+      } catch(e) {}
+    })();
+    </script>
+  """, height=0, width=0)
 
 def render_copilot_view():
   """Renders the full-page dedicated AI Carbon Copilot view."""
