@@ -406,6 +406,7 @@ def inject_custom_css():
     max-width: 85%;
     font-size: 0.9rem;
     box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+    scroll-margin-bottom: 24px;
   }}
 
   .chat-bubble-bot {{
@@ -418,6 +419,64 @@ def inject_custom_css():
     max-width: 92%;
     font-size: 0.9rem;
     line-height: 1.5;
+    scroll-margin-bottom: 24px;
+  }}
+
+  .chat-bubble-bot.latest-bot-answer {{
+    scroll-margin-top: 80px;
+    scroll-margin-bottom: 35px;
+    animation: fadeInCopilotAnswer 0.35s ease-out;
+  }}
+
+  @keyframes fadeInCopilotAnswer {{
+    from {{
+      opacity: 0.75;
+      transform: translateY(8px);
+    }}
+    to {{
+      opacity: 1;
+      transform: translateY(0);
+    }}
+  }}
+
+  /* Chatbot Interface & Smooth Scrolling */
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-bot),
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-user),
+  .copilot-scroll-container {{
+    scroll-behavior: smooth !important;
+    overflow-y: auto !important;
+    padding-right: 6px;
+  }}
+
+  /* Custom Sleek Scrollbars for Chat */
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-bot)::-webkit-scrollbar,
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-user)::-webkit-scrollbar,
+  .copilot-scroll-container::-webkit-scrollbar {{
+    width: 6px;
+  }}
+
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-bot)::-webkit-scrollbar-track,
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-user)::-webkit-scrollbar-track,
+  .copilot-scroll-container::-webkit-scrollbar-track {{
+    background: transparent;
+  }}
+
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-bot)::-webkit-scrollbar-thumb,
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-user)::-webkit-scrollbar-thumb,
+  .copilot-scroll-container::-webkit-scrollbar-thumb {{
+    background: #CBD5E1;
+    border-radius: 10px;
+  }}
+
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-bot)::-webkit-scrollbar-thumb:hover,
+  [data-testid="stVerticalBlockBorderWrapper"]:has(.chat-bubble-user)::-webkit-scrollbar-thumb:hover,
+  .copilot-scroll-container::-webkit-scrollbar-thumb:hover {{
+    background: #94A3B8;
+  }}
+
+  #copilot-chat-bottom-anchor,
+  #copilot-input-area-anchor {{
+    scroll-margin-bottom: 20px;
   }}
 
   /* Sidebar Styling */
