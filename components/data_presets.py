@@ -554,3 +554,171 @@ CIRCULAR_ALTERNATIVES: Dict[str, Dict[str, Any]] = {
     }
   }
 }
+
+CATEGORY_FIXES: Dict[str, List[Dict[str, Any]]] = {
+  "electricity": [
+    {
+      "id": "elec_led",
+      "name": "High-Efficiency LED High-Bay & Smart Dimming Retrofit",
+      "description": "Replace existing fluorescent tubes and metal-halide high bays with high-efficacy LEDs and motion daylight harvest controls.",
+      "co2_saved_pct": 14.0,
+      "cost_estimate": "₹150,000 – ₹300,000",
+      "cost_level": "Low",
+      "difficulty": "Easy",
+      "payback_time": "5 months",
+      "timeframe": "quick_win",
+      "timeframe_label": "Quick Win (0–3 Months)",
+      "impact_tag": "Instant Stop-Leak"
+    },
+    {
+      "id": "elec_sensor",
+      "name": "Smart Motor Soft-Starters & VFD Drives",
+      "description": "Install Variable Frequency Drives (VFDs) on plant exhaust blowers, pumps, and conveyor motors to eliminate idle power spikes.",
+      "co2_saved_pct": 22.0,
+      "cost_estimate": "₹350,000 – ₹600,000",
+      "cost_level": "Medium",
+      "difficulty": "Medium",
+      "payback_time": "11 months",
+      "timeframe": "mid_term",
+      "timeframe_label": "Mid-term (3–12 Months)",
+      "impact_tag": "Peak Demand Shaving"
+    },
+    {
+      "id": "solar_pv",
+      "name": "Rooftop Solar PV Microgrid (50kW – 150kW)",
+      "description": "Install on-site commercial rooftop solar PV arrays to generate clean power, abating daytime grid demand charges.",
+      "co2_saved_pct": 42.0,
+      "cost_estimate": "₹2,500,000 – ₹5,000,000",
+      "cost_level": "High",
+      "difficulty": "Hard",
+      "payback_time": "3.5 years",
+      "timeframe": "long_term",
+      "timeframe_label": "Long-term (1+ Years)",
+      "impact_tag": "Net-Zero Milestone"
+    }
+  ],
+  "fuel": [
+    {
+      "id": "fuel_insulate",
+      "name": "Thermal Pipe & Steam Valve Blanket Insulation",
+      "description": "Wrap bare steam manifolds, valves, and uninsulated condensate piping with high-temperature removable fiberglass thermal jackets.",
+      "co2_saved_pct": 16.0,
+      "cost_estimate": "₹80,000 – ₹180,000",
+      "cost_level": "Low",
+      "difficulty": "Easy",
+      "payback_time": "4 months",
+      "timeframe": "quick_win",
+      "timeframe_label": "Quick Win (0–3 Months)",
+      "impact_tag": "Radiant Heat Capture"
+    },
+    {
+      "id": "fuel_boiler_tune",
+      "name": "Boiler Burner Tuning & O2 Trim Calibration",
+      "description": "Calibrate air-fuel combustion ratios, clean burner nozzles, and service economizers for optimal thermal transfer.",
+      "co2_saved_pct": 18.0,
+      "cost_estimate": "₹120,000 – ₹250,000",
+      "cost_level": "Low",
+      "difficulty": "Easy",
+      "payback_time": "6 months",
+      "timeframe": "mid_term",
+      "timeframe_label": "Mid-term (3–12 Months)",
+      "impact_tag": "Combustion Efficiency"
+    },
+    {
+      "id": "fuel_heat_pump",
+      "name": "Industrial Heat Pump & Thermal Electrification",
+      "description": "Transition process hot water boilers from fossil fuels to high-efficiency industrial air-to-water heat pumps.",
+      "co2_saved_pct": 52.0,
+      "cost_estimate": "₹1,800,000 – ₹3,500,000",
+      "cost_level": "High",
+      "difficulty": "Hard",
+      "payback_time": "3.8 years",
+      "timeframe": "long_term",
+      "timeframe_label": "Long-term (1+ Years)",
+      "impact_tag": "Zero Fossil Fuel"
+    }
+  ],
+  "transport": [
+    {
+      "id": "fuel_telematics",
+      "name": "Fleet Anti-Idling Policy & Telematics Speed Caps",
+      "description": "Deploy OBD-II telematics to enforce 3-minute max engine idling rules and moderate highway cruising speeds.",
+      "co2_saved_pct": 12.0,
+      "cost_estimate": "₹20,000 – ₹50,000",
+      "cost_level": "Low",
+      "difficulty": "Easy",
+      "payback_time": "2 months",
+      "timeframe": "quick_win",
+      "timeframe_label": "Quick Win (0–3 Months)",
+      "impact_tag": "Zero CapEx"
+    },
+    {
+      "id": "trans_route",
+      "name": "AI Dynamic Route Planning & Delivery Consolidation",
+      "description": "Implement route dispatch software to cluster shipment drops and eliminate empty backhaul mileage.",
+      "co2_saved_pct": 24.0,
+      "cost_estimate": "₹80,000 – ₹180,000 / yr",
+      "cost_level": "Medium",
+      "difficulty": "Medium",
+      "payback_time": "3 months",
+      "timeframe": "mid_term",
+      "timeframe_label": "Mid-term (3–12 Months)",
+      "impact_tag": "Mileage Reduction"
+    },
+    {
+      "id": "trans_ev_fleet",
+      "name": "Commercial Electric Vehicle (EV) Delivery Fleet Transition",
+      "description": "Phase out diesel freight vans with commercial battery electric vans supported by depot smart overnight charging.",
+      "co2_saved_pct": 65.0,
+      "cost_estimate": "₹2,800,000 – ₹5,500,000 per van",
+      "cost_level": "High",
+      "difficulty": "Hard",
+      "payback_time": "3.5 years",
+      "timeframe": "long_term",
+      "timeframe_label": "Long-term (1+ Years)",
+      "impact_tag": "Zero Tailpipe"
+    }
+  ],
+  "waste": [
+    {
+      "id": "waste_segregation",
+      "name": "Point-of-Origin Color-Coded Waste Sorting Stations",
+      "description": "Introduce shop-floor source segregation bins for cardboard, clean plastics, and organics to avoid landfill contamination.",
+      "co2_saved_pct": 20.0,
+      "cost_estimate": "₹25,000 – ₹60,000",
+      "cost_level": "Low",
+      "difficulty": "Easy",
+      "payback_time": "2 months",
+      "timeframe": "quick_win",
+      "timeframe_label": "Quick Win (0–3 Months)",
+      "impact_tag": "Diverts Landfill"
+    },
+    {
+      "id": "waste_compact_baler",
+      "name": "Cardboard & Plastic Baler with Recycler Buyback",
+      "description": "Install an on-site mechanical baler to compact recyclable streams into dense bales for cash rebate pickups.",
+      "co2_saved_pct": 34.0,
+      "cost_estimate": "₹200,000 – ₹450,000",
+      "cost_level": "Medium",
+      "difficulty": "Medium",
+      "payback_time": "9 months",
+      "timeframe": "mid_term",
+      "timeframe_label": "Mid-term (3–12 Months)",
+      "impact_tag": "Turns Waste to Cash"
+    },
+    {
+      "id": "waste_return_totes",
+      "name": "Closed-Loop Collapsible Returnable Transport Packaging",
+      "description": "Replace single-use corrugated carton packaging with durable returnable plastic totes across recurring supplier loops.",
+      "co2_saved_pct": 58.0,
+      "cost_estimate": "₹450,000 – ₹900,000",
+      "cost_level": "High",
+      "difficulty": "Hard",
+      "payback_time": "2.1 years",
+      "timeframe": "long_term",
+      "timeframe_label": "Long-term (1+ Years)",
+      "impact_tag": "Circular Economy"
+    }
+  ]
+}
+

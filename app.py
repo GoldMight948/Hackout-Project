@@ -25,6 +25,7 @@ from components.icons import feather_icon, render_icon_heading, COLOR_WARNING, C
 # Import views
 from components.views.landing_view import render_landing_view
 from components.views.auth_view import render_auth_view
+from components.views.welcome_view import render_welcome_view
 from components.views.setup_view import render_setup_view
 from components.views.upload_view import render_upload_view
 from components.views.activity_log_view import render_activity_log_view
@@ -33,6 +34,8 @@ from components.views.analytics_view import render_analytics_view
 from components.views.leak_detection_view import render_leak_detection_view
 from components.views.carbon_credits_view import render_carbon_credits_view
 from components.views.recommendations_view import render_recommendations_view
+from components.views.action_plan_view import render_action_plan_view
+from components.views.export_view import render_export_view
 from components.views.simulator_view import render_simulator_view
 from components.views.circular_view import render_circular_view
 from components.views.settings_view import render_settings_view
@@ -99,6 +102,7 @@ def render_sidebar():
     """, unsafe_allow_html=True)
     op_items = [
         ("Executive Dashboard", "dashboard", 5, "dashboard"),
+        ("Deep-Dive Analytics", "analytics", 5, "analytics"),
         ("Daily & Weekly Logs", "activity_logs", 4, "calendar_today"),
         ("Carbon Copilot AI", "copilot", 99, "smart_toy"),
     ]
@@ -123,6 +127,7 @@ def render_sidebar():
         ("Carbon Credits & Market", "carbon_credits", 7, "monetization_on"),
         ("Green Recommendations", "recommendations", 8, "lightbulb"),
         ("Decarbonization Simulator", "simulator", 9, "science"),
+        ("Action Plan & Roadmap", "action_plan", 11, "checklist"),
         ("Circular Economy (4R)", "circular", 10, "recycling"),
     ]
     for label, section_key, step_target, icon_name in diag_items:
@@ -143,6 +148,7 @@ def render_sidebar():
         ("Business Profile & Setup", "setup", 3, "settings"),
         ("Activity Data Entry", "data_entry", 3, "edit_document"),
         ("Upload Historical Data", "upload_file", 4, "upload_file"),
+        ("Export & Reports", "export", 13, "ios_share"),
         ("Platform Settings", "settings", 12, "build"),
     ]
     for label, section_key, step_target, icon_name in admin_items:
@@ -225,12 +231,18 @@ def main():
   if nav_sec == "copilot":
     from components.chatbot import render_copilot_view
     render_copilot_view()
+  elif nav_sec == "welcome":
+    render_welcome_view()
   elif nav_sec == "activity_logs":
     render_activity_log_view()
   elif nav_sec == "analytics":
     render_analytics_view()
   elif nav_sec == "recommendations" or step == 8:
     render_recommendations_view()
+  elif nav_sec == "action_plan" or step == 11:
+    render_action_plan_view()
+  elif nav_sec == "export" or step == 13:
+    render_export_view()
   elif nav_sec == "circular" or step == 10:
     render_circular_view()
   elif nav_sec == "leak_detection" or step == 6:

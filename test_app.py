@@ -621,8 +621,11 @@ def test_new_user_past_data_csv_import():
   )
 
   # Clean any residual test data
-  for l in get_activity_logs(test_email):
-    delete_activity_log(l["id"], test_email)
+  from database.db_manager import get_db_connection
+  conn = get_db_connection()
+  conn.execute("DELETE FROM activity_logs WHERE user_email = ?", (test_email.lower().strip(),))
+  conn.commit()
+  conn.close()
 
   # 1. Verify New User initial zero state
   agg_init = get_aggregated_activity_summary(test_email)
@@ -719,7 +722,79 @@ def test_new_user_past_data_csv_import():
   assert "date,frequency" in tmpl_csv
   print(" [PASS] 1-Click sample generator and blank template verification complete.")
 
+def test_views_routing_and_welcome_flow():
+  print("Testing View Routing, Action Plan, Export, and Welcome Onboarding Flow...")
+  import streamlit as st
+  from components.views.action_plan_view import get_selected_fix_objects
+  from components.calculations import CATEGORY_METADATA
+  from components.data_presets import CATEGORY_FIXES
 
+  # 1. Verify CATEGORY_METADATA covers all category fixes
+  for cat in CATEGORY_FIXES.keys():
+    assert cat in CATEGORY_METADATA, f"Missing category metadata for {cat}"
+    assert "label" in CATEGORY_METADATA[cat]
+    assert "icon" in CATEGORY_METADATA[cat]
+  print(" [PASS] CATEGORY_METADATA dictionary complete and validated.")
+
+  # 2. Verify get_selected_fix_objects fallback
+  if "selected_fixes" in st.session_state:
+    del st.session_state["selected_fixes"]
+  if "selected_action_recs" in st.session_state:
+    del st.session_state["selected_action_recs"]
+  
+  default_fixes = get_selected_fix_objects()
+  assert len(default_fixes) > 0, "Expected non-empty default fixes"
+  timeframes = {f.get("timeframe") for f in default_fixes}
+  assert "quick_win" in timeframes
+  assert "mid_term" in timeframes
+  assert "long_term" in timeframes
+  print(f" [PASS] Action Plan default fixes fallback verified: {len(default_fixes)} initiatives across all timeframes.")
+
+  # 3. Verify specific selection
+  st.session_state["selected_fixes"] = {"elec_led", "fuel_insulate"}
+  chosen_fixes = get_selected_fix_objects()
+  assert len(chosen_fixes) == 2
+  ids = {f["id"] for f in chosen_fixes}
+  assert ids == {"elec_led", "fuel_insulate"}
+  print(" [PASS] Action Plan custom initiative filtering verified.")
+
+  # 4. Verify Export CSV DataFrame generation
+  data_rows = []
+  for f in chosen_fixes:
+    cat_meta = CATEGORY_METADATA.get(f.get("category"), {})
+    data_rows.append({
+      "Business Name": "Test Corp",
+      "Execution Stage": f.get("timeframe_label"),
+      "Category": cat_meta.get("label", f.get("category")),
+      "Initiative Name": f.get("name"),
+      "Description": f.get("description"),
+      "CO2 Reduction (%)": f.get("co2_saved_pct"),
+      "Estimated Cost": f.get("cost_estimate"),
+      "Difficulty": f.get("difficulty"),
+      "Payback Period": f.get("payback_time"),
+    })
+  df = pd.DataFrame(data_rows)
+  assert len(df) == 2
+  assert "CO2 Reduction (%)" in df.columns
+  assert "Payback Period" in df.columns
+  csv_str = df.to_csv(index=False)
+  assert "Test Corp" in csv_str
+  print(" [PASS] Export Action Plan CSV compilation verified.")
+
+  # 5. Verify App.py Routing and Sidebar Definitions
+  with open("app.py", "r", encoding="utf-8") as f:
+    app_source = f.read()
+
+  assert "render_welcome_view" in app_source
+  assert "render_action_plan_view" in app_source
+  assert "render_export_view" in app_source
+  assert 'nav_sec == "action_plan"' in app_source
+  assert 'nav_sec == "export"' in app_source
+  assert 'nav_sec == "welcome"' in app_source
+  assert '("Deep-Dive Analytics", "analytics"' in app_source
+  assert '("Action Plan & Roadmap", "action_plan"' in app_source
+  assert '("Export & Reports", "export"' in app_source
+  print(" [PASS] App.py routing branches and sidebar integration verified.")
 
 if __name__ == "__main__":
   test_database()
@@ -732,6 +807,7 @@ if __name__ == "__main__":
   test_ml_forecasting()
   test_presets_and_alternatives()
   test_new_user_past_data_csv_import()
+  test_views_routing_and_welcome_flow()
   test_fastapi_endpoints()
   print("\n=======================================================")
   print("🎉 ALL TEST SUITES PASSED CLEANLY WITH ZERO ERRORS! 🎉")

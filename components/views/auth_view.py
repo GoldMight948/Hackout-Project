@@ -58,6 +58,8 @@ def render_auth_view():
             else:
               user = authenticate_user(login_email, login_password)
               if user:
+                st.session_state["nav_section"] = "dashboard"
+                st.session_state["current_step"] = 5
                 st.success(f"Welcome back, {user['owner_name']}! Loading workspace...")
                 login_user_session(user)
               else:
@@ -205,6 +207,8 @@ def render_auth_view():
             st.success("Business profile created successfully! Initializing production workspace...")
             user = authenticate_user(p_email, p_password)
             if user:
+              st.session_state["nav_section"] = "welcome"
+              st.session_state["current_step"] = 2.5
               login_user_session(user)
           else:
             st.error("An account with this email address already exists. Please sign in instead.")
