@@ -5,11 +5,12 @@ Non-technical intro, value proposition cards, sample dataset pre-loaders, and ca
 
 import streamlit as st
 from components.data_presets import DEMO_BUSINESSES
+from components.calculations import calculate_detailed_emissions
 
 def render_welcome_view():
   user = st.session_state.get("current_user", {})
-  user_name = user.get("name", "there")
-  company_name = user.get("company", "your business")
+  user_name = user.get("owner_name", user.get("name", "there"))
+  company_name = user.get("company_name", user.get("company", "your business"))
 
   st.markdown(f"""
     <div style="background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px 36px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
@@ -19,7 +20,7 @@ def render_welcome_view():
       </div>
       <p style="font-size: 1.05rem; color: #475569; line-height: 1.6; max-width: 780px;">
         Ready to find where <strong>{company_name}</strong> is leaking emissions and money? 
-        Most small businesses can cut <strong>15% to 35% of their utility footprint</strong> in under 12 months with low-cost operational fixes.
+        Most small and mid-sized enterprises can cut <strong>15% to 35% of their utility footprint</strong> in under 12 months with low-cost operational fixes.
       </p>
     </div>
   """, unsafe_allow_html=True)
@@ -30,7 +31,7 @@ def render_welcome_view():
   with c1:
     st.markdown("""
       <div class="clean-card" style="height: 100%;">
-        <div style="font-size: 2rem; margin-bottom: 12px;"></div>
+        <div style="font-size: 2rem; margin-bottom: 12px;">🔍</div>
         <h4 style="font-size: 1.1rem; font-weight: 700; color: #0F172A; margin-bottom: 8px;">1. Spot Hidden Leaks</h4>
         <p style="font-size: 0.9rem; color: #64748B; line-height: 1.5;">
           Enter your electric, fuel, transport, and waste numbers in 60 seconds. Our diagnostic engine ranks your biggest leakage source.
@@ -41,10 +42,10 @@ def render_welcome_view():
   with c2:
     st.markdown("""
       <div class="clean-card" style="height: 100%;">
-        <div style="font-size: 2rem; margin-bottom: 12px;"></div>
+        <div style="font-size: 2rem; margin-bottom: 12px;">💡</div>
         <h4 style="font-size: 1.1rem; font-weight: 700; color: #0F172A; margin-bottom: 8px;">2. Actionable Green Fixes</h4>
         <p style="font-size: 0.9rem; color: #64748B; line-height: 1.5;">
-          No confusing carbon jargon. Get tailored, high-ROI recommendations with clear dollar payback periods and difficulty ratings.
+          No confusing carbon jargon. Get tailored, high-ROI recommendations with clear rupee payback periods and difficulty ratings.
         </p>
       </div>
     """, unsafe_allow_html=True)
@@ -79,32 +80,42 @@ def render_welcome_view():
   
   with p_col1:
     if st.button("🥪 Load Food Processor (Bakery)", use_container_width=True):
-      st.session_state["form_inputs"] = DEMO_BUSINESSES["food_processor"]["data"].copy()
+      preset_data = DEMO_BUSINESSES["food_processor"]["data"].copy()
+      st.session_state["form_inputs"] = preset_data
+      st.session_state["emissions_results"] = calculate_detailed_emissions(preset_data)
       st.session_state["active_preset"] = "food_processor"
-      st.session_state["current_step"] = 2
-      st.success("Loaded GreenBite Organics data! Proceeding to Data Entry...")
+      st.session_state["nav_section"] = "dashboard"
+      st.session_state["current_step"] = 5
+      st.success("Loaded GreenBite Organics data! Proceeding to Dashboard...")
       st.rerun()
 
   with p_col2:
     if st.button("🏪 Load Small Retail Boutique", use_container_width=True):
-      st.session_state["form_inputs"] = DEMO_BUSINESSES["small_retail"]["data"].copy()
+      preset_data = DEMO_BUSINESSES["small_retail"]["data"].copy()
+      st.session_state["form_inputs"] = preset_data
+      st.session_state["emissions_results"] = calculate_detailed_emissions(preset_data)
       st.session_state["active_preset"] = "small_retail"
-      st.session_state["current_step"] = 2
-      st.success("Loaded EcoTrend Boutique data! Proceeding to Data Entry...")
+      st.session_state["nav_section"] = "dashboard"
+      st.session_state["current_step"] = 5
+      st.success("Loaded EcoTrend Boutique data! Proceeding to Dashboard...")
       st.rerun()
 
   with p_col3:
     if st.button("🚚 Load Logistics & Delivery", use_container_width=True):
-      st.session_state["form_inputs"] = DEMO_BUSINESSES["logistics"]["data"].copy()
+      preset_data = DEMO_BUSINESSES["logistics"]["data"].copy()
+      st.session_state["form_inputs"] = preset_data
+      st.session_state["emissions_results"] = calculate_detailed_emissions(preset_data)
       st.session_state["active_preset"] = "logistics"
-      st.session_state["current_step"] = 2
-      st.success("Loaded SwiftRoute Couriers data! Proceeding to Data Entry...")
+      st.session_state["nav_section"] = "dashboard"
+      st.session_state["current_step"] = 5
+      st.success("Loaded SwiftRoute Couriers data! Proceeding to Dashboard...")
       st.rerun()
 
   st.markdown("<div style='margin-top: 36px; text-align: center;'>", unsafe_allow_html=True)
   col_l, col_btn, col_r = st.columns([1, 2, 1])
   with col_btn:
     if st.button("Start Assessment with My Own Data →", type="primary", use_container_width=True):
-      st.session_state["current_step"] = 2
+      st.session_state["nav_section"] = "setup"
+      st.session_state["current_step"] = 3
       st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)

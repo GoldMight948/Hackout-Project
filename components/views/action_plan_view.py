@@ -13,7 +13,13 @@ from components.calculations import CATEGORY_METADATA
 
 def get_selected_fix_objects():
   """Gathers all fix objects currently selected by user across all categories."""
-  selected_ids = st.session_state.get("selected_fixes", set())
+  selected_ids = st.session_state.get("selected_fixes") or st.session_state.get("selected_action_recs")
+  if not selected_ids:
+    selected_ids = {
+      "elec_led", "elec_sensor", "solar_pv",
+      "fuel_insulate", "fuel_boiler_tune",
+      "trans_route", "waste_segregation"
+    }
   all_fixes = []
   for cat, fixes in CATEGORY_FIXES.items():
     for fix in fixes:
@@ -25,8 +31,33 @@ def get_selected_fix_objects():
 
 def render_action_plan_view():
   user = st.session_state.get("current_user", {})
-  business_name = st.session_state.get("form_inputs", {}).get("business_name", "Your Business")
+  inputs = st.session_state.get("form_inputs", {})
+  business_name = inputs.get("business_name", user.get("company_name", user.get("company", "Your Business")))
+
+  # Data guard: auto-calculate emissions if missing from inputs or database
+  results = st.session_state.get("emissions_results")
+  if not results:
+    if inputs and any(v for k, v in inputs.items() if isinstance(v, (int, float)) and v > 0):
+      from components.calculations import calculate_detailed_emissions
+      results = calculate_detailed_emissions(inputs)
+      st.session_state["emissions_results"] = results
+    else:
+      email = user.get("email", "")
+      if email:
+        from database.db_manager import get_latest_emissions
+        from components.calculations import calculate_detailed_emissions
+        db_data = get_latest_emissions(email)
+        if db_data:
+          results = calculate_detailed_emissions(db_data)
+          st.session_state["form_inputs"] = dict(db_data)
+          st.session_state["emissions_results"] = results
+
   sim_outcomes = st.session_state.get("simulated_outcomes", {})
+  co2_t = results.get("total_co2", 0.0) if results else 0.0
+  cost_t = results.get("total_cost", 0.0) if results else 0.0
+  co2_saved = sim_outcomes.get("co2_saved", round(co2_t * 0.26, 1) if co2_t > 0 else 28.5)
+  cost_saved = sim_outcomes.get("cost_saved", round(cost_t * 0.22, 0) if cost_t > 0 else 8400)
+  co2_pct = sim_outcomes.get("co2_pct", 26.0)
 
   st.markdown(f"""
     <div style="margin-bottom: 20px;">
@@ -42,11 +73,11 @@ def render_action_plan_view():
     </div>
   """, unsafe_allow_html=True)
 
+  if not results or co2_t == 0.0:
+    st.info("ℹ️ Baseline emissions data not yet recorded. Showing projected roadmap based on typical facility benchmarks. You can customize your facility inputs under **Business Profile & Setup**.")
+
   # Summary metric highlights
   c1, c2, c3 = st.columns(3)
-  co2_saved = sim_outcomes.get("co2_saved", 28.5)
-  cost_saved = sim_outcomes.get("cost_saved", 8400)
-  co2_pct = sim_outcomes.get("co2_pct", 26.0)
 
   with c1:
     st.markdown(f"""
@@ -157,10 +188,12 @@ def render_action_plan_view():
   col_nav_left, col_nav_right = st.columns([1, 1])
   with col_nav_left:
     if st.button("← Back to Simulator", key="plan_back"):
-      st.session_state["current_step"] = 5
+      st.session_state["nav_section"] = "simulator"
+      st.session_state["current_step"] = 9
       st.rerun()
 
   with col_nav_right:
     if st.button("Proceed to Export & Share →", type="primary", key="plan_next", use_container_width=True):
-      st.session_state["current_step"] = 7
+      st.session_state["nav_section"] = "export"
+      st.session_state["current_step"] = 13
       st.rerun()

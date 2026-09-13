@@ -79,6 +79,46 @@ COST_FACTORS = {
 "machine_hour": 2656.0,    # ₹ / hour operating overhead
 }
 
+# Category Metadata for Visual Presentation, Roadmaps, and Reporting
+CATEGORY_METADATA: Dict[str, Dict[str, str]] = {
+  "electricity": {
+    "label": "Electricity & Power",
+    "icon": "⚡",
+    "feather_icon": "zap",
+    "color": "#F59E0B"
+  },
+  "fuel": {
+    "label": "Thermal Heating & Boiler Fuel",
+    "icon": "🔥",
+    "feather_icon": "flame",
+    "color": "#EF4444"
+  },
+  "transport": {
+    "label": "Fleet Logistics & Transport",
+    "icon": "🚚",
+    "feather_icon": "truck",
+    "color": "#3B82F6"
+  },
+  "waste": {
+    "label": "Solid Waste & Circular Streams",
+    "icon": "♻️",
+    "feather_icon": "trash-2",
+    "color": "#10B981"
+  },
+  "water": {
+    "label": "Industrial Water & Effluent",
+    "icon": "💧",
+    "feather_icon": "droplet",
+    "color": "#06B6D4"
+  },
+  "manufacturing": {
+    "label": "Embodied Materials & Production",
+    "icon": "🏭",
+    "feather_icon": "tool",
+    "color": "#8B5CF6"
+  }
+}
+
 # Industry Benchmarks (average t CO2e per 1,000 units or normalized turnover)
 INDUSTRY_BENCHMARKS = {
   "Food Processing": {"intensity_kg_per_unit": 0.95, "avg_renewable_pct": 18.0, "waste_divert_pct": 35.0},
